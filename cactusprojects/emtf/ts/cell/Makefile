@@ -33,21 +33,22 @@ Sources=\
 	Mtf7SpyFifo.cpp \
 	Mtf7LinksAlignmentReferences.cpp \
 	Mtf7ConfigCommands.cpp \
-	Mtf7WriteVerifyLuts.cpp
+	Mtf7WriteVerifyLuts.cpp \
 
 IncludeDirs = \
-	/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/include/ \
+	/home/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/include/ \
 	$(XDAQ_ROOT)/include \
 	$(CACTUS_ROOT)/include \
 	$(TRIGGER_EMTF_TS_CELL_INCLUDE_PREFIX) \
 	$(TRIGGER_EMTF_INCLUDE_PREFIX) \
 	$(XDAQ_ROOT)/include/hal \
-	$(BUILD_HOME)/cactusprojects/emtf/pciExprLinuxBusAdapter/include \
+	/home/emtfts/cactus_trunk/cactusprojects/emtf/pciExprLinuxBusAdapter/include \
 
 UserCFlags =
 UserCCFlags = -g -ggdb -O0 -std=c++0x
 
-UserDynamicLinkFlags= -Xlinker -rpath -Xlinker /nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/pciExprLinuxBusAdapter/lib/linux/x86_64_slc6/
+UserDynamicLinkFlags= -Xlinker -rpath -Xlinker /home/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/lib/linux/x86_64_slc6/ \
+                      -Xlinker -rpath -Xlinker /home/emtfts/cactus_trunk/cactusprojects/emtf/pciExprLinuxBusAdapter/lib/linux/x86_64_slc6/ \
 
 DependentLibraryDirs = \
 	$(XDAQ_ROOT)/lib \
@@ -56,7 +57,8 @@ DependentLibraryDirs = \
 	$(TRIGGER_EMTF_SPBASEINTERACTIONS_LIB_PREFIX) \
 	$(TRIGGER_EMTF_SPFUNCTIONS_LIB_PREFIX) \
 	$(TRIGGER_EMTF_SPLUTSANDFIRMWARE_LIB_PREFIX) \
-	$(BUILD_HOME)/cactusprojects/emtf/pciExprLinuxBusAdapter/lib/linux/x86_64_slc6 \
+	/home/emtfts/cactus_trunk/cactusprojects/emtf/pciExprLinuxBusAdapter/lib/linux/x86_64_slc6 \
+	/home/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/lib/linux/x86_64_slc6/ \
 
 DependentLibraries = tsframework \
                      swatchcellframework \

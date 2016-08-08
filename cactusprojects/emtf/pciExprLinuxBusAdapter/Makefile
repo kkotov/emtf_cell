@@ -37,11 +37,9 @@ DynamicLibrary=PCIExprLinuxBusAdapter
 
 StaticLibrary=
 
-#$(XDAQ_ROOT)/include/hal/generic/include
-
 IncludeDirs=\
-	/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/include \
-	$(BUILD_HOME)/cactusprojects/emtf/pciExprLinuxBusAdapter/include/emtf/pciExprLinuxBusAdapter/
+	/home/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/include \
+	/home/emtfts/cactus_trunk/cactusprojects/emtf/pciExprLinuxBusAdapter/include/emtf/pciExprLinuxBusAdapter/
 
 
 ifdef STANDALONE
@@ -63,7 +61,7 @@ DependentLibraries=GenericHAL
 
 UserCFlags =
 UserCCFlags = -g -DLINUX
-UserDynamicLinkFlags= -Xlinker -rpath -Xlinker /nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/lib/linux/x86_64_slc6/
+UserDynamicLinkFlags= -Xlinker -rpath -Xlinker /home/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/lib/linux/x86_64_slc6/
 UserStaticLinkFlags=
 UserExecutableLinkFlags=
 
