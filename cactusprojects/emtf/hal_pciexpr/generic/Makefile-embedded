@@ -1,0 +1,110 @@
+# small Makefile for embedded stand-alone systems.
+# leaves GenericHAL.so in lib directory
+
+DynamicLibrary=GenericHAL.so
+
+IncludeDirs = -Iinclude -I../xcept/include 
+
+.PHONY: default clean
+
+.default: $(DynamicLibrary)
+
+Sources = \
+          AddressTable.cc \
+          PCIAddressTable.cc \
+          VMEAddressTable.cc \
+          AddressTableItem.cc \
+          AddressTableReader.cc \
+          VMEAddressTableASCIIReader.cc \
+          VMEAddressTableDynamicReader.cc \
+          PCIAddressTableASCIIReader.cc \
+          PCIAddressTableDynamicReader.cc \
+          GeneralHardwareAddress.cc \
+          PCIHardwareAddress.cc \
+          VMEHardwareAddress.cc \
+          VME64xHardwareAddress.cc \
+          HardwareDevice.cc \
+          VMEDevice.cc \
+          VME64xDevice.cc \
+          PCIDevice.cc \
+          AbstractCommandFactory.cc \
+          CommandSequence.cc \
+          CommandCreator.cc \
+          CommandSequenceReader.cc \
+          WriteFactory.cc \
+          WriteCommand.cc \
+          UnmaskedWriteFactory.cc \
+          UnmaskedWriteCommand.cc \
+          ReadCommand.cc \
+          ReadFactory.cc \
+          UnmaskedReadCommand.cc \
+          UnmaskedReadFactory.cc \
+          LabelCommand.cc \
+          LabelFactory.cc \
+          SetBitFactory.cc \
+          SetBitCommand.cc \
+          ResetBitFactory.cc \
+          ResetBitCommand.cc \
+          DefineFactory.cc \
+          DefineCommand.cc \
+          AddFactory.cc \
+          AddCommand.cc \
+          GotoCommand.cc \
+          GotoFactory.cc \
+          PrintCommand.cc \
+          PrintFactory.cc \
+          CheckCommand.cc \
+          CheckFactory.cc \
+          PollItemCommand.cc \
+          PollItemFactory.cc \
+          CommandSequenceASCIIReader.cc \
+          CommandSequencer.cc \
+          StopWatch.cc \
+          StaticVMEConfiguration.cc \
+          StaticVMEConfigurationReader.cc \
+          StaticVMEConfigurationASCIIFileReader.cc \
+          StaticVMEItem.cc \
+          VME64xCrate.cc \
+          VME64xFunction.cc \
+          VME64xMappedWindow.cc \
+          VMEConfigurationSpaceAddressReader.cc \
+          VMEConfigurationSpaceDevice.cc \
+          VMEConfigurationSpaceHandler.cc \
+          VMESlot.cc 
+
+vpath  %.cc  src/common src/linux/common
+vpath  %.o   ./obj
+vpath  %.so  ./lib
+
+
+objects = $(Sources:%.cc=%.o)
+objectf = $(objects:%=obj/%)
+
+%.o : %.cc
+	g++ $(IncludeDirs) -Wall -fPIC -c -o obj/$@ $<
+
+$(DynamicLibrary) : obj lib $(objects)
+	g++ -shared -fPIC -o lib/$@ $(objectf)
+
+obj :
+	mkdir obj
+
+lib :
+	mkdir lib
+
+clean: 
+	-rm obj/*
+	-rm lib/*
+
+
+#ifdef NEEDXML 
+#Sources += VMEAddressTableXMLFileReader.cc \
+#          VMEAddressTableDOMReader.cc \
+#          DOMToVMEMapConverter.cc \
+#          PCIAddressTableXMLFileReader.cc \
+#          DOMToPCIMapConverter.cc \
+#          XMLParserErrorHandler.cc \
+#          ASCIIFileModuleMapper.cc \
+#          ASCIIFileAddressTableContainer.cc
+#endif
+# also version.cc  not compiled

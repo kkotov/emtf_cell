@@ -1,0 +1,60 @@
+# $Id: mfDefs.extern_coretools,v 1.2 2007/04/10 08:50:58 cschwick Exp $
+
+#########################################################################
+# XDAQ Components for Distributed Data Acquisition                      #
+# Copyright (C) 2000-2004, CERN.			                #
+# All rights reserved.                                                  #
+# Authors: J. Gutleber and L. Orsini					#
+#                                                                       #
+# For the licensing terms see LICENSE.		                        #
+# For the list of contributors see CREDITS.   			        #
+#########################################################################
+
+ifndef XERCES_PREFIX
+XERCES_PREFIX=$(XDAQ_ROOT)/daq/extern/xerces/$(XDAQ_PLATFORM)
+endif
+XERCES_INCLUDE_PREFIX=$(XERCES_PREFIX)/include
+XERCES_LIB_PREFIX=$(XERCES_PREFIX)/lib
+
+ifndef XALAN_PREFIX
+XALAN_PREFIX=$(XDAQ_ROOT)/daq/extern/xalan/$(XDAQ_PLATFORM)
+endif
+XALAN_INCLUDE_PREFIX=$(XALAN_PREFIX)/include
+XALAN_LIB_PREFIX=$(XALAN_PREFIX)/lib
+
+ifndef LOG4CPLUS_PREFIX
+LOG4CPLUS_PREFIX=$(XDAQ_ROOT)/daq/extern/log4cplus/$(XDAQ_PLATFORM)
+endif
+LOG4CPLUS_INCLUDE_PREFIX=$(LOG4CPLUS_PREFIX)/include
+LOG4CPLUS_LIB_PREFIX=$(LOG4CPLUS_PREFIX)/lib
+
+
+ifndef ASYNCRESOLV_PREFIX
+ASYNCRESOLV_PREFIX=$(XDAQ_ROOT)/daq/extern/asyncresolv/$(XDAQ_PLATFORM)
+endif
+ASYNCRESOLV_INCLUDE_PREFIX=$(ASYNCRESOLV_PREFIX)/include
+ASYNCRESOLV_LIB_PREFIX=$(ASYNCRESOLV_PREFIX)/lib
+
+#
+# this package just contains include files, therefore no platform specific
+#
+ifndef I2O_PREFIX
+I2O_PREFIX=$(XDAQ_ROOT)/daq/extern/i2o
+endif
+I2O_INCLUDE_PREFIX=$(I2O_PREFIX)/include
+I2O_LIB_PREFIX=$(I2O_PREFIX)/lib
+
+
+ifndef CGICC_PREFIX
+CGICC_PREFIX=$(XDAQ_ROOT)/daq/extern/cgicc/$(XDAQ_PLATFORM)
+endif
+CGICC_INCLUDE_PREFIX=$(CGICC_PREFIX)/include
+CGICC_LIB_PREFIX=$(CGICC_PREFIX)/lib
+
+
+ifndef MIMETIC_PREFIX
+MIMETIC_PREFIX=$(XDAQ_ROOT)/daq/extern/mimetic/$(XDAQ_PLATFORM)
+endif
+MIMETIC_INCLUDE_PREFIX=$(MIMETIC_PREFIX)/include
+MIMETIC_LIB_PREFIX=$(MIMETIC_PREFIX)/lib
+

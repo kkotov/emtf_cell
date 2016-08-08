@@ -1,0 +1,103 @@
+# $Id: mfDefs.coretools,v 1.2 2007/04/10 08:50:58 cschwick Exp $
+
+#########################################################################
+# XDAQ Components for Distributed Data Acquisition                      #
+# Copyright (C) 2000-2004, CERN.			                #
+# All rights reserved.                                                  #
+# Authors: J. Gutleber and L. Orsini					#
+#                                                                       #
+# For the licensing terms see LICENSE.		                        #
+# For the list of contributors see CREDITS.   			        #
+#########################################################################
+
+##
+# !!!! This marcros are used only for core tools development      !!!
+# !!!! They point always to the packages in the development tree  !!!
+# !!!! These paths never point to an installation                 !!!
+##
+
+
+ifndef CONFIG_PREFIX
+CONFIG_PREFIX=$(XDAQ_ROOT)/daq/config
+endif
+CONFIG_INCLUDE_PREFIX=$(CONFIG_PREFIX)/include $(CONFIG_PREFIX)/include/$(XDAQ_OS)
+CONFIG_LIB_PREFIX=$(CONFIG_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef XCEPT_PREFIX
+XCEPT_PREFIX=$(XDAQ_ROOT)/daq/xcept
+endif
+XCEPT_INCLUDE_PREFIX=$(XCEPT_PREFIX)/include $(XCEPT_PREFIX)/include/$(XDAQ_OS)
+XCEPT_LIB_PREFIX=$(XCEPT_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef PT_PREFIX
+PT_PREFIX=$(XDAQ_ROOT)/daq/pt
+endif
+PT_INCLUDE_PREFIX=$(PT_PREFIX)/include $(PT_PREFIX)/include/$(XDAQ_OS)
+PT_LIB_PREFIX=$(PT_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef TOOLBOX_PREFIX
+TOOLBOX_PREFIX=$(XDAQ_ROOT)/daq/toolbox
+endif
+TOOLBOX_INCLUDE_PREFIX=$(TOOLBOX_PREFIX)/include $(TOOLBOX_PREFIX)/include/$(XDAQ_OS)
+TOOLBOX_LIB_PREFIX=$(TOOLBOX_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef XOAP_PREFIX
+XOAP_PREFIX=$(XDAQ_ROOT)/daq/xoap
+endif
+XOAP_INCLUDE_PREFIX=$(XOAP_PREFIX)/include $(XOAP_PREFIX)/include/$(XDAQ_OS)
+XOAP_LIB_PREFIX=$(XOAP_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef LOG_UDPAPPENDER_PREFIX
+LOG_UDPAPPENDER_PREFIX=$(XDAQ_ROOT)/daq/log/udpappender
+endif
+LOG_UDPAPPENDER_INCLUDE_PREFIX=$(LOG_UDPAPPENDER_PREFIX)/include $(LOG_UDPAPPENDER_PREFIX)/include/$(XDAQ_OS)
+LOG_UDPAPPENDER_LIB_PREFIX=$(LOG_UDPAPPENDER_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef LOG_XMLAPPENDER_PREFIX
+LOG_XMLAPPENDER_PREFIX=$(XDAQ_ROOT)/daq/log/xmlappender
+endif
+LOG_XMLAPPENDER_INCLUDE_PREFIX=$(LOG_XMLAPPENDER_PREFIX)/include $(LOG_XMLAPPENDER_PREFIX)/include/$(XDAQ_OS)
+LOG_XMLAPPENDER_LIB_PREFIX=$(LOG_XMLAPPENDER_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef XOAP_FILTER_PREFIX
+XOAP_FILTER_PREFIX=$(XDAQ_ROOT)/daq/xoap/filter
+endif
+XOAP_FILTER_INCLUDE_PREFIX=$(XOAP_FILTER_PREFIX)/include $(XOAP_FILTER_PREFIX)/include/$(XDAQ_OS)
+XOAP_FILTER_LIB_PREFIX=$(XOAP_FILTER_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef XGI_PREFIX
+XGI_PREFIX=$(XDAQ_ROOT)/daq/xgi
+endif
+XGI_INCLUDE_PREFIX=$(XGI_PREFIX)/include $(XGI_PREFIX)/include/$(XDAQ_OS)
+XGI_LIB_PREFIX=$(XGI_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef XDATA_PREFIX
+XDATA_PREFIX=$(XDAQ_ROOT)/daq/xdata
+endif
+XDATA_INCLUDE_PREFIX=$(XDATA_PREFIX)/include $(XDATA_PREFIX)/include/$(XDAQ_OS)
+XDATA_LIB_PREFIX=$(XDATA_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef XI2O_PREFIX
+XI2O_PREFIX=$(XDAQ_ROOT)/daq/i2o
+endif
+XI2O_INCLUDE_PREFIX=$(XI2O_PREFIX)/include $(XI2O_PREFIX)/include/$(XDAQ_OS)
+XI2O_LIB_PREFIX=$(XI2O_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef XI2O_UTILS_PREFIX
+XI2O_UTILS_PREFIX=$(XDAQ_ROOT)/daq/i2o/utils
+endif
+XI2O_UTILS_INCLUDE_PREFIX=$(XI2O_UTILS_PREFIX)/include $(XI2O_UTILS_PREFIX)/include/$(XDAQ_OS)
+XI2O_UTILS_LIB_PREFIX=$(XI2O_UTILS_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+
+ifndef XDAQ_PREFIX
+XDAQ_PREFIX=$(XDAQ_ROOT)/daq/xdaq
+endif
+XDAQ_INCLUDE_PREFIX=$(XDAQ_PREFIX)/include $(XDAQ_PREFIX)/include/$(XDAQ_OS)
+XDAQ_LIB_PREFIX=$(XDAQ_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
+
+ifndef EXECUTIVE_PREFIX
+EXECUTIVE_PREFIX=$(XDAQ_ROOT)/daq/executive
+endif
+EXECUTIVE_INCLUDE_PREFIX=$(EXECUTIVE_PREFIX)/include $(EXECUTIVE_PREFIX)/include/$(XDAQ_OS)
+EXECUTIVE_LIB_PREFIX=$(EXECUTIVE_PREFIX)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)

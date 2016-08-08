@@ -1,0 +1,23 @@
+To compile in XDAQ environment make sure that the environment 
+variables XDAQ_ROOT and BUILD_HOME are correctly set. Then type 
+
+make 
+make install
+
+The include files and libraries will be installed under the tree
+in BUILD_HOME. 
+
+To generate RPMs (binary and dev) type
+
+make rpm
+make installrpm
+
+To install independent from a XDAQ tree make sure that the 
+environment variable XDAQ_ROOT is NOT set and type 
+
+make
+
+Further information/documentation in the API docu and in the 
+manual available under:
+./doc/index.html
+

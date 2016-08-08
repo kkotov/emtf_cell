@@ -1,0 +1,45 @@
+This is halwish version 0.1.
+
+This is an extension to the tcl/tk interpreter 'wish' to easily use
+the HAL library. It works for VME and PCI cards.
+
+You need four files:
+
+halAppInt.cc
+Card.h
+Card.cc
+PCICard.cc
+PCICard.h
+Makefile
+
+You need Tk 8.3, and an installed and working HAL version, with the
+appropriate bus adapter, implying a PCI-VME interface. 
+
+Usage: In the makefile select the correct PLATFORM := BT1003 or
+VXILINUX and set up the correct directories. Type 'make' and you
+should get an executable called halwish. This can be used as exactly
+wish, with the addition of one command:
+
+vmecard <name> <base address> <address map>
+
+This creates a new command <name> that communicates to the VME card at
+base address <base address> using the address map in <address map>.
+
+pcicard <name> <vendor> <device> <index> <address map>
+
+This creates a new command <name> that communicates to the PCI card at
+base address <base address> using the address map in <address map>.
+
+With one argument it returns the value read from the given address,
+with two arguments it writes the value of the second argument to the
+address given in the first argument and returns the empty string:
+
+<name> <address item>
+<name> <address item> <value>
+
+TTTThe files TTCvi.tk and TTCviAddressMap.dat provide an example using
+the TTCvi card. To try it, set the base address of your TTCvi card in 
+TTCvi.tk, and type
+
+./halwish TTCvi.tk
+

@@ -1,0 +1,41 @@
+# small Makefile for embedded stand-alone systems.
+# leaves GenericHAL.so in lib directory
+
+DynamicLibrary=HALUtilities.so
+
+IncludeDirs = -Iinclude -I../xcept/include -I../generic/include 
+
+.PHONY: default clean
+
+.default: $(DynamicLibrary)
+
+Sources = \
+          PersistentCommandSequencer.cc \
+          TestMaster.cc \
+          ConfigROMDumper.cc \
+          ConfigCSRDumper.cc
+
+vpath  %.cc  src/common src/linux/common
+vpath  %.o   ./obj
+vpath  %.so  ./lib
+
+
+objects = $(Sources:%.cc=%.o)
+objectf = $(objects:%=obj/%)
+
+%.o : %.cc
+	g++ $(IncludeDirs) -Wall -fPIC -c -o obj/$@ $<
+
+$(DynamicLibrary) : obj lib $(objects)
+	g++ -shared -fPIC -o lib/$@ $(objectf)
+
+obj :
+	mkdir obj
+
+lib :
+	mkdir lib
+
+clean: 
+	-rm obj/*
+	-rm lib/*
+

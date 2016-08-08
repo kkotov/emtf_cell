@@ -1,0 +1,58 @@
+%define name xdaq-hal-sbsAdapter
+%define version __version__
+%define release __release__
+%define _prefix  __prefix__
+%define _tmppath /tmp
+%define haldir __haldir__
+
+%define _unpackaged_files_terminate_build 0
+
+Summary: The SBS BusAdapter class for the HAL.
+Name: %{name}
+Version: %{version}
+Release: %{release}
+License: free
+Group: frameworks/DAQ
+URL: http://cmsdoc.cern.ch/~cschwick
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Prefix: __prefix__
+
+%description
+This library provides the SBS BusAdapter class for the HAL which
+allows to access VME cards via the SBS VME busadapter hardware.
+
+%package -n xdaq-hal-sbsAdapter-devel
+Summary:  Development package for the SBS BusAdapter class of the HAL.
+Group:    CMS/System
+
+%description -n xdaq-hal-sbsAdapter-devel
+This package contains the include files for development work
+with the SBS BusAdapter.
+
+#%prep
+
+#%setup 
+
+#%build
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/%{_prefix}/{lib,include}
+mkdir -p $RPM_BUILD_ROOT/%{_prefix}/include/hal
+install -m 655 %{haldir}/busAdapter/sbs/lib/linux/x86_slc3/*.so $RPM_BUILD_ROOT/%{_prefix}/lib/
+cp -r %{haldir}/busAdapter/sbs/include/hal/*.hh $RPM_BUILD_ROOT/%{_prefix}/include/hal/
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_prefix}/lib/*
+
+%files -n xdaq-hal-sbsAdapter-devel
+%defattr(-,root,root,-)
+%{_prefix}/include/*
+
+%changelog
+* Thu Oct 19 2006 _daqcolumn <_daqcolumn@CMSDAQPRESERIES.cmsdaqpreseries> 
+- Initial build.

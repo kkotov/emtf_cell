@@ -1,0 +1,32 @@
+*****************************************************************************************************
+*    EXAMPLE FOR MTF6/7
+*****************************************************************************************************
+*  key           accessmode  bar  address     mask      read write   description
+*****************************************************************************************************
+ConfigStart     configuration      00000000    FFFFFFFF    1    1     This is the beginning of the configuration space. 
+*                                                                     It is put here in the table as r/w item so that it
+*                                                                     can be read out and written back after a change of the 
+*                                                                     firmware loaded from the eprom into the FRL fpga
+Vendor_Id       configuration      00000000    0000FFFF    1    0     This register corresponds to the Vendor ID of the board (function 2 of the card).
+Device_Id       configuration      00000000    FFFF0000    1    0     This register correspond to the Device ID of the FRL logic element (function 2 of the card)
+Memory_Space    configuration      00000004    00000002    1    1     This bit when set by the BIOS able card to be accessed in memory space.
+Bus_Master      configuration      00000004    00000004    1    1     This bit when set by the BIOS able the card to do master access on PCI bus
+bar0            configuration      00000010    FFFFFFFF    1    1     This register is write by the BIOS to indicate at which address the card responds to a PCI access
+bar1            configuration      00000014    FFFFFFFF    1    1     This register is write by the BIOS to indicate at which address the card responds to a PCI access
+bar2            configuration      00000018    FFFFFFFF    1    1     This register is write by the BIOS to indicate at which address the card responds to a PCI access
+*
+* The current MTF6/7 driver is automatically using BAR0 and BAR1 spaces. 
+* BAR0 window is reserved for single registers.
+* BAR1 is a large memory window that only works with block transfers. 
+* The driver decides which window to use based on the transfer size. 
+* Adding the bar numbering just for completeness, but it is not currently used
+* As of today (2013.01.09) the firmware allocates only 2 registers of 32 bits 
+* for reading/writing random values in two different offsets starting from the BAR0
+*
+test_reg1      memory        0   00000100    FFFFFFF0    1    1    memory
+test_reg2      memory        0   00000200    FFFFFFF0    1    1    memory
+*
+test_mem       memory        1   00000000    FFFFFFFF    1    1     memory
+test_mem_end   memory        1   00001000    FFFFFFFF    1    1     memory
+*
+*****************************************************************************************************

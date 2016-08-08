@@ -1,0 +1,10 @@
+<infra id="emtf">
+    <context id="daqttcs">
+        <param id="bcnOffset" type="uint">3541</param>
+        <param id="slinkMask" type="uint">1</param>
+        <param id="localTTC" type="bool">false</param>
+        <param id="ocrCmd" type="uint">8</param>
+        <param id="resyncCmd" type="uint">4</param>
+    </context>
+</infra>
+

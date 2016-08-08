@@ -1,0 +1,8 @@
+write CounterReset 0
+write CountSelect   0
+write SoftReset 0
+# 32 bit:
+write BChannelLongMSB 0xa468
+write BChannelLongLSB 128
+# select external trigger
+write L1ATriggerSelect 1

@@ -1,0 +1,8 @@
+<db>
+    <key id="MWGR4">
+        <load module="./emtfSequenceParameters.xml" />
+        <load module="./amc13Config.xml" />
+        <load module="./emtfRunSettings.xml" />
+    </key>
+</db>
+

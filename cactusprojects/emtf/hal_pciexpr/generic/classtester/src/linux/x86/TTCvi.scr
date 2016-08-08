@@ -1,0 +1,18 @@
+# write CounterReset 0
+# write CountSelect   0
+# write SoftReset 0
+
+# select user trigger
+write L1ATriggerSelect 2
+write L1ASend 0
+write L1ASend 0
+write L1ASend 0
+write L1ASend 0
+write L1ASend 0
+write L1ASend 0
+write L1ASend 0
+write L1ASend 0
+
+#RandomTriggerRate 1
+# select external trigger
+#L1ATriggerSelect 1

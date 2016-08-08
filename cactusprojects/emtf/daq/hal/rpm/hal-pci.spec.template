@@ -1,0 +1,58 @@
+%define name xdaq-hal-pciAdapter
+%define version __version__
+%define release __release__
+%define _prefix  __prefix__
+%define _tmppath /tmp
+%define haldir __haldir__
+
+%define _unpackaged_files_terminate_build 0
+
+Summary: The PCI BusAdapter class for the HAL.
+Name: %{name}
+Version: %{version}
+Release: %{release}
+License: free
+Group: frameworks/DAQ
+URL: http://cmsdoc.cern.ch/~cschwick
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Prefix: __prefix__
+
+%description
+This library provides the PCI BusAdapter class for the HAL which
+allows to access VME cards via the PCI VME busadapter hardware.
+
+%package -n xdaq-hal-pciAdapter-devel
+Summary:  Development package for the PCI BusAdapter class of the HAL.
+Group:    CMS/System
+
+%description -n xdaq-hal-pciAdapter-devel
+This package contains the include files for development work
+with the PCI BusAdapter.
+
+#%prep
+
+#%setup 
+
+#%build
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/%{_prefix}/{lib,include}
+mkdir -p $RPM_BUILD_ROOT/%{_prefix}/include/hal
+install -m 655 %{haldir}/busAdapter/pci/lib/linux/x86_slc3/*.so $RPM_BUILD_ROOT/%{_prefix}/lib/
+cp %{haldir}/busAdapter/pci/include/hal/*.hh $RPM_BUILD_ROOT/%{_prefix}/include/hal/
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_prefix}/lib/*
+
+%files -n xdaq-hal-pciAdapter-devel
+%defattr(-,root,root,-)
+%{_prefix}/include/*
+
+%changelog
+* Thu Oct 19 2006 _daqcolumn <_daqcolumn@CMSDAQPRESERIES.cmsdaqpreseries> 
+- Initial build.

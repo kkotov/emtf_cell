@@ -1,0 +1,25 @@
+<infra id="emtf">
+    <context id="processors">
+        <param cmd="Set BC0 and Data Delay" id="BC0_offset" type="uint">24</param>
+        <param cmd="Set BC0 and Data Delay" id="DAQ_delay" type="int">272</param>
+        <param cmd="Set BC0 and Data Delay" id="GMT_comma_delay" type="uint">34</param>
+
+        <param cmd="Set DAQ Config Registers" id="BX_offset" type="uint">3540</param>
+        <param cmd="Set DAQ Config Registers" id="Valor_window" type="uint">7</param>
+        <param cmd="Set DAQ Config Registers" id="Valor_delay" type="uint">50</param>
+        <param cmd="Set DAQ Config Registers" id="L1a_window" type="uint">7</param>
+        <param cmd="Set DAQ Config Registers" id="L1a_delay" type="uint">56</param>
+        <param cmd="Set DAQ Config Registers" id="Stress" type="bool">False</param>
+        <param cmd="Set DAQ Config Registers" id="Amc13_easy_en" type="bool">false</param>
+
+        <param cmd="Enable the single hit algorithm" id="single_hits_enabled" type="bool">false</param>
+
+        <param cmd="Enable the firmware report in DAQ stream" id="daq_report_wo_track_enabled" type="bool">true</param>
+
+        <param cmd="Compare the firmware version" id="control_firmware_version" type="string">2016-2-3 18:29:26</param>
+        <param cmd="Compare the firmware version" id="core_firmware_version" type="string">2016-5-11 4:51:32</param>
+
+        <param cmd="Verify the PC LUTs version" id="pc_lut_version" type="string">2016-07-18</param>
+    </context>
+</infra>
+

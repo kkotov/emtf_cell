@@ -1,0 +1,52 @@
+# $Id: Makefile-standalone,v 1.1 2007/03/05 17:46:20 cschwick Exp $
+
+#########################################################################
+# XDAQ Components for Distributed Data Acquisition                      #
+# Copyright (C) 2000-2004, CERN.			                #
+# All rights reserved.                                                  #
+# Authors:  L. Orsini					                #
+#                                                                       #
+# For the licensing terms see LICENSE.		                        #
+# For the list of contributors see CREDITS.   			        #
+#########################################################################
+BUILD_HOME:=$(shell pwd)/..
+
+include $(BUILD_HOME)/config/mfAutoconf.rules
+include $(BUILD_HOME)/config/mfDefs.$(XDAQ_OS)
+
+Project=.
+Package=xcept
+
+Sources = \
+          tools.cc \
+          Exception.cc 
+
+DynamicLibrary= xcept
+StaticLibrary=
+
+IncludeDirs =
+
+LibraryDirs = 
+
+DependentLibraryDirs = 
+
+DependentLibraries = 
+
+UserCFlags =
+UserCCFlags = 
+UserDynamicLinkFlags =
+UserStaticLinkFlags =
+UserExecutableLinkFlags =
+
+# These libraries can be platform specific and
+# potentially need conditional processing
+
+ExternalObjects =
+
+# Compile the source files and create a shared library
+
+Executables=
+
+# Local Makefile.rules is a copy of TriDAS/config/Makefile.rules plus a
+# modification to use the Libraries tag when building a shared library
+include $(XDAQ_ROOT)/config/Makefile.rules

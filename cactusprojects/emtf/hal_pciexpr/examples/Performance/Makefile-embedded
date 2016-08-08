@@ -1,0 +1,53 @@
+# small Makefile for embedded stand-alone systems.
+# leaves GenericHAL.so in lib directory
+
+DynamicLibrary =
+
+IncludeDirs = -I../../generic/include -I../../xcept/include -I../../busAdapter/dummy/include
+
+LibraryDirs = -L../../xcept/lib -L../../generic/lib -L../../busAdapter/dummy/lib
+
+.PHONY: default clean dirs PerformanceTester
+
+.default: PerformanceTester
+
+Sources = 
+
+Execs = \
+	PerformanceTester
+
+vpath  %.cc  src/common src/linux/common
+vpath  %.o   obj
+vpath  %.so  lib
+vpath  %.exe bin
+
+objects = $(Execs:%=%.o)
+objectf = $(Execs:%=obj/%.o)
+
+PerformanceTester: dirs PerformanceTester.exe
+
+%.exe : %.o
+	g++ $(LibraryDirs) -lxcept -lGenericHAL -lDummyBusAdapters -Wall -fPIC -o $@ $(objectf)
+
+%.o : %.cc
+	g++ $(IncludeDirs) -Wall -fPIC -c -o $@ $<
+	mv $@ obj/.
+
+
+$(DynamicLibrary) : obj lib $(objects)
+	g++ -shared -fPIC -o lib/$@ $(objectf)
+
+dirs : obj lib bin
+
+obj :
+	mkdir obj
+
+lib :
+	mkdir lib
+
+bin :
+	mkdir bin
+
+clean: 
+	-rm obj/*
+	-rm lib/*

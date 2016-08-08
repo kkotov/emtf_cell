@@ -1,0 +1,5 @@
+vme-1        vme        VMETable_1.xml
+vme-2        vme        VMETable_2.xml
+vme64x-1     vme        VME64xTable_1.xml
+vme64x-2     vme        VME64xTable_2.xml
+vme64x-3     vme        VME64xTable_3.xml

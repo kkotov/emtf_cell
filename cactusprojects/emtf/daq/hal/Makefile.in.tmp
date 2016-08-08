@@ -1,0 +1,28 @@
+# Path to the XERCES library installation (development header files)
+
+XERCESDIR=
+
+# Paths for the drivers needed by the BusAdapters. If you do NOT use one of 
+# the drivers/BusAdapters below YOU MUST leave the directory paths empty!!!
+
+# If you want to access VME crates via the CAEN interface (V1718 or V2718)
+# with a Linux PC you must have installed the CAEN software. Give the 
+# installationdirectory here. The installation directory is the directory
+# where you untared the CAEN software.
+# Default is /usr/local 
+
+CAENDIR=
+
+# If you want to access VME crates via the SBS PC - to VME interface 
+# with a Linux PC you must have installed the SBS driver. Give the 
+# installationdirectory here. (Model 620 and similar)
+
+SBSDIR=
+
+# This driver specifies the installation location of the generic PCI
+# driver. If it is /usr the lib is expected in /usr/lib and the include
+# files in /usr/include
+
+GENERICPCIDIR=
+
+CONFIG_HAS_RUN=YES

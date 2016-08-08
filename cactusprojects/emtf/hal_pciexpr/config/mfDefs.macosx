@@ -1,0 +1,85 @@
+# $Id: mfDefs.macosx,v 1.2 2007/04/10 08:50:58 cschwick Exp $
+
+#########################################################################
+# XDAQ Components for Distributed Data Acquisition                      #
+# Copyright (C) 2000-2004, CERN.			                #
+# All rights reserved.                                                  #
+# Authors: J. Gutleber and L. Orsini					#
+#                                                                       #
+# For the licensing terms see LICENSE.		                        #
+# For the list of contributors see CREDITS.   			        #
+#########################################################################
+
+#----------------------------------------------------------------------------
+#
+# Platform specific definition for Mac OS X
+#
+# This file is included by Package Makefiles, prior to the 
+# source module list declaration.
+#
+#----------------------------------------------------------------------------
+
+DependencyFlags  	= -MM
+
+# Compiler and linker commands
+#
+CC		     = gcc
+CXX		     = g++
+LD		     = g++
+AR		     = ar
+NM		     = nm
+RANLIB		     = ranlib
+
+# Compile flags
+#
+DebugFlags		= -g
+CFlags			= $(DebugFlags) 
+CCFlags			= $(DebugFlags) 
+CDefines		= -D$(XDAQ_PLATFORM) -D$(XDAQ_OS) -DBIG_ENDIAN__
+CCDefines		= -D$(XDAQ_PLATFORM) -D$(XDAQ_OS) -DBIG_ENDIAN__
+
+# Linking flags
+#
+DynamicLinkFlags	= -dynamiclib -flat_namespace -undefined suppress
+ExecutableLinkFlags	= -flat_namespace -undefined suppress
+StaticLinkFlags		=
+SystemLibraries		= pthread
+ExternalObjects		=
+DynamicSuffix		= .dylib
+BundleSuffix		= .dylib
+StaticSuffix		= .a
+LibraryPrefix		= lib
+
+#
+# Shell commands
+#
+Copy			= cp -Rp
+
+
+# Libraries
+#
+
+#
+# Host X Configuration information
+#
+X_INCLUDE               =  -I/usr/dt/include -I/usr/openwin/include
+
+X_DIST			=
+
+X_LIBS                  = -L/usr/openwin/lib    \
+			  -lXmu			\
+			  $(ALTERNATE_X_LIBS)   \
+			  -lXt			\
+			  -lX11
+OSF_LIBS                = -L/usr/dt/lib  \
+			  -lXm
+
+
+#
+# Prevent build-user's environment from affecting the link.
+#
+LD_LIBRARY_PATH         = 
+
+
+
+

@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+<!-- The following line contains a reference to an XSL file -->
+<!-- that allows the rendering of this XML file into an HTML file -->
+<!-- <?xml-stylesheet type="text/xsl" href="xdaqConfig.xsl"?> -->
+
+<xc:Partition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xc="http://xdaq.web.cern.ch/xdaq/xsd/2004/XMLConfiguration-30">
+
+<!-- SWATCH WORKER CELL -->
+ <xc:Context url="http://srv-s2g18-26-01:3333">
+        <xc:Application class="emtf::Cell" id="13" instance="203" service="emtf-service" group="emtf" network="local" publish="true" >
+                        <properties xmlns="urn:xdaq-application:Cell" xsi:type="soapenc:Struct">
+                            <name xsi:type="xsd:string">emtf SWATCH cell</name>
+                            <xhannelListUrl xsi:type="xsd:string">file:///${BUILD_HOME}/cactuscore/swatchcell/example/test/standalone.xhannel</xhannelListUrl>
+   </properties>
+  </xc:Application>
+     <xc:Module>file:///${BUILD_HOME}/cactusprojects/emtf/ts/cell/lib/linux/x86_64_slc6/libemtfcell.so</xc:Module>
+ </xc:Context>
+
+
+</xc:Partition>
+

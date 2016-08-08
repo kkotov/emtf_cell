@@ -1,0 +1,21 @@
+* Dummy device address map
+*****************************************************************************************************************
+*  key       space   BARid    address        mask read write  description
+*****************************************************************************************************************
+* short format asynchronous broadcast command
+*
+test        memory      1   00000014    ffffffff    1    1
+*
+conf1     configuration     00000000    ffffffff    1    1
+*
+test1       memory      2   00010000    000000ff    1    1
+test2       memory      2   00010004    0000ffff    1    1
+test3       memory      2   00010006    0000ffff    1    1
+test4       memory      1   00010004    ffffffff    1    1    0= int, 1=ext regs
+test5       memory      2   00010010    00007ffe    1    1    14 bit TTCrx addr
+test6       memory      2   00010020    00008000    1    1    always set to 1
+test7       memory      2   00010030    0000ffff    1    1
+*
+RAMLow      memory      4   00000000    ffffffff    1    1    lower mem range
+RAMHigh     memory      4   0003fffc    ffffffff    1    1    64 kB of memory
+*

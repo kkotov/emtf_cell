@@ -1,0 +1,109 @@
+global count
+global oldcount
+global diffcount
+global source
+
+set base 0x00900800
+
+proc counter card {
+  expr [$card CounterMSB]*0x10000 + [$card CounterLSB]
+}
+
+proc updateCount {} {
+    global count
+    global oldcount
+    global diffcount
+    set oldcount $count
+    set count [counter ttcvi]
+    set diffcount [expr $count - $oldcount]
+    updateSource ttcvi
+    update idletasks
+    after 1000 updateCount
+}
+
+proc updateSource card {
+    global source
+    global aa
+    global rateHz
+    set number [expr [$card L1ATriggerSelect] & 7]
+    set source [lindex $aa $number]
+    if {$number == 5} {
+        set rate [lindex $rateHz [$card RandomTriggerRate]]
+        set source [concat $source $rate]
+    }
+}
+
+set aa {
+"External 0" 
+"External 1" 
+"External 2" 
+"External 3" 
+"VME access" 
+"Random"
+"Calibration" 
+"Disabled" 
+}
+
+set rateHz { "1 Hz" "100 Hz" "1 kHz" "5 kHz" "10 kHz" "25 kHz" "50 kHz" "100 kHz" }
+
+vmecard ttcvi $base TTCviAddressMap.dat
+set count [counter ttcvi]
+
+label .title -text "TTCvi $base"
+
+frame .source
+label .sourcevar -textvariable source -width 15 -anchor e
+label .sourcefix -text "Source:"
+
+frame .random
+button .stop -text "Disable" -command {ttcvi L1ATriggerSelect 7}
+button .start -text "External" -command {ttcvi L1ATriggerSelect 1}
+button .reset -text "Reset" -command {ttcvi SoftReset 1}
+button .r1   -text "Random       1 Hz" -command {ttcvi RandomTriggerRate 0
+	ttcvi L1ATriggerSelect 5}
+button .r100   -text "Random   100 Hz" -command {ttcvi RandomTriggerRate 1
+	ttcvi L1ATriggerSelect 5}
+button .r1k   -text "Random     1 kHz" -command {ttcvi RandomTriggerRate 2
+	ttcvi L1ATriggerSelect 5}
+button .r5k   -text "Random     5 kHz" -command {ttcvi RandomTriggerRate 3
+	ttcvi L1ATriggerSelect 5}
+button .r10k   -text "Random   10 kHz" -command {ttcvi RandomTriggerRate 4
+	ttcvi L1ATriggerSelect 5}
+button .r25k   -text "Random   25 kHz" -command {ttcvi RandomTriggerRate 5
+	ttcvi L1ATriggerSelect 5}
+button .r50k   -text "Random   50 kHz" -command {ttcvi RandomTriggerRate 6
+	ttcvi L1ATriggerSelect 5}
+button .r100k   -text "Random 100 kHz" -command {ttcvi RandomTriggerRate 7
+	ttcvi L1ATriggerSelect 5}
+button .manual -text "Single" -command {ttcvi L1ATriggerSelect 4
+        ttcvi L1ASend 0}
+
+pack .random -side right -expand 1 -fill both
+pack .r1 .r100 .r1k .r5k .r10k .r25k .r50k .r100k -expand 1 -fill both -in .random
+
+# pack .title
+
+pack .source -expand 1 -fill both
+pack .sourcefix -in .source -side left -expand 0 -fill both -anchor w
+pack .sourcevar -in .source -side right -expand 0 -fill both -anchor e
+
+frame .counter
+pack .counter  -expand 1 -fill both
+frame .rate
+pack .rate  -expand 1 -fill both
+pack .stop .manual .start .reset  -expand 1 -fill both
+
+label .countlab -text "Events:"
+label .difflab -text "Rate (Hz):"
+
+label .count -textvariable count -width 9 -anchor e
+pack .countlab   -expand 0 -fill both  -side left -in .counter -anchor e
+pack .count  -expand 0 -fill both  -side right -in .counter -anchor w
+
+label .diffcount -textvariable diffcount -width 9 -anchor e
+pack .difflab  -expand 0 -fill both -side left  -in .rate -anchor e
+pack  .diffcount  -expand 0 -fill both -side right  -in .rate -anchor w
+
+updateCount
+button .exit -text "Exit" -command {exit}
+pack .exit  -expand 1 -fill both

@@ -1,0 +1,49 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+print "Enter tag : ";
+my $tag = <>; chomp $tag;
+my $versionStr;
+if ( $tag =~ m/hal-V(\d+)_(\d+)_(\d+)-(\d+)/ ) {
+    $versionStr = "$1_$2_$3-$4";
+} else {
+    die "Not a valid tag: $tag";
+}
+
+print "verstionstr is $versionStr\n";
+
+`rm -rf hal`;
+`mkdir hal`;
+print "\nExporting tag $tag\n";
+`cvs -d :kserver:isscvs.cern.ch:/local/reps/tridas export -r $tag -d hal  TriDAS/daq/hal`;
+
+# users do not need this script
+`rm hal/makeDistribution`;
+`rm hal/putVersions.pl`;
+
+# check if html doc is up-to-date
+open IN, "hal/doc/index.html" || die "Could not open hal/doc/index.html";
+my $ok = 0;
+while (my $line = <IN>) {
+    if ( $line =~ /<H3>\s*Version $versionStr .+<\/H3>/ ) {
+	$ok = 1;
+	last;
+    }
+}
+if ( ! $ok ) {
+    print "ERROR: wrong version in hal/doc/index.html! Update first!\n";
+    exit -1;
+}
+# make documentation
+print "Documentation: first pass\n";
+`make doc`;
+print "Documentation: second pass\n";
+`make doc`;
+`cp -r generic/doc/html hal/generic/doc/.`;
+`cp -r busAdapter/doc/html hal/busAdapter/doc/.`;
+`cp -r utilities/doc/html hal/utilities/doc/.`;
+
+`gtar -czf $tag.tgz hal`;
+
+print "All done\n";

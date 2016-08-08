@@ -1,0 +1,11 @@
+daqvme011     vme-1                fffff800
+daqvme012     vme-1                00901000
+daqvme021     vme-2                fffc0000
+daqvme022     vme-2                ffffffff
+daqvme111     vme64x-1             00902000
+daqvme112     vme64x-1             00903000
+daqvme113     vme64x-1             00904000
+daqvme121     vme64x-2             ffffffff
+daqvme122     vme64x-2             ffffffff
+daqvme123     vme64x-2             ffffffff
+daqvme131     vme64x-3             00000000

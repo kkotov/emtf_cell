@@ -1,0 +1,65 @@
+%define name xdaq-hal
+%define version __version__
+%define release __release__
+%define _prefix  __prefix__
+%define _tmppath /tmp
+%define haldir __haldir__
+
+%define _unpackaged_files_terminate_build 0
+
+Summary: The Hardware Access Library for CMS.
+Name: %{name}
+Version: %{version}
+Release: %{release}
+License: free
+Group: frameworks/DAQ
+URL: http://cmsdoc.cern.ch/~cschwick
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Prefix: __prefix__
+
+%description
+This library allows to access VME or PCI custom hardware. It 
+forms an abstraction layer between device drivers and application
+software.
+
+%package -n xdaq-hal-devel
+Summary:  Development package for the Hardware Access Library
+Group:    CMS/System
+
+%description -n xdaq-hal-devel
+This package contains the include files for development work
+with the HAL.
+
+#%prep
+
+#%setup 
+
+#%build
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/%{_prefix}/{lib,include}
+mkdir -p $RPM_BUILD_ROOT/%{_prefix}/include/hal/linux
+install -m 655 %{haldir}/utilities/lib/linux/x86_slc3/*.so $RPM_BUILD_ROOT/%{_prefix}/lib/
+install -m 655 %{haldir}/generic/lib/linux/x86_slc3/*.so $RPM_BUILD_ROOT/%{_prefix}/lib/
+install -m 655 %{haldir}/busAdapter/dummy/lib/linux/x86_slc3/*.so $RPM_BUILD_ROOT/%{_prefix}/lib/
+cp %{haldir}/generic/include/hal/*.hh $RPM_BUILD_ROOT/%{_prefix}/include/hal/
+cp %{haldir}/generic/include/hal/*.h $RPM_BUILD_ROOT/%{_prefix}/include/hal/
+cp %{haldir}/generic/include/hal/linux/*.hh $RPM_BUILD_ROOT/%{_prefix}/include/hal/linux/
+cp %{haldir}/utilities/include/hal/*.hh $RPM_BUILD_ROOT/%{_prefix}/include/hal/
+cp %{haldir}/busAdapter/dummy/include/hal/*.hh $RPM_BUILD_ROOT/%{_prefix}/include/hal/
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_prefix}/lib/*
+
+%files -n xdaq-hal-devel
+%defattr(-,root,root,-)
+%{_prefix}/include/*
+
+%changelog
+* Thu Oct 19 2006 _daqcolumn <_daqcolumn@CMSDAQPRESERIES.cmsdaqpreseries> 
+- Initial build.

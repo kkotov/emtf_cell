@@ -1,0 +1,18 @@
+*
+* PLX chip registers
+*****************************************************************************************************************
+*  key                bank  address     mask      read write description
+*  key                     accessMode BAR  address        mask read write description
+*****************************************************************************************************************
+* 
+BAR0                    configuration     00000010    ffffffff   1    1  
+BAR1                    configuration     00000014    ffffffff   1    1  
+BAR2                    configuration     00000018    ffffffff   1    1  
+command                 configuration     00000004    000000ff   1    1
+which                   configuration     00000004    00008000   1    0
+jtag                    configuration     00000040    00000002   1    1
+enable                  configuration     00000040    00000001   1    1
+*                                                                     
+MemoryBase                memory       1  00000000    ffffffff   1    1
+MemoryTop                 memory       1  01ffffff    ffffffff   1    1
+*****************************************************************************************************************

@@ -1,0 +1,59 @@
+%define name xdaq-hal-caenAdapter
+%define version __version__
+%define release __release__
+%define _prefix  __prefix__
+%define _tmppath /tmp
+%define haldir __haldir__
+
+%define _unpackaged_files_terminate_build 0
+
+Summary: The CAEN BusAdapter class for the HAL.
+Name: %{name}
+Version: %{version}
+Release: %{release}
+License: free
+Group: frameworks/DAQ
+URL: http://cmsdoc.cern.ch/~cschwick
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Prefix: __prefix__
+
+%description
+This library provides the CAEN BusAdapter class for the HAL which
+allows to access VME cards via the CAEN VME busadapter hardware.
+The class works with the USB and the Optical version of the adapter.
+
+%package -n xdaq-hal-caenAdapter-devel
+Summary:  Development package for the CAEN BusAdapter class of the HAL.
+Group:    CMS/System
+
+%description -n xdaq-hal-caenAdapter-devel
+This package contains the include files for development work
+with the CAEN BusAdapter.
+
+#%prep
+
+#%setup 
+
+#%build
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/%{_prefix}/{lib,include}
+mkdir -p $RPM_BUILD_ROOT/%{_prefix}/include/hal
+install -m 655 %{haldir}/busAdapter/caen/lib/linux/x86_slc3/*.so $RPM_BUILD_ROOT/%{_prefix}/lib/
+cp -r %{haldir}/busAdapter/caen/include/hal/*.hh $RPM_BUILD_ROOT/%{_prefix}/include/hal/
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root,-)
+%{_prefix}/lib/*
+
+%files -n xdaq-hal-caenAdapter-devel
+%defattr(-,root,root,-)
+%{_prefix}/include/*
+
+%changelog
+* Thu Oct 19 2006 _daqcolumn <_daqcolumn@CMSDAQPRESERIES.cmsdaqpreseries> 
+- Initial build.

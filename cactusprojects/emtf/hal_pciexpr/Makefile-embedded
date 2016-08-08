@@ -1,0 +1,19 @@
+# main makefile for the embedded distribution of the hal
+
+.PHONY: all clean
+
+default: all
+
+all:
+	$(MAKE) -Cxcept -f Makefile-embedded
+	$(MAKE) -Cutilities -f Makefile-embedded
+	$(MAKE) -Cgeneric -f Makefile-embedded
+	$(MAKE) -CbusAdapter/dummy -f Makefile-embedded
+	$(MAKE) -CbusAdapter/pci -f Makefile-embedded
+
+clean: 
+	$(MAKE) -Cxcept -f Makefile-embedded clean
+	$(MAKE) -Cutilities -f Makefile-embedded clean
+	$(MAKE) -Cgeneric -f Makefile-embedded clean
+	$(MAKE) -CbusAdapter/dummy -f Makefile-embedded clean
+	$(MAKE) -CbusAdapter/pci -f Makefile-embedded clean

@@ -1,0 +1,8 @@
+
+print start
+define $result
+write rwFlagMask 1
+print go
+pollItem rwFlagMask 1 1000 $result HAL_POLL_UNTIL_EQUAL
+
+print thats all

@@ -1,0 +1,23 @@
+<?xml version='1.0'?>
+<xc:Partition xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xc="http://xdaq.web.cern.ch/xdaq/xsd/2004/XMLConfiguration-30" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+	<!-- Declare a context that contain the Trigger application -->
+    	<xc:Context id = "0" url="http://pccmsdaqs2:40000">
+		
+		<!-- Declare a Trigger application -->
+                <xc:Application class="Trigger" id="10" instance="0" network="local">
+			<properties xmlns="urn:xdaq-application:Trigger" xsi:type="soapenc:Struct">
+				<randomRate xsi:type="xsd:unsignedLong">1000</randomRate>
+				<triggerSource xsi:type="xsd:unsignedLong">1</triggerSource>
+				<TTCviBaseAddress xsi:type="xsd:unsignedLong">9439232</TTCviBaseAddress>
+				<XMLAddressTablePath xsi:type="xsd:string">/scratch3/christoph/daqcolumn/TriDAS/daq/hal/examples/XDAQ/Trigger/xml/TTCviXMLAddressTable.xml</XMLAddressTablePath>
+			</properties>                     
+		</xc:Application>
+
+		<!-- Shared object library that contains the Trigger inplementation -->		
+		<xc:Module>/scratch3/christoph/daqcolumn/TriDAS/daq/hal/examples/XDAQ/Trigger/lib/linux/x86/libTrigger.so</xc:Module>
+
+        </xc:Context>
+
+</xc:Partition>

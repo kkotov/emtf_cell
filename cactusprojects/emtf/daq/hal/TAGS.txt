@@ -1,0 +1,160 @@
+ver-01-00 : version at the day of checkin into XDAQ repository (before 
+		    compilation test)
+V1_0      : tag at moment of release (february 2002) issued by Johannes
+            and Luciano
+	ver-01-01 : 01-03-2002 23:00 a tag before trying to extend the 
+		    HardwareDeviceInterface for transfers of data blocks.
+ver-01-02 : 06-03-2002 12:43 a tag before putting the downloadable
+            distribution on the www. Updated generation of doc.
+ver-01-03 : to www
+            lots of exceptioni handling made conssitent
+            removed small memory leak in pcibusadapter
+            went back to version xerces 1 3 0 
+            writeBlock and readBlock with verify flag
+            removed bugs in sequencer commands which asked for 
+              wrong number of arguments after introduction of verifyFlag.
+ver-01-04 : to www
+            beta version of blockRead blockWrite for PCIi386BusAdapter
+            bug fixes: forgot to declare readBlock and writeBlock abstract
+                       in PCIBusAdapterInterface
+            CHANGED xmlfilereader Register to Item
+ver-01-05 : to www
+            version for the new XDAQ release:
+            removed debug statements
+            lots of exception handling corrections
+            2 new busadapter for MXI2 with blocktransfer 
+               from Frank (without block transfer) and
+               from Nuno (with block transfer)
+            new check command
+            improvements in Makefile, automatic configure script
+            checking against schemas for xml address tables
+            DummyBusAdapters for PCI and VME
+            examples in distribution
+ver-01-06 : to www
+            removed issue with readable check of resetBit
+            corrected bug in configure script
+V1_1:       official XDAQ release identical to ver-01-06
+ver-01-07 : to www
+            removed bug in AddressTable.exists() which has slipped in 
+            when introducing the hash_table.
+ver-01-08 : to www
+            debugged the National BusAdapter for the new compiler.
+ver-01-09 : to www
+            removed ugly bug in applyto(from)mask of addresstableitem
+            which changed the mask of the item. (slipped in in 01-05)
+ver-01-10 : to www
+            should become the new production release:
+            CommandSequencer interface changed: No pointer in argumentlist 
+            pollItem method and command has been added to HardwareDeviceInterface
+            Some fixes in exceptionHandling
+            HardwareAddressTable.xsd changed
+            configure probes for xerceslinuxx86
+            sequencer commands for writing : HAL_DO_VERIFY HAL_NO_VERIFY
+               is uppercase and the same as in software
+            Bug in the PCIi386BusAdapter fixed
+            Made the XMLAddressTable in the example more reasonable
+ver-01-11 : to www in in XDAQ release
+            some cosmetical changes (only comments and indents)
+V1_2      : like ver-01-11 in XDAQ release V1_2
+ver-01-12 : moved getDataWidth to the baseclass GeneralHardwareAddress
+ver-01-14 : before the change of the GeneralHardwareAddress which was moved
+            now contains a common interface for PCI and VME. (This is due
+            to similarity of VME64x and PCI).
+ver-01-15 : version with sort of working VME64xCrate. Before restructuring of
+            file structure.
+ver-02-00 : version with working VME64xCrate debugged with hardware.
+            New SBSBusAdapter_test corrects some features. 
+ver-02-01 : 
+ver-02-02 : release on www with VME64x. Byte swapping in SBSBusAdapter. Example for XDAQ.
+            new libHALUtilities.so. XDAQSupport lib with database access. New XML file 
+            format, and scripts to convert. Offsets are checked not to go out of limits
+            of address table.
+ver-02-03 : Makefile changes : more consistent target names, new 1.3 Makefiles for V1_3 XDAQ.
+            byte-swapping in PCIBusAdapter enabled. Lot's of small fixes for VME64x.
+ver-02-04 : intermediate tag in before splitting off XERCES-2-3 development branch.
+
+XercesMigration-00 : branch to do xerces migration.
+
+ver-02-05 : intermediate tag for pre-xerces-2-3 development. 
+ver-02-06 : included ascii vme64x reader. some changes in configuration scripts etc. 
+            Try to make this the last release for the old version of xdaq/xerces.
+            After this the xerces-2-3 branch will be merged into the main branch. 
+            This tag will go to the www as last version before xdaq 2.0.
+ver-02-07 : introduced blocking of the SBS driver for every access
+            in utilties there is a programs to dump configuration space.
+	    introduced an example for debugging VME64x modules
+            default compiler is gcc-alt-3.2.3
+ver-03-00-test : first version with xerces 2.3, couts go to os_, 
+                 migration to new xdaq ver2 (intro of log4cplus)
+                 VME64x: only configure hardware which is not yet configured
+ver-03-01-test : Makefile, configure cleanup, 
+	         small bugfix in DummyBusAdapters
+		 cleanup of ASCIIPCIConverter.pl script and minor mods of other tools.
+ver-03-02-test : change of output of VMEAddressTable.print: no rw flag anymore
+                 update of tools converter scripts
+ver-03-03 : some very preliminary version of CAEN busAddapter (not official yet, not
+            supported by configure script). PCIDevice has new api: Now possible to
+            find a device by bus, "slot", functionId.
+ver-03-04: version which went into DAQKit-01. Includes support for CAEN BusAdpater.
+	   SBS BusAdapter is semaphore protected. Tools to handle the semaphore.
+	   SBS driver v2p3p0, configure changes, ASCII file WINDOOF safe, 
+           resetBbus implemented for SBS, New constructor for PCIi386BusAdapter
+ver-03-05-test: bugfix for addressboundary determination in case of vme64x.
+           Bugfix in interface of VME64xDummyBusAdapter.
+ver-03-05-test-01: Bugfix in StopWatch (influencing performance only). 
+           New class VMEAddressTableDynamicReader to dynamically create 
+	   VME address tables (request from HCAL).
+ver-03-05-test-02: SBSBusadapter implements interrupt support and 
+           HAL_NO_INCREMENT in Block transfers. Changes in VME64x plug and
+           play configuration: User becomes owner of VMEDevices. VMEDevices
+	   are now always created when getVMEDevice is called. Only 
+	   Not enabled devices are configured. Enabled devices are read out
+	   and treated like static VMEDevices.
+ver03-05-test-04: eliminate VME64ASCIIAddresstableReader since now the 
+           VMEAddressTableASCII reader can distinguish between VME and VME64.
+           CopyCOnstgructor for AddressTable, AddressTableItem for making
+           deep copies since the addresstable container gives back a reference to the
+           addresstable which needs a copyconstructo to assign to 
+           AddressTable instance variables.
+ver-03-05  Version for the DAQKit-02-00. Changed default compiler to system
+           compiler since this version is for SLC linux. (works also with 7.3.x)
+ver-03-06  Version with example for XDAQ3. Full support for CAEN busadapters
+           (usb and optical)
+ver-03-07  namespace HAL introduced
+           Exceptions are now derived from the XDAQ xcept package.
+           CAENLinuxBusAdapter now handles usb version and optical version of
+           bridge. Support of byte swapping for CAEN busadapter.
+ver-03-08  simpler config script. Tighter embedding into XDAQ.
+ver-03-09  small mod in the Makefile in order to have a default target
+ver-03-10-test-01 implemented chaining for caen busadapters, bugfix in doc makefile
+ver-03-10-test-02 implemented fifo mode for caen busadapters.
+ver-03-10 Fifomode and chaining in the caen busadapter.
+ver-03-11 Introduced VME64xDevice to access UserCR UserCSR and CRAM regions
+          in VME64x Modules. The VME64xCrate returnes VME64xDevices or 
+          VMEDevices for standard VME modules.
+ver-03-12 VME4xDevice now can also read standard VME64x items. It understands
+          these without that they need to be defined in user address table.
+ver-03-13-test-01 Bugfix in VMEAddresstableASCIIReader: did not consider width for 
+          configuration space items.
+ver-03-13 Bugfix: virtual desctructor for VMEBusAdapterInterface and PCIBusAdapterInterface.
+          Corrections of version string in xdaq examples. Error message clariefied.
+ver-03-14-test1 Wrappers in the CAEN BusAdapter for interrupt handling alla CAEN.
+ver-03-14-test3 repolished namespace handling. new class PCIAddressTableDynamicReader.
+                this tag is on branch "namespace_rework".
+ver-03-14-test4 bugfix: inserted missing std::
+
+namespace_rework: a branch which branched off from ver-03-14-test-2 to implement namespace 
+          cleanup and 64bit compatibility.
+
+before_namespace_merge, after_namespace_merge : tags referring to the merge of the branch
+          "namespace_rework"
+ver-03-14 tag on main branch for new xdaq 3.7 (after namespace merge)
+ver-03-15 makefile modification to overcome incompatibility with new xdaq makefile
+3.16      introduced a prefix for the ASCIIFileAddressTableContainer. Some exception fixes.
+3.17      corrected handle type in CAEN busadapter to follow caenlib changes for 64bit compliance
+3.18      CAENVMELinuxBusadapter can now be called from the same process several times.
+          configure script is compatible with rpm installation of CAEN driver.
+3.19      small bugfix in the HardwareDevice concerning exception throwing
+V4_0_0-0  version in a new unified compile and release scheme. Generation of
+          binary and development RPMs.
+V4_0_2    update of rpm and build stuff

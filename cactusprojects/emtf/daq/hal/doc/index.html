@@ -1,0 +1,97 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<center>
+  <br>
+  <a href="HTTP://cmsdoc.cern.ch/~cschwick/software/documentation/HAL/index.html">
+    <b>HAL Online-Homepage</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="HTTP://cmsdoc.cern.ch/~cschwick/"><b>up</b></a>
+<HR>
+<H1>HAL (Hardware Access Library)</H1>
+<H3>A library developed for the CMS data aquisition system at CERN</H3>
+<H3>Version 4_0_0-1 10th-April-2007</H3>
+
+</center>
+A high level interface which allows for user friendly 
+hardware access to VME or PCI modules. 
+<p>
+The library contains a software layer between the user program and the 
+driver software to access hardware. A class called "BusAdapter" implements
+the interface to the various hardware drivers. Several BusAdapters are 
+contained in the distribution. It is easy for the user to extend this collection
+by writing his own BusAdapter.
+<p>
+The HAL library currently supports VME and PCI hardware accesses.
+For the current list of supported BusAdapters please refer to the online 
+<A HREF="http://cmsdoc.cern.ch/~cschwick/software/documentation/HAL/index.html">HAL homepage</A>.
+</p>
+<p> 
+If you use XML AddressTables you need the schema
+against which your address table will be checked. It is contained in the root
+directory of the distribution (HardwareAddressTable-ver-2-0.xsd) or it is available at
+<a href="http://xdaq.web.cern.ch/xdaq/xsd/HardwareAddressTable-ver-2-0.xsd">
+http://xdaq.web.cern.ch/xdaq/xsd/HardwareAddressTable-ver-2-0.xsd</a>.
+</p>
+<p>
+It is assumed you use the HAL library in the context of the XDAQ online environment
+of CMS. There are two dependencies on libraries in the TriDAS directory tree:
+<ul><li>
+The xerces package is needed to support XML Addresstables. It should be installed
+in $XDAQ_ROOT/daq/extern.</li>
+<li>The exceptions thrown by the HAL are derived from the baseclass in the 
+XDAQ xcept package. 
+</li>
+</ul>
+If for some reason the HAL must be installed without the XDAQ environment, these
+two libraries can be installed independently and the Makefile.in can be edited in
+order set variables which point to the location of the two needed libraries. 
+</p>
+<br>
+<H2> Documentation </H2>
+<UL>
+  <LI>The <B>Users Guide</B>
+    contains a complete description of the library including architecture,
+    functionality, installation guide, user-instructions and instructions
+    how to extend the library (for example to custom hardware drivers).
+    It is available <A HREF="manual/HALUsersGuide.pdf">in pdf format</B></A>.
+  </LI>  
+  <LI>
+    The <A HREF="generic/html/index.html"><B>API documentation</B></A> 
+    of the current version (see below) of the HAL library can be browsed 
+    here. It is the most important 
+    document for user's prgramming with HAL. The 
+    <A HREF="busAdapter/html/index.html"><B>API of the BusAdapters</B></A> 
+    can be found here. (In the API documentation there are cross links).
+    A small library of useful utilities which you can use is documented :
+    <A HREF="utilities/html/index.html"><B>API of the Utilities library</B></A> 
+  </LI>
+  <LI>
+    <B>Examples</B> The HAL contains a series of examples where the usage of the
+    various components is demonstrated. Among these a small application to 
+    measure the overhead due to the HAL library for a single hardware access
+    is included. Also a complete XDAQ application using the HAL library is 
+    included.
+  </LI>  
+</LI>
+</UL>
+<BR>
+
+<H2>Change-Log </H2>
+ChangeLogs are maintained on the online HAL pages:
+<br>
+<A HREF="http://cmsdoc.cern.ch/~schwick/software/documentation/HAL/index.html"
+<B>http://cmsdoc.cern.ch/~schwick/software/documentation/HAL/index.html</B></A> 
+<br>
+
+<HR WIDTH="100%">
+  Contact : 
+  <A HREF="mailto:Christoph.Schwick@cern.ch">Christoph.Schwick@cern.ch</A>
+
+</BODY>
+</HTML>
+
+
+
+
+

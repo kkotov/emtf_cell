@@ -1,0 +1,4 @@
+#!/bin/sh
+ln -s ../../../../../HardwareAddressTable-ver-2-1.xsd HardwareAddressTable-ver-2-1.xsd
+. ldpath
+./Tester

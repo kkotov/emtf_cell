@@ -1,0 +1,62 @@
+*
+* PLX chip registers
+*
+LocalArbritation                memory  0   000000ac    ffffffff   1    1 
+LocalArbritation2               memory  0   00000008    ffffffff   1    1 
+BAR0                     configuration      00000010    ffffffff   1    1
+BAR2                     configuration      00000018    ffffffff   1    1
+LAS0RR                          memory  0   00000000    ffffffff   1    1
+LAS0BA                          memory  0   00000004    ffffffff   1    1
+MBOX0                           memory  0   00000040    ffffffff   1    1
+CNTRL                           memory  0   0000006c    ffffffff   1    1
+PCIHIDR                         memory  0   00000070    ffffffff   1    1
+MARBR                           memory  0   00000008    3fffffff   1    1
+*
+* DMA0 registers
+*
+DMAPADR0                        memory  0   00000084    ffffffff   1    1
+DMALADR0                        memory  0   00000088    ffffffff   1    1
+DMASIZ0                         memory  0   0000008c    00ffffff   1    1
+DMADPR0                         memory  0   00000090    ffffffff   1    1
+DMAMODE0                        memory  0   00000080    0007ffff   1    1
+DMACSR0                         memory  0   000000a8    0000001f   1    1
+LBRD0                           memory  0   00000018    ffffffff   1    1
+
+*****************************************************************************************************************
+*  key                bank  address     mask      read write description
+*  key                     accessMode  BAR   address        mask  read write  description
+*****************************************************************************************************************
+* 
+resetAll                	memory  0   00000000    00000003   0	1   resets the FPGA anf the TTCrx
+resetFpga               	memory  0   00000000    00000001   0	1   resets the FPGA
+resetTTCrx              	memory  0   00000000    00000002   0	1   resets the TTCrx
+*
+StatusWord              	memory  0   00000100    ffffffff   1	1
+BackpressureLevel		memory  0   00000100    003ff000   1	1   determines when to generate backpressure
+*                       		        			    (Fifo depth : 1024 words)
+enableTriggerSampling   	memory  0   00000100    00400000   1	1
+enableBroadcastSampling 	memory  0   00000100    00800000   1	1
+enableCommandSampling   	memory  0   00000100    01000000   1	1   SET TO 0 FOR THE MOMENT
+enableTTCrxSampling     	memory  0   00000100    02000000   1	1
+CtrlFifoEmpty           	memory  0   00000100    04000000   1	0
+CtrlBackpressure		memory  0   00000100    08000000   1	0
+CtrlFifoFull			memory  0   00000100    00000400   1	0
+CtrlTTCrxReady			memory  0   00000100    20000000   1	0
+CtrlSinError			memory  0   00000100    40000000   1	0
+CtrlDbError             	memory  0   00000100    80000000   1	0
+CtrlFifoWordCount       	memory  0   00000100    000003ff   1	0  1024 words in fifo
+
+Test                    	memory  0   00000004    ffffffff   1	0
+FifoQ                   	memory  0   00000000    ffffffff   1	0
+BunchCounter			memory  0   00000000    00000fff   1	0
+EventNumber			memory  0   00000000    00ffffff   1	0
+FifoEmpty               	memory  0   00000000    01000000   1	0
+Backpressure			memory  0   00000000    02000000   1	0
+FifoFull                	memory  0   00000000    04000000   1	0
+TTCrxReady              	memory  0   00000000    08000000   1	0
+SinError                	memory  0   00000000    10000000   1	0
+DbError                 	memory  0   00000000    20000000   1	0
+wordCode                	memory  0   00000000    C0000000   1	0  3 : first  trigger word
+*                       					           2 : second trigger word
+*                       					           1 : broadcast word
+*****************************************************************************************************************
