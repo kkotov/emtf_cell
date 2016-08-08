@@ -1,0 +1,13 @@
+cactusprojects/emtf/daq/hal/busAdapter/caen/lib/
+cactusprojects/emtf/daq/hal/busAdapter/caen/src/linux/
+cactusprojects/emtf/daq/hal/busAdapter/dummy/lib/
+cactusprojects/emtf/daq/hal/busAdapter/dummy/src/linux/
+cactusprojects/emtf/daq/hal/busAdapter/pci/lib/
+cactusprojects/emtf/daq/hal/busAdapter/pci/src/linux/
+cactusprojects/emtf/daq/hal/busAdapter/pciexpr/lib/
+cactusprojects/emtf/daq/hal/busAdapter/pciexpr/src/linux/
+cactusprojects/emtf/daq/hal/generic/lib/
+cactusprojects/emtf/daq/hal/generic/src/linux/x86_64_slc6/
+cactusprojects/emtf/daq/hal/utilities/lib/
+cactusprojects/emtf/daq/hal/utilities/src/linux/
+cactusprojects/emtf/daq/hal/x86_64_slc6/lib/
