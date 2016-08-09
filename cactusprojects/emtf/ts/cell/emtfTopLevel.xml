@@ -1,5 +1,5 @@
 <db>
-    <key id="MWGR4">
+    <key id="emtf_key">
         <load module="./emtfSequenceParameters.xml" />
         <load module="./amc13Config.xml" />
         <load module="./emtfRunSettings.xml" />
