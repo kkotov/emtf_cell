@@ -225,43 +225,6 @@ void Mtf7Processor::retrieveMetricValues()
     setMetricValue<bool>    (ext_pll_lock_status,    readPLLstatus());
     setMetricValue<int>     (bc0_period_counter,     readBC0counter());
     setMetricValue<double>  (output_track_rate,      readTrackRate());
-
-
-    // TODO: debug code
-    // const string fileName("/nfshome0/emtfts/cactus_1701/cactusprojects/emtf/ts/cell/alignment/" + getCrateId() + "_" + boost::lexical_cast<string>(getSlot()));
-
-    // ofstream alignLog(fileName.c_str(), ios::app);
-
-    // if(alignLog.is_open())
-    // {
-    //     const int size = 49;
-    //     const string links[size] = {"me1a_02", "me1a_03", "me1a_04", "me1a_05", "me1a_06", "me1a_07", "me1a_08", "me1a_09",
-    //                                 "me1b_02", "me1b_03", "me1b_04", "me1b_05", "me1b_06", "me1b_07", "me1b_08", "me1b_09",
-    //                                 "me2_02", "me2_03", "me2_04", "me2_05", "me2_06", "me2_07", "me2_08", "me2_09",
-    //                                 "me3_02", "me3_03", "me3_04", "me3_05", "me3_06", "me3_07", "me3_08", "me3_09",
-    //                                 "me4_02", "me4_03", "me4_04", "me4_05", "me4_06", "me4_07", "me4_08", "me4_09",
-    //                                 "me1n_03", "me1n_06", "me1n_09",
-    //                                 "me2n_03", "me2n_09",
-    //                                 "me3n_03", "me3n_09",
-    //                                 "me4n_03", "me4n_09" };
-
-    //     string afDelayStr;
-    //     for(int i=0; i<size; ++i)
-    //     {
-    //         const string regName("af_delay_" + links[i]);
-
-    //         uint64_t afDelay;
-
-    //         driver_->read64(regName, &afDelay);
-
-    //         afDelayStr.append(boost::lexical_cast<string>(afDelay) + "  ");
-    //     }
-    //     afDelayStr.append("\n");
-
-    //     alignLog << afDelayStr;
-
-    //     alignLog.close();
-    // }
 }
 
 } // namespace

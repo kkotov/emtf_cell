@@ -16,7 +16,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>0</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
       <slot>1</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -35,7 +35,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>1</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
       <slot>3</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -54,7 +54,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>2</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
       <slot>5</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -73,7 +73,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>3</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
       <slot>7</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -92,7 +92,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>4</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
       <slot>9</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -111,7 +111,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>5</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
       <slot>11</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -130,7 +130,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>6</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
       <slot>1</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -149,7 +149,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>7</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
       <slot>3</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -168,7 +168,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>8</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
       <slot>5</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -187,7 +187,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>9</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
       <slot>7</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -206,7 +206,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>10</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
       <slot>9</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
@@ -225,7 +225,7 @@
       <hw-type>MTF7</hw-type>
       <role>procRoleA</role>
       <uri>11</uri>
-      <address-table>/nfshome0/emtfts/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
+      <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
       <slot>11</slot>
       <rx-port pid="[00:08]" name="me1a_[2:10]"/>
