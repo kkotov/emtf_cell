@@ -52,7 +52,13 @@ public:
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
+    // hide the copy constructor and the assignment operator because the class allocates memory
+    WritePcLuts(const WritePcLuts &);
+    WritePcLuts operator=(const WritePcLuts &);
+
     void write(Mtf7Processor &processor, std::map<std::string, std::vector<unsigned long long>> &pairs);
+
+    Mtf7Processor &processor;
 
     PcLuts *pcLuts;
 };
@@ -70,7 +76,13 @@ public:
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
+    // hide the copy constructor and the assignment operator because the class allocates memory
+    VerifyPcLuts(const VerifyPcLuts &);
+    VerifyPcLuts operator=(const VerifyPcLuts &);
+
     void verify(Mtf7Processor &processor, std::map<std::string, std::vector<unsigned long long>> &pairs, Command::State &status);
+
+    Mtf7Processor &processor;
 
     PcLuts *pcLuts;
 };

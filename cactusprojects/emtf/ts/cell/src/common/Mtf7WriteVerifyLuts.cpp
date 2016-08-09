@@ -106,26 +106,23 @@ bool PcLuts::loadData(string regName, string fileName, map<string, vector<unsign
 
 WritePcLuts::WritePcLuts(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
+    processor(getActionable<Mtf7Processor>()),
     pcLuts(NULL)
-{ }
+{
+    pcLuts = new PcLuts(processor.endcap(), processor.sector());
+}
 
 swatch::core::Command::State WritePcLuts::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Write the PC LUTs to the board.");
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
 
     Command::State commandStatus = ActionSnapshot::kDone;
 
-    const int endcap = processor.endcap();
-    const int sector = processor.sector();
-
-    pcLuts = new PcLuts(endcap, sector);
-
     auto thLutPairs = pcLuts->getThLutPairs();
-    // verify(processor, thLutPairs, commandStatus);
+    // write(processor, thLutPairs);
 
     auto thCorrPairs = pcLuts->getCorrPairs();
-    // verify(processor, thLutPairs, commandStatus);
+    // write(processor, thLutPairs);
 
     setProgress(1.);
 
@@ -144,20 +141,18 @@ void WritePcLuts::write(Mtf7Processor &processor, map<string, vector<unsigned lo
 
 
 VerifyPcLuts::VerifyPcLuts(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    Command(aId, aActionable, xdata::Integer(0))
-{ }
+    Command(aId, aActionable, xdata::Integer(0)),
+    processor(getActionable<Mtf7Processor>()),
+    pcLuts(NULL)
+{
+    pcLuts = new PcLuts(processor.endcap(), processor.sector());
+}
 
 swatch::core::Command::State VerifyPcLuts::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Verify the PC LUTs.");
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
 
     Command::State commandStatus = ActionSnapshot::kDone;
-
-    const int endcap = processor.endcap();
-    const int sector = processor.sector();
-
-    pcLuts = new PcLuts(endcap, sector);
 
     auto thLutPairs = pcLuts->getThLutPairs();
     verify(processor, thLutPairs, commandStatus);
