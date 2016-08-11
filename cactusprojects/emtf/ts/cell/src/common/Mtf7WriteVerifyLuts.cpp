@@ -15,7 +15,7 @@ using namespace core;
 
 namespace emtf {
 
-const string PcLuts::prefix("/home/emtfts/emtf_cell_config/vl_lut");
+const string PcLuts::prefix("/home/emtfts/emtf_cell_config/vl_lut/");
 
 PcLuts::PcLuts(int endcap, int sector)
 {
