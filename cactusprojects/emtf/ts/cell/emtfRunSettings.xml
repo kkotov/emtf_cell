@@ -1,5 +1,20 @@
 <run-settings id="emtf">
     <context id="processors">
+        <state id="Halted">
+            <mon-obj id="inputPorts" status="disabled" />
+        </state>
+        <state id="Engaged">
+            <mon-obj id="inputPorts" status="disabled" />
+        </state>
+        <state id="Synchronized">
+            <mon-obj id="inputPorts" status="disabled" />
+        </state>
+        <state id="Configured">
+            <mon-obj id="inputPorts" status="disabled" />
+        </state>
+        <state id="Aligned">
+            <mon-obj id="inputPorts" status="disabled" />
+        </state>
         <state id="Running">
             <mon-obj id="inputPorts" status="non-critical" />
         </state>
