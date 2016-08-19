@@ -54,6 +54,15 @@ namespace verify {
 
 
 namespace config {
+    const string log4cplusGeneralLogger()
+    {
+        return "emtfGeneralLogger";
+    }
+
+    const string log4cplusLinkLogger()
+    {
+        return "emtfLinkLogger";
+    }
 
     const string log4cplusPropertyFile()
     {

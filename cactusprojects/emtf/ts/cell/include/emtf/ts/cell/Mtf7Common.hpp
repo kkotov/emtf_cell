@@ -17,6 +17,10 @@ namespace verify {
 
 
 namespace config {
+    const std::string log4cplusGeneralLogger();
+
+    const std::string log4cplusLinkLogger();
+
     const std::string log4cplusPropertyFile();
 } // namespace config
 

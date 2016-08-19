@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "emtf/ts/cell/Mtf7LinksAlignmentReferences.hpp"
 #include "swatch/core/MetricConditions.hpp"
+#include "emtf/ts/cell/Mtf7Common.hpp"
 #include <map>
 #include <string>
 #include <vector>
@@ -91,7 +92,7 @@ Mtf7InputPort::Mtf7InputPort(const string& aID, const uint32_t portId, const str
     afDelayReference(InputLinksAlignmentReferences::getReferenceValue(processorName, portId)),
     driver_(driver),
     link_id_mismatch(registerMetric<string>("linkIdMismatch", swatch::core::NotEqualCondition<string>("none"), swatch::core::NotEqualCondition<string>("none"))),
-    linkLogger(Logger::getInstance(LOG4CPLUS_TEXT("emtfLinkLogger"))),
+    linkLogger(Logger::getInstance(config::log4cplusLinkLogger())),
     lockedOld(false),
     alignedOld(false),
     crcOld(false),
