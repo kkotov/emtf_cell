@@ -50,13 +50,5 @@ bool CheckWrittenValue(Mtf7Processor &processor, string reg, uint32_t length, co
 }
 
 
-// TODO: single_en HACK. Remove it once HAL has 64 bit support
-void setSingleEn(uint64_t &value)
-{
-    const uint64_t singleEn = (0x1ULL) << 4;
-    value |= singleEn;
-}
-
-
 } // namespace
 
