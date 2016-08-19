@@ -153,7 +153,7 @@ Command::State Mtf7Loopback::code(const XParameterSet& params)
 
     // verify the written value
     // Command::State commandStatus = kDone;
-    // uint32_t valueRead = CheckWrittenValue(processor, "test_reg1", value, commandStatus);
+    // uint32_t valueRead = verify::CheckWrittenValue(processor, "test_reg1", value, commandStatus);
 
     // setResult(xdata::UnsignedInteger32(valueRead)); // set the return value of the command
 

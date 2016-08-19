@@ -43,29 +43,29 @@ Command::State Mtf7DAQConfigRegisters::code(const XParameterSet& params)
 
     Command::State commandStatus = ActionSnapshot::kDone;
     processor.write64("daq_l1a_del", l1aDelay);
-    CheckWrittenValue(processor, "daq_l1a_del", l1aDelay, commandStatus);
+    verify::CheckWrittenValue(processor, "daq_l1a_del", l1aDelay, commandStatus);
 
     processor.write64("daq_l1a_window", l1aWindow);
-    CheckWrittenValue(processor, "daq_l1a_window", l1aWindow, commandStatus);
+    verify::CheckWrittenValue(processor, "daq_l1a_window", l1aWindow, commandStatus);
 
     processor.write64("daq_valor_delay", valorDelay);
-    CheckWrittenValue(processor, "daq_valor_delay", valorDelay, commandStatus);
+    verify::CheckWrittenValue(processor, "daq_valor_delay", valorDelay, commandStatus);
 
     processor.write64("daq_valor_window", valorWindow);
-    CheckWrittenValue(processor, "daq_valor_window", valorWindow, commandStatus);
+    verify::CheckWrittenValue(processor, "daq_valor_window", valorWindow, commandStatus);
 
     processor.write64("daq_bxn_offset", bxOffset);
-    CheckWrittenValue(processor, "daq_bxn_offset", bxOffset, commandStatus);
+    verify::CheckWrittenValue(processor, "daq_bxn_offset", bxOffset, commandStatus);
 
     const uint64_t boardId = processor.sector() | (processor.endcap() << 3); // form board id from the sector and the endcap
     processor.write64("daq_brd_id", boardId);
-    CheckWrittenValue(processor, "daq_brd_id", boardId, commandStatus);
+    verify::CheckWrittenValue(processor, "daq_brd_id", boardId, commandStatus);
 
     processor.write64("daq_stress_en", stress);
-    CheckWrittenValue(processor, "daq_stress_en", stress, commandStatus);
+    verify::CheckWrittenValue(processor, "daq_stress_en", stress, commandStatus);
 
     processor.write64("daq_amc13_easy_en", amc13EasyEn);
-    CheckWrittenValue(processor, "daq_amc13_easy_en", amc13EasyEn, commandStatus);
+    verify::CheckWrittenValue(processor, "daq_amc13_easy_en", amc13EasyEn, commandStatus);
 
     return commandStatus;
 }

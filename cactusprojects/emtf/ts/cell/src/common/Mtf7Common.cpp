@@ -8,46 +8,49 @@ using namespace core;
 
 namespace emtf {
 
-uint32_t CheckWrittenValue(Mtf7Processor &processor, string reg, const uint32_t value, Command::State &currentStatus)
-{
-    uint32_t valueRead;
-    processor.read(reg, valueRead);
 
-    if(value != valueRead)
+namespace verify {
+    uint32_t CheckWrittenValue(Mtf7Processor &processor, string reg, const uint32_t value, Command::State &currentStatus)
     {
-        currentStatus = ActionSnapshot::kError;
+        uint32_t valueRead;
+        processor.read(reg, valueRead);
+
+        if(value != valueRead)
+        {
+            currentStatus = ActionSnapshot::kError;
+        }
+
+        return valueRead;
     }
 
-    return valueRead;
-}
-
-uint64_t CheckWrittenValue(Mtf7Processor &processor, string reg, const uint64_t value, Command::State &currentStatus)
-{
-    uint64_t valueRead;
-    processor.read64(reg, valueRead);
-
-    if(value != valueRead)
+    uint64_t CheckWrittenValue(Mtf7Processor &processor, string reg, const uint64_t value, Command::State &currentStatus)
     {
-        currentStatus = ActionSnapshot::kError;
+        uint64_t valueRead;
+        processor.read64(reg, valueRead);
+
+        if(value != valueRead)
+        {
+            currentStatus = ActionSnapshot::kError;
+        }
+
+        return valueRead;
     }
 
-    return valueRead;
-}
-
-bool CheckWrittenValue(Mtf7Processor &processor, string reg, uint32_t length, const char *buffer, Command::State &currentStatus)
-{
-    char bufferRead[length];
-    processor.readBlock(reg, length, bufferRead);
-
-    bool success = (0 == memcmp(buffer, bufferRead, length));
-
-    if(!success)
+    bool CheckWrittenValue(Mtf7Processor &processor, string reg, uint32_t length, const char *buffer, Command::State &currentStatus)
     {
-        currentStatus = ActionSnapshot::kError;
-    }
+        char bufferRead[length];
+        processor.readBlock(reg, length, bufferRead);
 
-    return success;
-}
+        bool success = (0 == memcmp(buffer, bufferRead, length));
+
+        if(!success)
+        {
+            currentStatus = ActionSnapshot::kError;
+        }
+
+        return success;
+    }
+} // namespace verify
 
 
 namespace config {
