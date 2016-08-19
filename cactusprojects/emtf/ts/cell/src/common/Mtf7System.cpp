@@ -6,6 +6,8 @@
 #include "swatch/processor/Processor.hpp"
 #include "swatch/dtm/DaqTTCManager.hpp"
 
+#include <log4cplus/configurator.h>
+#include "emtf/ts/cell/Mtf7Common.hpp"
 
 namespace emtf {
 
@@ -39,6 +41,10 @@ Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) : swatch::system
     fsm.stopFromRunning.add(getDaqTTCs(), DaqTTCFSM_t::kStateRunning, DaqTTCFSM_t::kTrStop).add(getProcessors(), ProcFSM_t::kStateRunning, ProcFSM_t::kTrStop);
 
     fsm.stopFromPaused.add(getDaqTTCs(), DaqTTCFSM_t::kStatePaused, DaqTTCFSM_t::kTrStop).add(getProcessors(), ProcFSM_t::kStateRunning, ProcFSM_t::kTrStop);
+
+
+    // append a specific emtf logging configuration to the existing log4cplus
+    log4cplus::PropertyConfigurator::doConfigure(config::log4cplusPropertyFile());
 }
 
 Mtf7System::~Mtf7System()

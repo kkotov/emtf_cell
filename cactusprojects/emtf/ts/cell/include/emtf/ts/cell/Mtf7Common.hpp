@@ -12,7 +12,13 @@ uint32_t CheckWrittenValue(Mtf7Processor &processor, std::string reg, const uint
 uint64_t CheckWrittenValue(Mtf7Processor &processor, std::string reg, const uint64_t value, swatch::core::Command::State &currentStatus);
 bool CheckWrittenValue(Mtf7Processor &processor, std::string reg, uint32_t length, const char *buffer, swatch::core::Command::State &currentStatus);
 
-} // namespace
+
+namespace config {
+    const std::string log4cplusPropertyFile();
+} // namespace config
+
+
+} // namespace emtf
 
 #endif /* __MTF7_COMMON_HPP__ */
 

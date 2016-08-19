@@ -50,5 +50,15 @@ bool CheckWrittenValue(Mtf7Processor &processor, string reg, uint32_t length, co
 }
 
 
+namespace config {
+
+    const string log4cplusPropertyFile()
+    {
+        return getenv("EMTF_LOGGER_PROPERTY_FILE") ? getenv("EMTF_LOGGER_PROPERTY_FILE") : "/home/emtfts/emtf_cell_config/log4cplus.properties";
+    }
+
+} // namespace config
+
+
 } // namespace
 
