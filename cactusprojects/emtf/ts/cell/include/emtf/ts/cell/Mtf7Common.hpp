@@ -22,6 +22,8 @@ namespace config {
     const std::string log4cplusLinkLogger();
 
     const std::string log4cplusPropertyFile();
+
+    const std::string pcLutsPath();
 } // namespace config
 
 

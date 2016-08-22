@@ -69,6 +69,11 @@ namespace config {
         return getenv("EMTF_LOGGER_PROPERTY_FILE") ? getenv("EMTF_LOGGER_PROPERTY_FILE") : "/home/emtfts/emtf_cell_config/log4cplus.properties";
     }
 
+    const std::string pcLutsPath()
+    {
+        return "/home/emtfts/emtf_cell_config/vl_lut/";
+    }
+
 } // namespace config
 
 

@@ -13,8 +13,6 @@ namespace emtf {
 class PcLuts
 {
 public:
-    static const std::string prefix;
-
     PcLuts(int endcap, int sector);
 
     // return map of pairs where each pair consist of "register name" and a "vector of unsigned long long values"
