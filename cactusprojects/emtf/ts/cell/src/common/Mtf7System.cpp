@@ -5,11 +5,16 @@
 #include "emtf/ts/cell/Mtf7Common.hpp"
 #include "swatch/processor/Processor.hpp"
 #include "swatch/dtm/DaqTTCManager.hpp"
+#include <string>
 
 #include <log4cplus/logger.h>
 #include <log4cplus/configurator.h>
+#include <log4cplus/loggingmacros.h>
 
 namespace emtf {
+
+using namespace std;
+
 
 SWATCH_REGISTER_CLASS(emtf::Mtf7System);
 
@@ -43,11 +48,13 @@ Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) : swatch::system
     fsm.stopFromPaused.add(getDaqTTCs(), DaqTTCFSM_t::kStatePaused, DaqTTCFSM_t::kTrStop).add(getProcessors(), ProcFSM_t::kStateRunning, ProcFSM_t::kTrStop);
 
 
+    const string emtfLog4cplusPropertyFile(config::log4cplusPropertyFile());
+
     log4cplus::Logger generalLogger(log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()));
-    // TODO: print the name of the log4cplus property file
+    LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT("Emtf log4cplus property file: " + emtfLog4cplusPropertyFile));
 
     // append a specific emtf logging configuration to the existing log4cplus
-    log4cplus::PropertyConfigurator::doConfigure(config::log4cplusPropertyFile());
+    log4cplus::PropertyConfigurator::doConfigure(emtfLog4cplusPropertyFile);
 }
 
 Mtf7System::~Mtf7System()
