@@ -22,10 +22,12 @@
 #include "swatch/core/StateMachine.hpp"
 #include "swatch/core/MetricConditions.hpp"
 
+
 using namespace std;
 using namespace swatch::core;
 using namespace boost::gregorian;
 using namespace boost::posix_time;
+using namespace log4cplus;
 
 namespace emtf {
 
@@ -40,7 +42,8 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     swatch::processor::Processor(aStub),
     addressTableReader(NULL),
     addressTable(NULL),
-    driver_(NULL)
+    driver_(NULL),
+    rateLogger(Logger::getInstance(config::log4cplusRateLogger()))
 {
     const swatch::processor::ProcessorStub& stub = getStub();
 
@@ -118,22 +121,32 @@ uint64_t Mtf7Processor::readFirmwareVersion()
     return firmwareVersion;
 }
 
-bool Mtf7Processor::readPLLstatus(void) {
+bool Mtf7Processor::readPLLstatus(void)
+{
     uint32_t ext_pll_lock = 0u;
     read("ext_pll_lock", ext_pll_lock);
     return ext_pll_lock;
 }
 
-int Mtf7Processor::readBC0counter(void) {
+int Mtf7Processor::readBC0counter(void)
+{
     uint32_t bc0_period_cnt = 0u;
     read("bc0_period_cnt", bc0_period_cnt);
     return bc0_period_cnt;
 }
 
-double Mtf7Processor::readTrackRate(void) {
+double Mtf7Processor::readTrackRate(void)
+{
     uint64_t output_track_counter = 0u;
     read64("output_track_rate", output_track_counter);
-    return (output_track_counter/0.00327);
+
+    double rate = output_track_counter/0.00327;
+
+    const string rateMsg(getStub().id + " output track rate: " + boost::lexical_cast<string>(rate) + " Hz");
+
+    LOG4CPLUS_WARN(rateLogger, LOG4CPLUS_TEXT(rateMsg));
+
+    return rate;
 }
 
 string Mtf7Processor::readControlFirmwareVersion(uint32_t *firmwareVersion)

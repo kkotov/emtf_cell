@@ -9,6 +9,8 @@
 #include "emtf/pciExprLinuxBusAdapter/PCIExprDevice.hh"
 #include "boost/lexical_cast.hpp"
 #include <string>
+#include <log4cplus/logger.h>
+#include <log4cplus/loggingmacros.h>
 
 namespace emtf {
 
@@ -109,6 +111,8 @@ private:
     HAL::PCIAddressTableASCIIReader * addressTableReader;
     HAL::PCIAddressTable            * addressTable;
     HAL::PCIExprDevice              * driver_;
+
+    log4cplus::Logger rateLogger;
 };
 
 } // namespace
