@@ -10,6 +10,11 @@ class Mtf7System : public swatch::system::System {
 public:
     Mtf7System(const swatch::core::AbstractStub& aStub);
     ~Mtf7System();
+
+    void retrieveMetricValues();
+
+private:
+    swatch::core::Metric<uint16_t> & inputLinksInError;
 };
 
 } // namespace

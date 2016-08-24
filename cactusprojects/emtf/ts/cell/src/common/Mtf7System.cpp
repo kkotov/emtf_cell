@@ -5,13 +5,20 @@
 
 #include "swatch/processor/Processor.hpp"
 #include "swatch/dtm/DaqTTCManager.hpp"
+#include "swatch/core/MetricConditions.hpp"
+
+
+using namespace std;
+using namespace swatch::core;
 
 
 namespace emtf {
 
 SWATCH_REGISTER_CLASS(emtf::Mtf7System);
 
-Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) : swatch::system::System(aStub)
+Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
+    swatch::system::System(aStub),
+    inputLinksInError(registerMetric<uint16_t>("Number of input links in error", GreaterThanCondition<uint16_t>(10), RangeCondition<uint16_t>(6,10)))
 {
     // system run control state machine
     typedef swatch::processor::RunControlFSM ProcFSM_t;
@@ -43,6 +50,12 @@ Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) : swatch::system
 
 Mtf7System::~Mtf7System()
 {
+}
+
+void Mtf7System::retrieveMetricValues()
+{
+    // TODO: remove this 5 and add a real function
+    setMetricValue<uint16_t>(inputLinksInError, 5);
 }
 
 } // namespace
