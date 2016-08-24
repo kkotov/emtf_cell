@@ -100,10 +100,12 @@ private:
     bool   readPLLstatus (void);
     int    readBC0counter(void);
     double readTrackRate (void);
+    uint16_t countBrokenLinks(void);
 
     swatch::core::Metric<bool>&        ext_pll_lock_status;
     swatch::core::Metric<int>&         bc0_period_counter;
     swatch::core::Metric<double>&      output_track_rate;
+    swatch::core::Metric<uint16_t>&    brokenLinks;
     swatch::core::Metric<std::string>& controlFirmwareVersion;
     swatch::core::Metric<std::string>& coreFirmwareVersion;
 

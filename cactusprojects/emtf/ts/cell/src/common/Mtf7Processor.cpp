@@ -25,6 +25,7 @@
 
 using namespace std;
 using namespace swatch::core;
+using namespace swatch::processor;
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 using namespace log4cplus;
@@ -33,19 +34,27 @@ namespace emtf {
 
 SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
 
-Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
-    ext_pll_lock_status(registerMetric<bool>     ("Ext pll lock status", swatch::core::NotEqualCondition<bool>(true), swatch::core::NotEqualCondition<bool>(true))),
-    bc0_period_counter (registerMetric<int>      ("Bc0 period counter", swatch::core::NotEqualCondition<int>(3563),  swatch::core::NotEqualCondition<int>(3563))),
-    output_track_rate  (registerMetric<double>   ("Output track rate (Hz)")),
+Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
+    ext_pll_lock_status(registerMetric<bool>("Ext pll lock status",
+                                             NotEqualCondition<bool>(true),
+                                             NotEqualCondition<bool>(true))),
+    bc0_period_counter(registerMetric<int>("Bc0 period counter",
+                                           NotEqualCondition<int>(3563),
+                                           NotEqualCondition<int>(3563))),
+    output_track_rate(registerMetric<double>("Output track rate (Hz)")),
+    brokenLinks(registerMetric<uint16_t>("Number of broken input links",
+                                         GreaterThanCondition<uint16_t>(config::brokenLinksErrorThresholdProcessor()),
+                                         RangeCondition<uint16_t>(config::brokenLinksWarningThresholdProcessor(),
+                                                                  config::brokenLinksErrorThresholdProcessor()))),
     controlFirmwareVersion(registerMetric<string>("Control Firmware Version Timestamp")),
     coreFirmwareVersion(registerMetric<string>   ("Core Firmware Version Timestamp")),
-    swatch::processor::Processor(aStub),
+    Processor(aStub),
     addressTableReader(NULL),
     addressTable(NULL),
     driver_(NULL),
     rateLogger(Logger::getInstance(config::log4cplusRateLogger()))
 {
-    const swatch::processor::ProcessorStub& stub = getStub();
+    const ProcessorStub& stub = getStub();
 
     addressTableReader = new HAL::PCIAddressTableASCIIReader(stub.addressTable);
     addressTable = new HAL::PCIExprAddressTable("Address Table", *addressTableReader);
@@ -57,15 +66,15 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     registerInterface(new Mtf7TTCInterface(*driver_));
     registerInterface(new Mtf7ReadoutInterface(*driver_));
     registerInterface(new Mtf7AlgoInterface(*driver_));
-    registerInterface(new swatch::processor::InputPortCollection());
-    registerInterface(new swatch::processor::OutputPortCollection());
+    registerInterface(new InputPortCollection());
+    registerInterface(new OutputPortCollection());
 
-    for(vector<swatch::processor::ProcessorPortStub>::const_iterator it = stub.rxPorts.begin(); it != stub.rxPorts.end(); it++)
+    for(vector<ProcessorPortStub>::const_iterator it = stub.rxPorts.begin(); it != stub.rxPorts.end(); it++)
     {
         getInputPorts().addPort(new Mtf7InputPort(it->id, it->number, aStub.id, *driver_));
     }
 
-    for(std::vector<swatch::processor::ProcessorPortStub>::const_iterator it = stub.txPorts.begin(); it != stub.txPorts.end(); it++)
+    for(std::vector<ProcessorPortStub>::const_iterator it = stub.txPorts.begin(); it != stub.txPorts.end(); it++)
     {
         getOutputPorts().addPort(new Mtf7OutputPort(it->id, it->number, *driver_));
     }
@@ -91,7 +100,7 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
                                                                 then(cDaqReportWoTrack);
 
     // processor run control state machine
-    swatch::processor::RunControlFSM &pFSM = getRunControlFSM();
+    RunControlFSM &pFSM = getRunControlFSM();
     // pFSM.setup.add(cCheckFWVersion); // TODO: when we enable that we'll need a new DB key
     pFSM.configure.add(cfgSeq);
     // pFSM.align.add(cGthModuleReset);
@@ -147,6 +156,21 @@ double Mtf7Processor::readTrackRate(void)
     LOG4CPLUS_WARN(rateLogger, LOG4CPLUS_TEXT(rateMsg));
 
     return rate;
+}
+
+uint16_t Mtf7Processor::countBrokenLinks(void)
+{
+    uint16_t counter = 0;
+
+    for(auto it=getInputPorts().getPorts().begin(); it!=getInputPorts().getPorts().end(); ++it)
+    {
+        if( (!(*it)->isMasked()) && (kGood != (*it)->getStatusFlag()) )
+        {
+            ++counter;
+        }
+    }
+
+    return counter;
 }
 
 string Mtf7Processor::readControlFirmwareVersion(uint32_t *firmwareVersion)
@@ -238,6 +262,7 @@ void Mtf7Processor::retrieveMetricValues()
     setMetricValue<bool>    (ext_pll_lock_status,    readPLLstatus());
     setMetricValue<int>     (bc0_period_counter,     readBC0counter());
     setMetricValue<double>  (output_track_rate,      readTrackRate());
+    setMetricValue<uint16_t>(brokenLinks,            countBrokenLinks());
 }
 
 } // namespace

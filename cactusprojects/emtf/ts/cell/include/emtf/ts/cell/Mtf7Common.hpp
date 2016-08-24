@@ -22,6 +22,10 @@ namespace config {
     const std::string log4cplusRateLogger();
     const std::string log4cplusPropertyFile();
     const std::string pcLutsPath();
+    const uint16_t brokenLinksWarningThresholdProcessor();
+    const uint16_t brokenLinksErrorThresholdProcessor();
+    const uint16_t brokenLinksWarningThresholdSystem();
+    const uint16_t brokenLinksErrorThresholdSystem();
 } // namespace config
 
 

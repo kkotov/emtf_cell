@@ -79,6 +79,25 @@ namespace config {
         return "/home/emtfts/emtf_cell_config/vl_lut/";
     }
 
+    const uint16_t brokenLinksWarningThresholdProcessor()
+    {
+        return 3;
+    }
+
+    const uint16_t brokenLinksErrorThresholdProcessor()
+    {
+        return 5;
+    }
+
+    const uint16_t brokenLinksWarningThresholdSystem()
+    {
+        return 6;
+    }
+
+    const uint16_t brokenLinksErrorThresholdSystem()
+    {
+        return 10;
+    }
 } // namespace config
 
 
