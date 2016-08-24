@@ -36,17 +36,17 @@ Command::State Mtf7SetDelaysAndTriggerSource::code(const XParameterSet& params)
     Command::State commandStatus = ActionSnapshot::kDone;
 
     processor.write64("spy_data_delay", daqDelay);
-    CheckWrittenValue(processor, "spy_data_delay", daqDelay, commandStatus);
+    verify::CheckWrittenValue(processor, "spy_data_delay", daqDelay, commandStatus);
 
     const uint64_t afEnable = 1u;
     processor.write64("af_en", afEnable);
-    CheckWrittenValue(processor, "af_en", afEnable, commandStatus);
+    verify::CheckWrittenValue(processor, "af_en", afEnable, commandStatus);
 
     processor.write64("af_ttc_bc0_delay", bc0Offset);
-    CheckWrittenValue(processor, "af_ttc_bc0_delay", bc0Offset, commandStatus);
+    verify::CheckWrittenValue(processor, "af_ttc_bc0_delay", bc0Offset, commandStatus);
 
     processor.write64("gmt_link_comma_delay", gmtCommaDelay);
-    CheckWrittenValue(processor, "gmt_link_comma_delay", gmtCommaDelay, commandStatus);
+    verify::CheckWrittenValue(processor, "gmt_link_comma_delay", gmtCommaDelay, commandStatus);
 
     return commandStatus;
 }
@@ -68,7 +68,7 @@ Command::State Mtf7SetSingleHits::code(const XParameterSet& params)
     Command::State commandStatus = ActionSnapshot::kDone;
 
     processor.write64("single_en", singleHits);
-    CheckWrittenValue(processor, "single_en", singleHits, commandStatus);
+    verify::CheckWrittenValue(processor, "single_en", singleHits, commandStatus);
 
     return commandStatus;
 }
@@ -90,7 +90,7 @@ Command::State Mtf7DaqReportWoTrack::code(const XParameterSet& params)
     Command::State commandStatus = ActionSnapshot::kDone;
 
     processor.write64("daq_report_wo_track", daqReportWoTrack);
-    CheckWrittenValue(processor, "daq_report_wo_track", daqReportWoTrack, commandStatus);
+    verify::CheckWrittenValue(processor, "daq_report_wo_track", daqReportWoTrack, commandStatus);
 
     return commandStatus;
 }

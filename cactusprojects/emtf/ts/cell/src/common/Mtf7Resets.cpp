@@ -27,14 +27,14 @@ swatch::core::Command::State DAQModuleReset::code(const swatch::core::XParameter
     /* TODO: this code performs gth reset and currently it is removed from here
     uint64_t gth_reset = 1u;
     processor.write64("gth_rst", gth_reset);
-    CheckWrittenValue(processor, "gth_rst", gth_reset, commandStatus);
+    verify::CheckWrittenValue(processor, "gth_rst", gth_reset, commandStatus);
 
     setProgress(0.33);
     usleep(sleepInterval);
 
     gth_reset = 0u;
     processor.write64("gth_rst", gth_reset);
-    CheckWrittenValue(processor, "gth_rst", gth_reset, commandStatus);
+    verify::CheckWrittenValue(processor, "gth_rst", gth_reset, commandStatus);
 
     setProgress(0.5);
     usleep(sleepInterval);
@@ -43,11 +43,11 @@ swatch::core::Command::State DAQModuleReset::code(const swatch::core::XParameter
     // Substract 1 from the endcap number and the sector number, because in the firmware they start from 0.
     const uint64_t endcap = processor.endcap() - 1;
     processor.write64("endcap", endcap); // add the endcap code
-    CheckWrittenValue(processor, "endcap", endcap, commandStatus);
+    verify::CheckWrittenValue(processor, "endcap", endcap, commandStatus);
 
     const uint64_t sector = processor.sector() - 1;
     processor.write64("sector", sector); // add sector code
-    CheckWrittenValue(processor, "sector", sector, commandStatus);
+    verify::CheckWrittenValue(processor, "sector", sector, commandStatus);
 
     setProgress(1.);
 
@@ -69,7 +69,7 @@ swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
 //    uint32_t value = 0u;
 //    processor.write("corelink_axi_reset", value);
 //    Command::State commandStatus = ActionSnapshot::kDone;
-//    CheckWrittenValue(processor, "corelink_axi_reset", value, commandStatus);
+//    verify::CheckWrittenValue(processor, "corelink_axi_reset", value, commandStatus);
 //
 //    setProgress(0.33);
 //
@@ -78,7 +78,7 @@ swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
 //    // write and verify the corelink_axi_reset register again
 //    value = 1u;
 //    processor.write("corelink_axi_reset", value);
-//    CheckWrittenValue(processor, "corelink_axi_reset", value, commandStatus);
+//    verify::CheckWrittenValue(processor, "corelink_axi_reset", value, commandStatus);
 //
 //    setProgress(0.5);
 //
@@ -98,7 +98,7 @@ swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
 //    processor.write64reg("corelogic_spy_memory_configuration", qvalue);
 //
 //    const uint64_t mask = (0x1FFull << 21); // mask for bits 21-29 includive, because they are read only
-//    // CheckWrittenValue(processor, "corelogic_spy_memory_configuration", qvalue, commandStatus, mask);
+//    // verify:CheckWrittenValue(processor, "corelogic_spy_memory_configuration", qvalue, commandStatus, mask);
 //
 //    setProgress(1.);
 
@@ -122,14 +122,14 @@ Command::State ResetGthTransceivers::code(const XParameterSet& params)
     processor.write64("gth_rst", gth_reset);
 
     Command::State commandStatus = ActionSnapshot::kDone;
-    CheckWrittenValue(processor, "gth_rst", gth_reset, commandStatus);
+    verify::CheckWrittenValue(processor, "gth_rst", gth_reset, commandStatus);
 
     usleep(sleepInterval);
     setProgress(0.5);
 
     gth_reset = 0u;
     processor.write64("gth_rst", gth_reset);
-    CheckWrittenValue(processor, "gth_rst", gth_reset, commandStatus);
+    verify::CheckWrittenValue(processor, "gth_rst", gth_reset, commandStatus);
 
     usleep(sleepInterval);
     setProgress(1.0);
@@ -175,7 +175,7 @@ Command::State ResetPtLut::code(const swatch::core::XParameterSet& params)
         value = (*it);
         processor.write64reg("ptlut_clk_reset", value);
         usleep(sleepInterval);
-        CheckWrittenValue(processor, "ptlut_clk_reset", value, commandStatus);
+        verify::CheckWrittenValue(processor, "ptlut_clk_reset", value, commandStatus);
     }
 
     return commandStatus;
@@ -197,11 +197,11 @@ Command::State ResetRXBuffers::code(const swatch::core::XParameterSet& params)
     processor.write64reg("corelogic_control", value);
 
     Command::State commandStatus = ActionSnapshot::kDone;
-    CheckWrittenValue(processor, "corelogic_control", value, commandStatus);
+    verify::CheckWrittenValue(processor, "corelogic_control", value, commandStatus);
 
     value = 0; // remove the reset bit
     processor.write64reg("corelogic_control", value);
-    CheckWrittenValue(processor, "corelogic_control", value, commandStatus);
+    verify::CheckWrittenValue(processor, "corelogic_control", value, commandStatus);
 
     return commandStatus;
 }
@@ -251,7 +251,7 @@ Command::State SyncClockReset::code(const swatch::core::XParameterSet& params)
     {
         processor.write("test_reg1", (*it));
         usleep(sleepInterval);
-        CheckWrittenValue(processor, "test_reg1", (*it), commandStatus);
+        verify::CheckWrittenValue(processor, "test_reg1", (*it), commandStatus);
     }
 
     return commandStatus;

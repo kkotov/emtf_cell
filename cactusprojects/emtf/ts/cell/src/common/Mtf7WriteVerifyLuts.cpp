@@ -2,6 +2,7 @@
 #include "xdata/String.h"
 #include "emtf/ts/cell/Mtf7Processor.hpp"
 #include "emtf/ts/cell/Mtf7WriteVerifyLuts.hpp"
+#include "emtf/ts/cell/Mtf7Common.hpp"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -14,8 +15,6 @@ using namespace core;
 
 
 namespace emtf {
-
-const string PcLuts::prefix("/home/emtfts/emtf_cell_config/vl_lut/");
 
 PcLuts::PcLuts(int endcap, int sector)
 {
@@ -32,7 +31,7 @@ void PcLuts::generateThLutPairs(int endcap, int sector, map<string, vector<unsig
     boost::format regNameTemplate("prim_conv_th_lut_%s_0%u");
     vector<string> regNameStations = {"me1a", "me1b", "me2", "me3", "me4"};
 
-    boost::format fileNameTemplate(PcLuts::prefix + "vl_th_lut_endcap_%d_sec_%d_%s_ch_%u.lut");
+    boost::format fileNameTemplate(config::pcLutsPath() + "vl_th_lut_endcap_%d_sec_%d_%s_ch_%u.lut");
     vector<string> fileNameStations = {"sub_1_st_1", "sub_2_st_1", "st_2", "st_3", "st_4"};
 
     // TODO: replace this with an exception
@@ -62,7 +61,7 @@ void PcLuts::generateThLutPairs(int endcap, int sector, map<string, vector<unsig
 
 void PcLuts::generateThCorrPairs(int endcap, int sector, std::map<std::string, std::vector<unsigned long long>> & thCorrPairs)
 {
-    boost::format fileNameTemplate(PcLuts::prefix + "vl_th_corr_lut_endcap_%d_sec_%s_%s_%s.lut");
+    boost::format fileNameTemplate(config::pcLutsPath() + "vl_th_corr_lut_endcap_%d_sec_%s_%s_%s.lut");
 
     loadData("prim_conv_th_cor_me1a_01", (fileNameTemplate % endcap % sector % "sub_1_st_1" % "ch_1").str(), thCorrPairs);
     loadData("prim_conv_th_cor_me1a_02", (fileNameTemplate % endcap % sector % "sub_1_st_1" % "ch_2").str(), thCorrPairs);
@@ -205,7 +204,7 @@ swatch::core::Command::State VerifyPcLutsVersion::code(const swatch::core::XPara
     string pcLutVersionFile("invalid PC Lut version");
 
 
-    ifstream file((PcLuts::prefix + "version"), ios::in);
+    ifstream file((config::pcLutsPath() + "version"), ios::in);
     if(file.is_open())
     {
         getline(file, pcLutVersionFile); // TODO: check if the reading is successful
