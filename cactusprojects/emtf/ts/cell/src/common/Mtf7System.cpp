@@ -24,7 +24,10 @@ SWATCH_REGISTER_CLASS(emtf::Mtf7System);
 
 Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
     swatch::system::System(aStub),
-    inputLinksInError(registerMetric<uint16_t>("Number of input links in error", GreaterThanCondition<uint16_t>(10), RangeCondition<uint16_t>(6,10)))
+    brokenLinks(registerMetric<uint16_t>("Number of input links in error",
+                                         GreaterThanCondition<uint16_t>(config::brokenLinksErrorThresholdSystem()),
+                                         RangeCondition<uint16_t>(config::brokenLinksWarningThresholdSystem(),
+                                                                        config::brokenLinksErrorThresholdSystem())))
 {
     // system run control state machine
     typedef swatch::processor::RunControlFSM ProcFSM_t;
@@ -67,10 +70,21 @@ Mtf7System::~Mtf7System()
 {
 }
 
+uint16_t Mtf7System::countBrokenLinks(void)
+{
+    uint16_t counter = 0;
+
+    for(auto it=getProcessors().begin(); it!=getProcessors().end(); ++it)
+    {
+        counter += (dynamic_cast<Mtf7Processor *>(*it))->countBrokenLinks();
+    }
+
+    return counter;
+}
+
 void Mtf7System::retrieveMetricValues()
 {
-    // TODO: remove this 5 and add a real function
-    setMetricValue<uint16_t>(inputLinksInError, 5);
+    setMetricValue<uint16_t>(brokenLinks, countBrokenLinks());
 }
 
 } // namespace

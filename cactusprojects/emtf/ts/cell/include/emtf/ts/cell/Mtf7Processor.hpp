@@ -14,7 +14,8 @@
 
 namespace emtf {
 
-class Mtf7Processor : public swatch::processor::Processor {
+class Mtf7Processor : public swatch::processor::Processor
+{
 public:
     Mtf7Processor(const swatch::core::AbstractStub& aStub);
     ~Mtf7Processor();
@@ -91,6 +92,8 @@ public:
         return sectorIndex[deviceIndex() % 6];
     }
 
+    uint16_t countBrokenLinks(void);
+
     std::string readControlFirmwareVersion(uint32_t *controlFirmwareVersion = NULL);
     std::string readCoreFirmwareVersion(uint32_t *coreFirmwareVersion = NULL);
 
@@ -100,7 +103,6 @@ private:
     bool   readPLLstatus (void);
     int    readBC0counter(void);
     double readTrackRate (void);
-    uint16_t countBrokenLinks(void);
 
     swatch::core::Metric<bool>        & extPllLockStatus;
     swatch::core::Metric<int>         & bc0PeriodCounter;

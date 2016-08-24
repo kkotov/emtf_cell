@@ -14,7 +14,9 @@ public:
     void retrieveMetricValues();
 
 private:
-    swatch::core::Metric<uint16_t> & inputLinksInError;
+    uint16_t countBrokenLinks(void);
+
+    swatch::core::Metric<uint16_t> & brokenLinks;
 };
 
 } // namespace
