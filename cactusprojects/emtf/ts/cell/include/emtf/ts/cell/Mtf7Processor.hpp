@@ -23,32 +23,32 @@ public:
 
     void read(std::string reg, uint32_t &value)
     {
-        driver_->read(reg, &value);
+        driver->read(reg, &value);
     }
 
     void write(std::string reg, uint32_t value)
     {
-        driver_->write(reg, value);
+        driver->write(reg, value);
     }
 
     void read64(std::string reg, uint64_t &value)
     {
-        driver_->read64(reg, &value);
+        driver->read64(reg, &value);
     }
 
     void write64(std::string reg, uint64_t value)
     {
-        driver_->write64(reg, value);
+        driver->write64(reg, value);
     }
 
     void readBlock(std::string reg, uint32_t length, char *buffer)
     {
-        driver_->readBlock(reg, length, buffer);
+        driver->readBlock(reg, length, buffer);
     }
 
     void writeBlock(std::string reg, uint32_t length, const char *buffer)
     {
-        driver_->writeBlock(reg, length, const_cast<char *>(buffer));
+        driver->writeBlock(reg, length, const_cast<char *>(buffer));
     }
 
     void read64reg(std::string reg, uint64_t &value)
@@ -102,17 +102,17 @@ private:
     double readTrackRate (void);
     uint16_t countBrokenLinks(void);
 
-    swatch::core::Metric<bool>&        ext_pll_lock_status;
-    swatch::core::Metric<int>&         bc0_period_counter;
-    swatch::core::Metric<double>&      output_track_rate;
-    swatch::core::Metric<uint16_t>&    brokenLinks;
-    swatch::core::Metric<std::string>& controlFirmwareVersion;
-    swatch::core::Metric<std::string>& coreFirmwareVersion;
+    swatch::core::Metric<bool>        & extPllLockStatus;
+    swatch::core::Metric<int>         & bc0PeriodCounter;
+    swatch::core::Metric<double>      & outputTrackRate;
+    swatch::core::Metric<uint16_t>    & brokenLinks;
+    swatch::core::Metric<std::string> & controlFirmwareVersion;
+    swatch::core::Metric<std::string> & coreFirmwareVersion;
 
     HAL::PCIExprLinuxBusAdapter     busAdapter;
     HAL::PCIAddressTableASCIIReader * addressTableReader;
     HAL::PCIAddressTable            * addressTable;
-    HAL::PCIExprDevice              * driver_;
+    HAL::PCIExprDevice              * driver;
 
     log4cplus::Logger rateLogger;
 };

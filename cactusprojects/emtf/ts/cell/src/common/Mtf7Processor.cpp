@@ -35,13 +35,13 @@ namespace emtf {
 SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
 
 Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
-    ext_pll_lock_status(registerMetric<bool>("Ext pll lock status",
+    extPllLockStatus(registerMetric<bool>("Ext pll lock status",
                                              NotEqualCondition<bool>(true),
                                              NotEqualCondition<bool>(true))),
-    bc0_period_counter(registerMetric<int>("Bc0 period counter",
+    bc0PeriodCounter(registerMetric<int>("Bc0 period counter",
                                            NotEqualCondition<int>(3563),
                                            NotEqualCondition<int>(3563))),
-    output_track_rate(registerMetric<double>("Output track rate (Hz)")),
+    outputTrackRate(registerMetric<double>("Output track rate (Hz)")),
     brokenLinks(registerMetric<uint16_t>("Number of broken input links",
                                          GreaterThanCondition<uint16_t>(config::brokenLinksErrorThresholdProcessor()),
                                          RangeCondition<uint16_t>(config::brokenLinksWarningThresholdProcessor(),
@@ -51,7 +51,7 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     Processor(aStub),
     addressTableReader(NULL),
     addressTable(NULL),
-    driver_(NULL),
+    driver(NULL),
     rateLogger(Logger::getInstance(config::log4cplusRateLogger()))
 {
     const ProcessorStub& stub = getStub();
@@ -60,23 +60,23 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     addressTable = new HAL::PCIExprAddressTable("Address Table", *addressTableReader);
 
     uint32_t mtf7_index = boost::lexical_cast<uint32_t, std::string>(stub.uri);
-    driver_ = new HAL::PCIExprDevice(*addressTable, busAdapter, mtf7_index);
+    driver = new HAL::PCIExprDevice(*addressTable, busAdapter, mtf7_index);
 
     // Build subcomponents
-    registerInterface(new Mtf7TTCInterface(*driver_));
-    registerInterface(new Mtf7ReadoutInterface(*driver_));
-    registerInterface(new Mtf7AlgoInterface(*driver_));
+    registerInterface(new Mtf7TTCInterface(*driver));
+    registerInterface(new Mtf7ReadoutInterface(*driver));
+    registerInterface(new Mtf7AlgoInterface(*driver));
     registerInterface(new InputPortCollection());
     registerInterface(new OutputPortCollection());
 
     for(vector<ProcessorPortStub>::const_iterator it = stub.rxPorts.begin(); it != stub.rxPorts.end(); it++)
     {
-        getInputPorts().addPort(new Mtf7InputPort(it->id, it->number, aStub.id, *driver_));
+        getInputPorts().addPort(new Mtf7InputPort(it->id, it->number, aStub.id, *driver));
     }
 
     for(std::vector<ProcessorPortStub>::const_iterator it = stub.txPorts.begin(); it != stub.txPorts.end(); it++)
     {
-        getOutputPorts().addPort(new Mtf7OutputPort(it->id, it->number, *driver_));
+        getOutputPorts().addPort(new Mtf7OutputPort(it->id, it->number, *driver));
     }
 
 
@@ -112,7 +112,7 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
 
 Mtf7Processor::~Mtf7Processor()
 {
-    delete driver_;
+    delete driver;
     delete addressTable;
     delete addressTableReader;
 }
@@ -259,9 +259,9 @@ void Mtf7Processor::retrieveMetricValues()
     setMetricValue<uint64_t>(mMetricFirmwareVersion, readFirmwareVersion());
     setMetricValue<string>  (controlFirmwareVersion, readControlFirmwareVersion());
     setMetricValue<string>  (coreFirmwareVersion,    readCoreFirmwareVersion());
-    setMetricValue<bool>    (ext_pll_lock_status,    readPLLstatus());
-    setMetricValue<int>     (bc0_period_counter,     readBC0counter());
-    setMetricValue<double>  (output_track_rate,      readTrackRate());
+    setMetricValue<bool>    (extPllLockStatus,    readPLLstatus());
+    setMetricValue<int>     (bc0PeriodCounter,     readBC0counter());
+    setMetricValue<double>  (outputTrackRate,      readTrackRate());
     setMetricValue<uint16_t>(brokenLinks,            countBrokenLinks());
 }
 
