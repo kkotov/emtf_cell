@@ -52,7 +52,9 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     addressTableReader(NULL),
     addressTable(NULL),
     driver(NULL),
+    generalLogger(Logger::getInstance(config::log4cplusGeneralLogger())),
     rateLogger(Logger::getInstance(config::log4cplusRateLogger()))
+
 {
     const ProcessorStub& stub = getStub();
 
@@ -105,9 +107,8 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     pFSM.configure.add(cfgSeq);
     // pFSM.align.add(cGthModuleReset);
 
-    cout << "deviceIndex: " << deviceIndex() << " endcap: " << endcap() << " sector: " << sector() << endl;
-
-
+    const string processorMessage("Board " + aStub.id + " (/dev/utca_sp12" + getStub().uri + ") " + "initialized successfully");
+    LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(processorMessage));
 }
 
 Mtf7Processor::~Mtf7Processor()
@@ -134,6 +135,7 @@ bool Mtf7Processor::readPLLstatus(void)
 {
     uint32_t ext_pll_lock = 0u;
     read("ext_pll_lock", ext_pll_lock);
+
     return ext_pll_lock;
 }
 
@@ -141,6 +143,7 @@ int Mtf7Processor::readBC0counter(void)
 {
     uint32_t bc0_period_cnt = 0u;
     read("bc0_period_cnt", bc0_period_cnt);
+
     return bc0_period_cnt;
 }
 

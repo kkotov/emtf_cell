@@ -114,6 +114,7 @@ private:
     HAL::PCIAddressTable            * addressTable;
     HAL::PCIExprDevice              * driver;
 
+    log4cplus::Logger generalLogger;
     log4cplus::Logger rateLogger;
 };
 
