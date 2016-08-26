@@ -2,7 +2,7 @@
 #define __MTF7_SYSTEM_HPP__
 
 #include "swatch/system/System.hpp"
-
+#include <vector>
 
 namespace emtf {
 
@@ -11,12 +11,8 @@ public:
     Mtf7System(const swatch::core::AbstractStub& aStub);
     ~Mtf7System();
 
-    void retrieveMetricValues();
-
 private:
-    uint16_t countBrokenLinks(void);
-
-    swatch::core::Metric<uint16_t> & brokenLinks;
+    const uint16_t countBrokenLinks(const std::vector<swatch::core::MetricSnapshot>& aSnapshots);
 };
 
 } // namespace

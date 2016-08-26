@@ -23,11 +23,11 @@ using namespace std;
 SWATCH_REGISTER_CLASS(emtf::Mtf7System);
 
 Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
-    swatch::system::System(aStub),
-    brokenLinks(registerMetric<uint16_t>("Number of input links in error",
-                                         GreaterThanCondition<uint16_t>(config::brokenLinksErrorSystem()),
-                                         RangeCondition<uint16_t>(config::brokenLinksWarningSystem(),
-                                                                        config::brokenLinksErrorSystem())))
+    swatch::system::System(aStub)
+//    brokenLinks(registerMetric<uint16_t>("i Number of input links in error",
+//                                         GreaterThanCondition<uint16_t>(config::brokenLinksErrorSystem()),
+//                                         RangeCondition<uint16_t>(config::brokenLinksWarningSystem(),
+//                                                                        config::brokenLinksErrorSystem())))
 {
     // system run control state machine
     typedef swatch::processor::RunControlFSM ProcFSM_t;
@@ -57,6 +57,21 @@ Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
     fsm.stopFromPaused.add(getDaqTTCs(), DaqTTCFSM_t::kStatePaused, DaqTTCFSM_t::kTrStop).add(getProcessors(), ProcFSM_t::kStateRunning, ProcFSM_t::kTrStop);
 
 
+
+    // Now register the "totalCRCerrors" complex metric
+    vector<AbstractMetric*> brokenLinksMetrics;
+    for(auto it=getProcessors().begin(); it!=getProcessors().end(); ++it)
+    {
+        brokenLinksMetrics.push_back(&(*it)->getMetric("Number of broken input links"));
+    }
+
+    // ComplexMetric<uint16_t>& lTotalCRCs = registerComplexMetric<uint16_t>("totalCRCErrors", lCRCErrorMetrics.begin(), lCRCErrorMetrics.end(), countBrokenLinks2);
+
+    // System should go into error if total number of CRC errors in one processor goes above 50 ...
+    // setErrorCondition(lTotalCRCs, swatch::core::GreaterThanCondition<uint16_t>(50));
+
+
+
     const string emtfLog4cplusPropertyFile(config::log4cplusPropertyFile());
 
     log4cplus::Logger generalLogger(log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()));
@@ -70,21 +85,28 @@ Mtf7System::~Mtf7System()
 {
 }
 
-uint16_t Mtf7System::countBrokenLinks(void)
-{
-    uint16_t counter = 0;
+// uint16_t Mtf7System::countBrokenLinks(void)
+// {
+//     uint16_t counter = 0;
+//
+//     for(auto it=getProcessors().begin(); it!=getProcessors().end(); ++it)
+//     {
+//         counter += (dynamic_cast<Mtf7Processor *>(*it))->countBrokenLinks();
+//     }
+//
+//     return counter;
+// }
 
-    for(auto it=getProcessors().begin(); it!=getProcessors().end(); ++it)
+const uint16_t countBrokenLinks(const vector<MetricSnapshot>& aSnapshots)
+{
+    uint16_t result = 0;
+
+    for (auto it=aSnapshots.begin(); it != aSnapshots.end(); it++)
     {
-        counter += (dynamic_cast<Mtf7Processor *>(*it))->countBrokenLinks();
+        result += it->getValue<uint16_t>();
     }
 
-    return counter;
-}
-
-void Mtf7System::retrieveMetricValues()
-{
-    setMetricValue<uint16_t>(brokenLinks, countBrokenLinks());
+    return result;
 }
 
 } // namespace
