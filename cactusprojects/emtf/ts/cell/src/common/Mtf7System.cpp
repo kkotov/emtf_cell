@@ -25,9 +25,9 @@ SWATCH_REGISTER_CLASS(emtf::Mtf7System);
 Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
     swatch::system::System(aStub),
     brokenLinks(registerMetric<uint16_t>("Number of input links in error",
-                                         GreaterThanCondition<uint16_t>(config::brokenLinksErrorThresholdSystem()),
-                                         RangeCondition<uint16_t>(config::brokenLinksWarningThresholdSystem(),
-                                                                        config::brokenLinksErrorThresholdSystem())))
+                                         GreaterThanCondition<uint16_t>(config::brokenLinksErrorSystem()),
+                                         RangeCondition<uint16_t>(config::brokenLinksWarningSystem(),
+                                                                        config::brokenLinksErrorSystem())))
 {
     // system run control state machine
     typedef swatch::processor::RunControlFSM ProcFSM_t;
