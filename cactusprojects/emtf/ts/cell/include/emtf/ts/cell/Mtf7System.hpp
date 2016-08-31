@@ -10,9 +10,6 @@ class Mtf7System : public swatch::system::System {
 public:
     Mtf7System(const swatch::core::AbstractStub& aStub);
     ~Mtf7System();
-
-private:
-    const uint16_t countBrokenLinks(const std::vector<swatch::core::MetricSnapshot>& aSnapshots);
 };
 
 } // namespace
