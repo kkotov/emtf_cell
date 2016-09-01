@@ -95,6 +95,46 @@ public:
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 };
 
+class WritePtLuts : public swatch::core::Command
+{
+public:
+    WritePtLuts(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    ~WritePtLuts(){}
+
+    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+
+private:
+    // hide the copy constructor and the assignment operator because the class allocates memory
+    WritePtLuts(const WritePtLuts &);
+    WritePtLuts operator=(const WritePtLuts &);
+
+    int write_mrs(uint32_t cs, uint32_t code);
+    int setWriteDelays(void);
+
+    Mtf7Processor &processor;
+};
+
+class VerifyPtLuts : public swatch::core::Command
+{
+public:
+    VerifyPtLuts(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    ~VerifyPtLuts(){}
+
+    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+
+private:
+    // hide the copy constructor and the assignment operator because the class allocates memory
+    VerifyPtLuts(const VerifyPtLuts &);
+    VerifyPtLuts operator=(const VerifyPtLuts &);
+
+    int write_mrs(uint32_t cs, uint32_t code);
+    int setReadDelays(void);
+
+    Mtf7Processor &processor;
+};
+
+
+
 } // namespace
 
 #endif /* __Mtf7_WRITE_VERIFY_LUTS__ */
