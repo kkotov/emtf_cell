@@ -90,6 +90,8 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     Command & cDaqReportWoTrack = registerCommand<Mtf7DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
     // Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
+    Command & cWritePtLuts = registerCommand<WritePtLuts>("Write the pT LUT to the board");
+    Command & cVerifyPtLuts = registerCommand<VerifyPtLuts>("Verify the pT LUT to the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
