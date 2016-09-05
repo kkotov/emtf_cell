@@ -183,14 +183,15 @@ uint32_t Mtf7InputPort::readMetricCRCErrors()
     return 0;
 }
 
-void Mtf7InputPort::logLinkStatus()
+void Mtf7InputPort::logLinkStatus(bool forceLog)
 {
     const bool lockedOk = readMetricIsLocked();
     const bool alignedOk = readMetricIsAligned();
     const bool crcOk = (0 == readMetricCRCErrors());
     const bool idOk = ("none" == readLinkID());
 
-    if(    (lockedOk  != lockedOld)
+    if(    forceLog
+        || (lockedOk  != lockedOld)
         || (alignedOk != alignedOld)
         || (crcOk     != crcOld)
         || (idOk      != idOld) )

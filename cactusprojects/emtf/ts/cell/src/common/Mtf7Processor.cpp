@@ -14,7 +14,7 @@
 #include "emtf/ts/cell/Mtf7SpyFifo.hpp"
 #include "emtf/ts/cell/Mtf7ConfigCommands.hpp"
 #include "emtf/ts/cell/Mtf7WriteVerifyLuts.hpp"
-
+#include "emtf/ts/cell/TransitionCommands.hpp"
 #include <fstream>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/date_time/posix_time/posix_time_types.hpp"
@@ -92,6 +92,7 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     // Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
+    Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
 
     CommandSequence &cfgSeq = registerSequence("Configure Sequence", cVerifyPcLutsVersion).
                                                                 then(cVerifyPcLuts).
@@ -106,6 +107,7 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     // pFSM.setup.add(cCheckFWVersion); // TODO: when we enable that we'll need a new DB key
     pFSM.configure.add(cfgSeq);
     // pFSM.align.add(cGthModuleReset);
+    pFSM.start.add(cOnStart);
 
     const string processorMessage("Board " + aStub.id + " (/dev/utca_sp12" + getStub().uri + ") " + "initialized successfully");
     LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(processorMessage));
