@@ -222,16 +222,11 @@ swatch::core::Command::State VerifyPcLutsVersion::code(const swatch::core::XPara
 
 } // namespace
 
-#define LB_MEM_SIZE 0x10000 //size of loopback buffer in sp12, bytes
-#define DATA_SIZE 0x1000 //one transfer size
-#define N_WRITES       (LB_MEM_SIZE / DATA_SIZE) // how many transfers for entire buffer
-
 #define CHIP_SIZE 0x2000000L // size of one RLDRAM chip in 18-bit words (32 MW)
 #define CHIP_COUNT 16L // how many RLDRAM chips on board
 #define RL_MEM_SIZE (CHIP_SIZE*CHIP_COUNT) //size of RLDRAM in 18-bit words (512 MW = 1GB)
 // each 32-bit PC word contains one 18-bit RLDRAM word
 #define RL_DATA_SIZE_B (RL_MEM_SIZE*4L) // size of memory data buffer in bytes
-#define RL_ADDR_SIZE_B (RL_MEM_SIZE*2L) // size of address buffer for rldram, bytes
 #define FW_DATA_SIZE_B 0x2000 // size of data buffer in firmware, bytes
 #define FW_ADDR_SIZE_B 0x1000 // size of addr buffer in firmware, bytes
 
@@ -262,12 +257,12 @@ swatch::core::Command::State emtf::WritePtLuts::code(const swatch::core::XParame
     if( data_buf == NULL ) 
         throw std::runtime_error("data_buf: not enough memory\n"); 
 
-    uint32_t *addr_buf = new uint32_t [ RL_MEM_SIZE ];
+    uint32_t *addr_buf = new uint32_t [ RL_MEM_SIZE/2 ];
     if( addr_buf == NULL ) 
         throw std::runtime_error("addr_buf: not enough memory\n"); 
 
     bzero(data_buf, RL_MEM_SIZE * sizeof(uint32_t) );
-    bzero(addr_buf, RL_MEM_SIZE * sizeof(uint32_t) );
+    bzero(addr_buf, RL_MEM_SIZE * sizeof(uint32_t)/2 );
 
     setProgress(0.);
 
@@ -518,7 +513,7 @@ swatch::core::Command::State emtf::VerifyPtLuts::code(const swatch::core::XParam
     for(unsigned int block=0; block<100; block++)
     {
         // Generating random addresses for selective read'n'compares
-        for(unsigned int j=0, prev_rand=0; j<FW_ADDR_SIZE_B/4; j++)
+        for(unsigned int j=0, prev_rand=0; j<FW_ADDR_SIZE_B/sizeof(uint32_t); j++)
         {
             uint32_t new_rand = 0;
             // make sure the new address does not hit same bank in same chip as old one
