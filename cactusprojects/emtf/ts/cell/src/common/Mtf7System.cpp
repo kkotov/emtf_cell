@@ -75,8 +75,9 @@ Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
     }
 
     ComplexMetric<uint16_t> & brokenLinks = registerComplexMetric<uint16_t>("Total number of broken input links", brokenLinksMetrics.begin(), brokenLinksMetrics.end(), &countBrokenLinks);
-    setErrorCondition(brokenLinks, RangeCondition<uint16_t>(config::brokenLinksWarningSystem(),
-                                                            config::brokenLinksErrorSystem()));
+    setErrorCondition(brokenLinks, GreaterThanCondition<uint16_t>(config::brokenLinksErrorSystem()));
+    setWarningCondition(brokenLinks, RangeCondition<uint16_t>(config::brokenLinksWarningSystem(),
+                                                              config::brokenLinksErrorSystem()));
 
 
     const string emtfLog4cplusPropertyFile(config::log4cplusPropertyFile());
