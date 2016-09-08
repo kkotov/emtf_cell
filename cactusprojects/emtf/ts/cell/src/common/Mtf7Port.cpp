@@ -201,8 +201,9 @@ void Mtf7InputPort::logLinkStatus(bool forceLog)
         crcOld = crcOk;
         idOld = idOk;
 
-        string msg = "endcap " + boost::lexical_cast<string>(endcap) + ", " + \
-                     "sector " + boost::lexical_cast<string>(sector) + ", " + \
+        // add 1 to the endcap and the sector because in the software they start from 0 and that might be misleading
+        string msg = "endcap " + boost::lexical_cast<string>(endcap+1) + ", " + \
+                     "sector " + boost::lexical_cast<string>(sector+1) + ", " + \
                      id + " - " + \
                      "locked: " + boolToString(lockedOk) + ", " + \
                      "aligned: " + boolToString(alignedOk) + ", " + \
