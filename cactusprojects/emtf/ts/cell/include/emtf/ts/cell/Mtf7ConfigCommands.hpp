@@ -5,6 +5,17 @@
 
 namespace emtf {
 
+class InitReset : public swatch::core::Command
+{
+public:
+    InitReset(const std::string& aId, swatch::core::ActionableObject& aActionable);
+
+    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+private:
+
+    Mtf7Processor &processor;
+};
+
 class CheckFWVersion : public swatch::core::Command
 {
 public:

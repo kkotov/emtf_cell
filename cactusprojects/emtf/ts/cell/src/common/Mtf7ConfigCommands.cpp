@@ -11,6 +11,35 @@ using namespace core;
 
 namespace emtf {
 
+InitReset::InitReset(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+    swatch::core::Command(aId, aActionable, xdata::Integer(0)),
+    processor(getActionable<Mtf7Processor>())
+{
+}
+
+swatch::core::Command::State InitReset::code(const swatch::core::XParameterSet& params)
+{
+    setStatusMsg("Initializing the processor");
+    //Mtf7Processor &processor = getActionable<Mtf7Processor>();
+
+    setStatusMsg("Reseting the core links");
+
+    processor.write("core_link_rst",0x0);
+    usleep(10000);
+
+    processor.write("core_link_rst",0x1);
+    usleep(10000);
+
+    setStatusMsg("Writing endcap and sector");
+
+    processor.write64("endcap", processor.endcap()-1 ); // -1 offset to start from 0: Endcap 1 = URI[0-5] = '+' and Endcap 2 = URI[6-11] = '-'
+    processor.write64("sector", processor.sector()-1 ); // -1 offset ...
+
+    Command::State commandStatus = ActionSnapshot::kDone;
+    setProgress(1.);
+    return commandStatus;
+}
+
 CheckFWVersion::CheckFWVersion(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     swatch::core::Command(aId, aActionable, xdata::Integer(0))
 {
