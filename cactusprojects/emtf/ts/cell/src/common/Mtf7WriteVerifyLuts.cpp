@@ -8,6 +8,7 @@
 #include <fstream>
 #include <map>
 #include "boost/lexical_cast.hpp"
+#include <time.h>
 
 using namespace std;
 using namespace swatch;
@@ -268,6 +269,7 @@ swatch::core::Command::State emtf::WritePtLuts::code(const swatch::core::XParame
 
     setStatusMsg("Reading pT LUT into the memory");
 
+std::cout<<"Reading pT LUT into the memory"<<std::endl;
     // read from file
     FILE* ptlut_in = fopen("/opt/madorsky/data/ptlut.dat", "rb");
     if( ptlut_in != NULL ) {
@@ -284,22 +286,29 @@ swatch::core::Command::State emtf::WritePtLuts::code(const swatch::core::XParame
     }
 
     setStatusMsg("Generating chunks of address blocks");
+std::cout<<"Generating chunks of address blocks"<<std::endl;
 
     // just fill addresses for file contents
     for (uint32_t i = 0; i < RL_MEM_SIZE/2; i++)
         addr_buf[i] = (i*2); // address progresses by 2 because two words at a time are written
 
     setStatusMsg("Setting write delay registers");
+std::cout<<"Setting write delay registers"<<std::endl;
 
+    init();
     setWriteDelays();
+    setReadDelays();
 
     setStatusMsg("Writing blocks to the board");
+std::cout<<"Writing blocks to the board"<<std::endl;
 
     write_mrs(0x01010101, ODT_ON); // turn ODT on, only on one chip at the end of each quad
 
+    clock_t start = clock();
+
     for (int i = 0; i < RL_BUFS; i++) {
 
-        //std::cout<<"Progress: "<<i<<"/"<<RL_BUFS<<std::endl;
+///        std::cout<<"Progress: "<<i<<"/"<<RL_BUFS<<std::endl;
 
         setProgress(i/float(RL_BUFS));
 
@@ -316,8 +325,12 @@ swatch::core::Command::State emtf::WritePtLuts::code(const swatch::core::XParame
         processor.write64("ptlut_write_cmd", 0x0);
 
         // wait until not busy
-        for(uint64_t val=0; val==1; processor.read64("ptlut_busy", val) ); // maybe sleep a bit?
+        for(uint64_t val=1; val==1; processor.read64("ptlut_busy", val) ); // maybe sleep a bit?
     }
+
+
+    clock_t end = clock() - start;
+    cout << "Write time: " << (double)end / ((double)CLOCKS_PER_SEC) << " s" << endl;;
 
     write_mrs(0xffffffff, ODT_OFF); // turn ODT off
 
@@ -336,15 +349,81 @@ int emtf::WritePtLuts::write_mrs(uint32_t cs, uint32_t code)
     uint64_t value = cs;
     value = ((value << 14) & 0x3fff00000000ULL) | (cs & 0x3ffffULL);
 
-    processor.write64("ptlut_mem", value);
+    processor.writeBlock64("ptlut_mem", 8, (char*)&value, 0);
 
     // write command code into address buffer A=0
-    processor.write64("ptlut_addr", code);
+    uint64_t _code = code;
+    processor.writeBlock64("ptlut_addr", 8, (char*)&_code, 0);
 
     // send command
     processor.write64("ptlut_mrs_cmd", 0x1);
     processor.write64("ptlut_mrs_cmd", 0x0);
     return 0;
+}
+
+// contents of MRTs, see RLDRAM3_registers.xlsx
+#define MR0 0x10 // for 093E memory
+#define MR1 0x400e0
+#define MR2 0x80000 // normal operation
+
+int emtf::WritePtLuts::init(void)
+{
+    uint64_t wr_lat  = 4;
+    uint64_t rd_lat  = 15;// for version with RX FIFO
+    uint64_t wr_term = wr_lat + 0x403; //0x408;//0x407;
+    uint64_t rd_term = rd_lat + 0x3fe;//0x40a;
+    uint64_t wr_shift = 1;
+    uint64_t rd_shift = 0;
+    uint64_t qr_sel = rd_lat - 5;
+    uint64_t qw_sel = wr_lat - 2;
+    uint64_t we_sel = rd_lat - 4; //8;
+
+    processor.write64("ptlut_wr_term_count",wr_term);
+    processor.write64("ptlut_rd_term_count",rd_term);
+    processor.write64("ptlut_wr_latency",wr_lat);
+    processor.write64("ptlut_rd_latency",rd_lat);
+    processor.write64("ptlut_wr_phase_shift",wr_shift);
+    processor.write64("ptlut_rd_phase_shift",rd_shift);
+    processor.write64("ptlut_dpm_wr_del",we_sel);
+    processor.write64("ptlut_wr_quad_del",qw_sel);
+    processor.write64("ptlut_rd_quad_del",qr_sel);
+
+    processor.write64("ptlut_chips_rst",0x1);
+    usleep(10000);
+
+    processor.write64("ptlut_chips_rst",0x0);
+    usleep(10000);
+
+    uint64_t mrs[3] = {MR0, MR1, MR2};
+    for (int i = 0; i < 3; i++)
+    {
+        write_mrs(0xffffffff, mrs[i]);
+        usleep (10000);
+    }
+
+    write_mrs(0xffffffff, ODT_OFF);
+
+    uint64_t value = 0;
+    processor.read64("ptlut_delay_ctl_locked", value);
+    std::cout<<"delay_ctrl lock status: "<<std::hex<<((value >> 22) & 0xf)<<std::dec<<std::endl;
+
+    // reset IDELAY_CONTROL
+    processor.write64("ptlut_dbdel_rst",0x1); // IO and IDELAY_CONTROL reset
+
+    usleep(10000);
+
+    // remove reset bit
+    processor.write64("ptlut_dbdel_rst", 0x0);
+
+    processor.read64("ptlut_delay_ctl_locked", value);
+    std::cout<<"delay_ctrl lock status: "<<std::hex<<((value >> 22) & 0xf)<<std::dec<<std::endl;
+
+    // enable refresh, program RX clock domain crossing polarity
+    processor.write64("ptlut_refresh_en",0x1);
+    // program wait times after refresh and read cycles
+    processor.write64("ptlut_rd_bank_timeout",0x1);
+    processor.write64("ptlut_refresh_bank_timout",0x1);
+    processor.write64("ptlut_core_rq_mask",0x7); // ptlut requests enable mask
 }
 
 int emtf::WritePtLuts::setWriteDelays(void)
@@ -355,11 +434,17 @@ int emtf::WritePtLuts::setWriteDelays(void)
           8, 7, 8, 8, 9,10, 8, 6, 8, 9, 7, 9, 8,10,10, 9, 7, 9,
           8, 9, 9, 9, 9, 9, 9, 9, 8, 9,10,10, 9,10, 9,10, 9, 9 };
 
-    const unsigned short wdel01[72] =
-        {  9, 9, 8,10, 8, 9, 8, 8, 9, 9, 9, 9,10, 9, 9, 8, 9,10,
-          10,10, 9,10, 9,11,10,10,10,10,10, 9, 9, 9,10,10, 9,10,
-           8, 7, 8, 7, 9, 9, 8, 6, 8, 9, 7, 9, 8,10,10, 9, 7, 9,
-           8, 9, 9, 9, 9, 9, 9, 9, 9, 9,10,10, 9,10,10, 9, 9, 9 };
+    const unsigned short wdel01[72] = // one of the boards in b.904
+        {10,10, 8,11, 8, 9, 8, 8,10, 9, 9, 8,10, 8, 9, 8, 8, 9,
+         10, 9, 9, 9, 8,10,10, 9, 9,11,10,10,10,10,10,10,10,10,
+          9, 7, 8, 7, 8,10, 8, 6, 8, 9, 6, 9, 8, 9,10, 9, 7, 9,
+          8, 9, 8, 9, 9, 8, 9, 9, 8, 8, 9, 9, 8, 9, 8, 9, 9, 8};
+
+//    const unsigned short wdel01[72] =
+//        {  9, 9, 8,10, 8, 9, 8, 8, 9, 9, 9, 9,10, 9, 9, 8, 9,10,
+//          10,10, 9,10, 9,11,10,10,10,10,10, 9, 9, 9,10,10, 9,10,
+//           8, 7, 8, 7, 9, 9, 8, 6, 8, 9, 7, 9, 8,10,10, 9, 7, 9,
+//           8, 9, 9, 9, 9, 9, 9, 9, 9, 9,10,10, 9,10,10, 9, 9, 9 };
 
     const unsigned short wdel02[72] =
         {  9, 9, 8,10, 8, 9, 8, 8, 9, 9, 9, 8,10, 9, 9, 8, 8, 9,
@@ -449,9 +534,13 @@ int emtf::WritePtLuts::setWriteDelays(void)
         std::stringstream reg;
         reg << "ptlut_db_out_del_" << i;
         processor.write64( reg.str(), wdel[i] );
+        processor.write64("ptlut_dbdel_ld", 0x1);
+        processor.write64("ptlut_dbdel_ld", 0x0);
     }
 
     processor.write64("ptlut_inp_clk_del", 0x5);
+    processor.write64("ptlut_dbdel_ld", 0x1);
+    processor.write64("ptlut_dbdel_ld", 0x0);
 
     return 0;
 }
@@ -506,7 +595,7 @@ swatch::core::Command::State emtf::VerifyPtLuts::code(const swatch::core::XParam
 
     setStatusMsg("Setting read delay registers");
 
-    setReadDelays();
+//    setReadDelays();
 
     setStatusMsg("Reading blocks from the board");
 
@@ -526,8 +615,8 @@ swatch::core::Command::State emtf::VerifyPtLuts::code(const swatch::core::XParam
                 uint32_t new_bank =  new_rand & 0x1f;
                 uint32_t new_chip = (new_rand >> 25) & 0xf;
                 if( prev_bank != new_bank || prev_chip != new_chip ) break;
-                prev_rand = new_rand;
             }
+            prev_rand = new_rand;
 
             addr_buf[j] = new_rand;
         }
@@ -542,7 +631,7 @@ swatch::core::Command::State emtf::VerifyPtLuts::code(const swatch::core::XParam
         processor.write64("ptlut_read_cmd", 0x0);
 
         // wait until not busy
-        for(uint64_t val=0; val==1; processor.read64("ptlut_busy", val) ); // maybe sleep a bit?
+        for(uint64_t val=1; val==1; processor.read64("ptlut_busy", val) ); // maybe sleep a bit?
 
         memset(data_buf, 0x55, sizeof(data_buf));
 
@@ -570,6 +659,7 @@ swatch::core::Command::State emtf::VerifyPtLuts::code(const swatch::core::XParam
                 err_count++;
             }
         }
+
     }
 
     delete [] data_buf;
@@ -580,7 +670,7 @@ swatch::core::Command::State emtf::VerifyPtLuts::code(const swatch::core::XParam
     return commandStatus;
 }
 
-int emtf::VerifyPtLuts::setReadDelays(void)
+int emtf::WritePtLuts::setReadDelays(void)
 {
     const unsigned short rdel00[72] =
       { 12,13,14,13,14,12,12,13,13,13,14,14,14,14,13,12,14,14,
@@ -588,11 +678,17 @@ int emtf::VerifyPtLuts::setReadDelays(void)
         11,10,11,10,11,11,11,11,10,12,11,11,11,12,11,11,12,11,
         11,11,11,12,11,11,12,11,11,13,12,12,12,12,11,12,11,11 };
 
-    const unsigned short rdel01[72] =
-      { 13,14,14,14,14,13,13,14,13,14,16,15,15,16,15,13,15,14,
-        12,12,11,12,11,11,11,11,13,12,12,13,14,12,12,12,13,13,
-        11,11,11,10,11,10,11,12,11,12,12,11,11,12,11,13,13,11,
-        13,12,12,13,13,12,13,11,11,14,13,13,13,14,12,13,11,11 };
+    const unsigned short rdel01[72] = // one of the boards in b.904
+      { 13,14,14,14,14,13,13,14,14,14,14,14,14,15,14,13,14,15,
+        12,12,12,13,12,12,11,12,11,12,12,13,13,12,12,12,13,12,
+        11,11,11,11,11,11,12,12,11,11,11,11,11,12,11,12,12,12,
+        12,11,11,11,12,10,11,11,11,12,11,11,11,12,10,11,11,11 };
+
+//    const unsigned short rdel01[72] =
+//      { 13,14,14,14,14,13,13,14,13,14,16,15,15,16,15,13,15,14,
+//        12,12,11,12,11,11,11,11,13,12,12,13,14,12,12,12,13,13,
+//        11,11,11,10,11,10,11,12,11,12,12,11,11,12,11,13,13,11,
+//        13,12,12,13,13,12,13,11,11,14,13,13,13,14,12,13,11,11 };
 
     const unsigned short rdel02[72] =
       { 14,15,15,15,16,15,14,15,15,16,16,16,17,17,15,15,17,16,
@@ -682,9 +778,13 @@ int emtf::VerifyPtLuts::setReadDelays(void)
         std::stringstream reg;
         reg << "ptlut_db_inp_del_" << i;
         processor.write64( reg.str(), rdel[i] );
+        processor.write64("ptlut_dbdel_ld", 0x1);
+        processor.write64("ptlut_dbdel_ld", 0x0);
     }
 
     processor.write64("ptlut_inp_clk_del", 0x5);
+    processor.write64("ptlut_dbdel_ld", 0x1);
+    processor.write64("ptlut_dbdel_ld", 0x0);
 
     return 0;
 }

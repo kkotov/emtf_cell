@@ -108,8 +108,10 @@ private:
     WritePtLuts(const WritePtLuts &);
     WritePtLuts operator=(const WritePtLuts &);
 
+    int init(void);
     int write_mrs(uint32_t cs, uint32_t code);
     int setWriteDelays(void);
+    int setReadDelays(void);
 
     Mtf7Processor &processor;
 };
