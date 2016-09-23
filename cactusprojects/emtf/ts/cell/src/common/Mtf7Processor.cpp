@@ -9,6 +9,7 @@
 #include "swatch/core/StateMachine.hpp"
 #include "emtf/ts/cell/Mtf7Common.hpp"
 #include "emtf/ts/cell/Mtf7Resets.hpp"
+#include "emtf/ts/cell/Mtf7Reboot.hpp"
 #include "emtf/ts/cell/Mtf7Loopback.hpp"
 #include "emtf/ts/cell/Mtf7DAQConfigRegisters.hpp"
 #include "emtf/ts/cell/Mtf7SpyFifo.hpp"
@@ -34,11 +35,11 @@ namespace emtf {
 SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
 
 Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
-    ext_pll_lock_status(registerMetric<bool>     ("Ext pll lock status", swatch::core::NotEqualCondition<bool>(true), swatch::core::NotEqualCondition<bool>(true))),
-    bc0_period_counter (registerMetric<int>      ("Bc0 period counter", swatch::core::NotEqualCondition<int>(3563),  swatch::core::NotEqualCondition<int>(3563))),
-    output_track_rate  (registerMetric<double>   ("Output track rate (Hz)")),
-    controlFirmwareVersion(registerMetric<string>("Control Firmware Version Timestamp")),
-    coreFirmwareVersion(registerMetric<string>   ("Core Firmware Version Timestamp")),
+    ext_pll_lock_status(registerMetric<bool>     ("extPllLockStatus", swatch::core::NotEqualCondition<bool>(true), swatch::core::NotEqualCondition<bool>(true))),
+    bc0_period_counter (registerMetric<int>      ("bc0PeriodCounter", swatch::core::NotEqualCondition<int>(3563),  swatch::core::NotEqualCondition<int>(3563))),
+    output_track_rate  (registerMetric<double>   ("outputTrackRateInHz")),
+    controlFirmwareVersion(registerMetric<string>("controlFwVersionTimestamp")),
+    coreFirmwareVersion(registerMetric<string>   ("coreFwaVersionTimestamp")),
     swatch::processor::Processor(aStub),
     addressTableReader(NULL),
     addressTable(NULL),
@@ -83,8 +84,14 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     Command & cVerifyPtLuts = registerCommand<VerifyPtLuts>("Verify the pT LUT to the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
+    Command & cBoardInitReset = registerCommand<InitReset>("Core link reset");
+    Command & cPtLutInitReset = registerCommand<ResetPtLut>("pTLUT clock");
+    Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
-    CommandSequence &cfgSeq = registerSequence("Configure Sequence", cVerifyPcLutsVersion).
+    CommandSequence &cfgSeq = registerSequence("Configure Sequence", cBoardInitReset).
+                                                                then(cReboot).
+                                                                then(cPtLutInitReset).
+                                                                then(cVerifyPcLutsVersion).
                                                                 then(cVerifyPcLuts).
                                                                 then(cDaqModuleRst).
                                                                 then(cSetDaqCfgRegs).
