@@ -62,13 +62,20 @@ ResetCoreLink::ResetCoreLink(const string& aId, ActionableObject& aActionable) :
 
 swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
 {
-//    setStatusMsg("Reset the core link of the mtf7 board.");
-//    Mtf7Processor &processor = getActionable<Mtf7Processor>();
-//
+    setStatusMsg("Reset the core link of the mtf7 board.");
+    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+
+    processor.write("core_link_rst",0x0); ///
+    usleep(10000); ///
+
+    processor.write("core_link_rst",0x1); ///
+    usleep(10000); ///
+
+
 //    // write and verify the corelink_axi_reset register
 //    uint32_t value = 0u;
 //    processor.write("corelink_axi_reset", value);
-//    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = ActionSnapshot::kDone;
 //    verify::CheckWrittenValue(processor, "corelink_axi_reset", value, commandStatus);
 //
 //    setProgress(0.33);
@@ -100,11 +107,11 @@ swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
 //    const uint64_t mask = (0x1FFull << 21); // mask for bits 21-29 includive, because they are read only
 //    // verify:CheckWrittenValue(processor, "corelogic_spy_memory_configuration", qvalue, commandStatus, mask);
 //
-//    setProgress(1.);
+    setProgress(1.);
 
-//    return commandStatus;
+    return commandStatus;
 
-    return ActionSnapshot::kError;
+///    return ActionSnapshot::kError;
 }
 
 
@@ -173,9 +180,9 @@ Command::State ResetPtLut::code(const swatch::core::XParameterSet& params)
     for(vector<uint32_t>::const_iterator it = clkWord.begin(); it != clkWord.end(); ++it)
     {
         value = (*it);
-        processor.write64reg("ptlut_clk_reset", value);
+        processor.write64("ptlut_clk_config_word", value);
         usleep(sleepInterval);
-        verify::CheckWrittenValue(processor, "ptlut_clk_reset", value, commandStatus);
+///        verify::CheckWrittenValue(processor, "ptlut_clk_reset", value, commandStatus);
     }
 
     return commandStatus;

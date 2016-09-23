@@ -9,6 +9,7 @@
 #include "swatch/core/StateMachine.hpp"
 #include "emtf/ts/cell/Mtf7Common.hpp"
 #include "emtf/ts/cell/Mtf7Resets.hpp"
+#include "emtf/ts/cell/Mtf7Reboot.hpp"
 #include "emtf/ts/cell/Mtf7Loopback.hpp"
 #include "emtf/ts/cell/Mtf7DAQConfigRegisters.hpp"
 #include "emtf/ts/cell/Mtf7SpyFifo.hpp"
@@ -34,21 +35,21 @@ namespace emtf {
 
 SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
 
-Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
-    extPllLockStatus(registerMetric<bool>("Ext pll lock status",
+Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
+    ext_pll_lock_status(registerMetric<bool>("extPllLockStatus",
                                              NotEqualCondition<bool>(true),
                                              NotEqualCondition<bool>(true))),
-    bc0PeriodCounter(registerMetric<int>("Bc0 period counter",
-                                           NotEqualCondition<int>(3563),
-                                           NotEqualCondition<int>(3563))),
-    outputTrackRate(registerMetric<double>("Output track rate (Hz)")),
+    bc0_period_counter(registerMetric<int>("bc0PeriodCounter",
+                                             NotEqualCondition<int>(3563),
+                                             NotEqualCondition<int>(3563))),
+    output_track_rate(registerMetric<double>("outputTrackRateInHz")),
     brokenLinks(registerMetric<uint16_t>("Number of broken input links",
                                          GreaterThanCondition<uint16_t>(config::brokenLinksErrorProcessor()),
                                          RangeCondition<uint16_t>(config::brokenLinksWarningProcessor(),
                                                                   config::brokenLinksErrorProcessor()))),
-    controlFirmwareVersion(registerMetric<string>("Control Firmware Version Timestamp")),
-    coreFirmwareVersion(registerMetric<string>   ("Core Firmware Version Timestamp")),
-    Processor(aStub),
+    controlFirmwareVersion(registerMetric<string>("controlFwVersionTimestamp")),
+    coreFirmwareVersion(registerMetric<string>   ("coreFwaVersionTimestamp")),
+    swatch::processor::Processor(aStub),
     addressTableReader(NULL),
     addressTable(NULL),
     driver(NULL),
@@ -95,6 +96,9 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
+    Command & cBoardInitReset = registerCommand<InitReset>("Core link reset");
+    Command & cPtLutInitReset = registerCommand<ResetPtLut>("pTLUT clock");
+    Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
     CommandSequence &cfgSeq = registerSequence("Configure Sequence", cVerifyPcLutsVersion).
                                                                 then(cVerifyPcLuts).
