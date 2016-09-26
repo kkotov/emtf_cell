@@ -109,7 +109,7 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
                                                                 then(cSetSingleHits).
                                                                 then(cDaqReportWoTrack);
 
-    CommandSequence &ptLutSeq = registerSequence("Load and Verify pT LUT", cResetCoreLink).
+    CommandSequence &ptLutSeq = registerSequence("Load and Verify Pt LUT", cResetCoreLink).
                                                                 then(cPtLutClockReset).
                                                                 then(cWritePtLut).
                                                                 then(cVerifyPtLut);
