@@ -10,6 +10,9 @@ namespace emtf {
 class Reboot: public swatch::core::Command // Configure button in the Alex's expert tool
 {
 private:
+    const useconds_t sleepInterval;
+
+    void log(const char *prefix, uint32_t val, const char *suffix="");
 
 public:
     Reboot(const std::string& aId, swatch::core::ActionableObject& aActionable);

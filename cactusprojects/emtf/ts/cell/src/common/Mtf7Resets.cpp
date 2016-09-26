@@ -63,55 +63,23 @@ ResetCoreLink::ResetCoreLink(const string& aId, ActionableObject& aActionable) :
 swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
 {
     setStatusMsg("Reset the core link of the mtf7 board.");
+    setProgress(0.);
+
     Mtf7Processor &processor = getActionable<Mtf7Processor>();
 
-    processor.write("core_link_rst",0x0); ///
-    usleep(10000); ///
+    processor.write("core_link_rst",0x0);
+    usleep( sleepInterval );
 
-    processor.write("core_link_rst",0x1); ///
-    usleep(10000); ///
+    processor.write("core_link_rst",0x1);
+    usleep( sleepInterval );
 
+    // let us also have it here
+    processor.write64("endcap", processor.endcap()-1 ); // -1 offset to start from 0: Endcap 1 = URI[0-5] = '+' and Endcap 2 = URI[6-11] = '-'
+    processor.write64("sector", processor.sector()-1 ); // -1 offset ...
 
-//    // write and verify the corelink_axi_reset register
-//    uint32_t value = 0u;
-//    processor.write("corelink_axi_reset", value);
-    Command::State commandStatus = ActionSnapshot::kDone;
-//    verify::CheckWrittenValue(processor, "corelink_axi_reset", value, commandStatus);
-//
-//    setProgress(0.33);
-//
-//    usleep(sleepInterval);
-//
-//    // write and verify the corelink_axi_reset register again
-//    value = 1u;
-//    processor.write("corelink_axi_reset", value);
-//    verify::CheckWrittenValue(processor, "corelink_axi_reset", value, commandStatus);
-//
-//    setProgress(0.5);
-//
-//    usleep(sleepInterval);
-//
-//    // read the value of "corelogic_spy_memory_configuration"
-//    uint64_t qvalue = 0;
-//
-//    processor.read64reg("corelogic_spy_memory_configuration", qvalue);
-//
-//    qvalue &= 0xfffffffffffffff0ULL; // clear bits for endcap/sector
-//    // Substract 1 from the endcap number and the sector number, because in the firmware they start from 0.
-//    qvalue |= ((processor.endcap() - 1) & 1); // add the endcap code.
-//    qvalue |= (((processor.sector() - 1) & 7) << 1); // add sector code.
-//
-//    // write and verify the new value of corelogic_spy_memory_configuration back to the board
-//    processor.write64reg("corelogic_spy_memory_configuration", qvalue);
-//
-//    const uint64_t mask = (0x1FFull << 21); // mask for bits 21-29 includive, because they are read only
-//    // verify:CheckWrittenValue(processor, "corelogic_spy_memory_configuration", qvalue, commandStatus, mask);
-//
     setProgress(1.);
 
-    return commandStatus;
-
-///    return ActionSnapshot::kError;
+    return ActionSnapshot::kDone;
 }
 
 

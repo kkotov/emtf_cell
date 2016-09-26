@@ -91,16 +91,17 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     Command & cDaqReportWoTrack = registerCommand<Mtf7DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
     // Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
-    Command & cWritePtLuts = registerCommand<WritePtLuts>("Write the pT LUT to the board");
-    Command & cVerifyPtLuts = registerCommand<VerifyPtLuts>("Verify the pT LUT to the board");
+    Command & cWritePtLut = registerCommand<WritePtLut>("Write the pT LUT to the board");
+    Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the pT LUT to the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
-    Command & cBoardInitReset = registerCommand<InitReset>("Core link reset");
-    Command & cPtLutInitReset = registerCommand<ResetPtLut>("pTLUT clock");
+    Command & cResetCoreLink = registerCommand<ResetCoreLink>("Core link reset");
+    Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
     Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
-    CommandSequence &cfgSeq = registerSequence("Configure Sequence", cVerifyPcLutsVersion).
+    CommandSequence &cfgSeq = registerSequence("Configure Sequence",cVerifyPtLut).
+                                                                then(cVerifyPcLutsVersion).
                                                                 then(cVerifyPcLuts).
                                                                 then(cDaqModuleRst).
                                                                 then(cSetDaqCfgRegs).
@@ -108,8 +109,15 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
                                                                 then(cSetSingleHits).
                                                                 then(cDaqReportWoTrack);
 
+    CommandSequence &ptLutSeq = registerSequence("Load and Verify pT LUT", cResetCoreLink).
+                                                                then(cPtLutClockReset).
+                                                                then(cWritePtLut).
+                                                                then(cVerifyPtLut);
+
+
     // processor run control state machine
     RunControlFSM &pFSM = getRunControlFSM();
+    pFSM.coldReset.add(cReboot);
     // pFSM.setup.add(cCheckFWVersion); // TODO: when we enable that we'll need a new DB key
     pFSM.configure.add(cfgSeq);
     // pFSM.align.add(cGthModuleReset);

@@ -95,42 +95,42 @@ public:
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 };
 
-class WritePtLuts : public swatch::core::Command
+/// Following functions can be used from both: Verify and Write commands for the pT LUT
+int init( Mtf7Processor &processor );
+int write_mrs( Mtf7Processor &processor, uint32_t cs, uint32_t code );
+int setWriteDelays( Mtf7Processor &processor );
+int setReadDelays ( Mtf7Processor &processor );
+void log(const char *prefix, uint64_t val, const char *suffix="");
+void log(const char *message);
+
+class WritePtLut : public swatch::core::Command
 {
 public:
-    WritePtLuts(const std::string& aId, swatch::core::ActionableObject& aActionable);
-    ~WritePtLuts(){}
+    WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    ~WritePtLut(){}
 
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory
-    WritePtLuts(const WritePtLuts &);
-    WritePtLuts operator=(const WritePtLuts &);
-
-    int init(void);
-    int write_mrs(uint32_t cs, uint32_t code);
-    int setWriteDelays(void);
-    int setReadDelays(void);
+    WritePtLut(const WritePtLut &);
+    WritePtLut operator=(const WritePtLut &);
 
     Mtf7Processor &processor;
 };
 
-class VerifyPtLuts : public swatch::core::Command
+class VerifyPtLut : public swatch::core::Command
 {
 public:
-    VerifyPtLuts(const std::string& aId, swatch::core::ActionableObject& aActionable);
-    ~VerifyPtLuts(){}
+    VerifyPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    ~VerifyPtLut(){}
 
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory
-    VerifyPtLuts(const VerifyPtLuts &);
-    VerifyPtLuts operator=(const VerifyPtLuts &);
-
-    int write_mrs(uint32_t cs, uint32_t code);
-    int setReadDelays(void);
+    VerifyPtLut(const VerifyPtLut &);
+    VerifyPtLut operator=(const VerifyPtLut &);
 
     Mtf7Processor &processor;
 };
