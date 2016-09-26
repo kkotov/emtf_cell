@@ -54,12 +54,12 @@ public:
 
     void readBlock64(std::string reg, uint32_t length, char *buffer, uint64_t offset=0)
     {
-        driver_->readBlock64(reg, length, buffer, HAL::HAL_DO_INCREMENT, offset);
+        driver->readBlock64(reg, length, buffer, HAL::HAL_DO_INCREMENT, offset);
     }
 
     void writeBlock64(std::string reg, uint32_t length, char *buffer, uint64_t offset=0)
     {
-        driver_->writeBlock64(reg, length, buffer, HAL::HAL_NO_VERIFY, HAL::HAL_DO_INCREMENT, offset);
+        driver->writeBlock64(reg, length, buffer, HAL::HAL_NO_VERIFY, HAL::HAL_DO_INCREMENT, offset);
     }
 
     void read64reg(std::string reg, uint64_t &value)

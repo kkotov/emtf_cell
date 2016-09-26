@@ -36,13 +36,13 @@ namespace emtf {
 SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
 
 Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
-    ext_pll_lock_status(registerMetric<bool>("extPllLockStatus",
+    extPllLockStatus(registerMetric<bool>("extPllLockStatus",
                                              NotEqualCondition<bool>(true),
                                              NotEqualCondition<bool>(true))),
-    bc0_period_counter(registerMetric<int>("bc0PeriodCounter",
+    bc0PeriodCounter(registerMetric<int>("bc0PeriodCounter",
                                              NotEqualCondition<int>(3563),
                                              NotEqualCondition<int>(3563))),
-    output_track_rate(registerMetric<double>("outputTrackRateInHz")),
+    outputTrackRate(registerMetric<double>("outputTrackRateInHz")),
     brokenLinks(registerMetric<uint16_t>("Number of broken input links",
                                          GreaterThanCondition<uint16_t>(config::brokenLinksErrorProcessor()),
                                          RangeCondition<uint16_t>(config::brokenLinksWarningProcessor(),

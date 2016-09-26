@@ -28,6 +28,7 @@ Sources=\
 	Mtf7AlgoInterface.cpp \
     Mtf7Common.cpp \
 	Mtf7Resets.cpp \
+	Mtf7Reboot.cpp \
 	Mtf7Loopback.cpp \
 	Mtf7DAQConfigRegisters.cpp \
 	Mtf7SpyFifo.cpp \
