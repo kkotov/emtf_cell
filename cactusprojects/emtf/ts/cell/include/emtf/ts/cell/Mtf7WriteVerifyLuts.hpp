@@ -95,14 +95,6 @@ public:
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 };
 
-/// Following functions can be used from both: Verify and Write commands for the pT LUT
-int init( Mtf7Processor &processor );
-int write_mrs( Mtf7Processor &processor, uint32_t cs, uint32_t code );
-int setWriteDelays( Mtf7Processor &processor );
-int setReadDelays ( Mtf7Processor &processor );
-void log(const char *prefix, uint64_t val, const char *suffix="");
-void log(const char *message);
-
 class WritePtLut : public swatch::core::Command
 {
 public:
@@ -115,6 +107,13 @@ private:
     // hide the copy constructor and the assignment operator because the class allocates memory
     WritePtLut(const WritePtLut &);
     WritePtLut operator=(const WritePtLut &);
+
+    int init(void);
+    int write_mrs(uint32_t cs, uint32_t code );
+    int setWriteDelays(void);
+    int setReadDelays (void);
+    void log(const char *prefix, uint64_t val, const char *suffix="");
+    void log(const char *message);
 
     Mtf7Processor &processor;
 };
@@ -131,6 +130,8 @@ private:
     // hide the copy constructor and the assignment operator because the class allocates memory
     VerifyPtLut(const VerifyPtLut &);
     VerifyPtLut operator=(const VerifyPtLut &);
+
+    void log(const char *message);
 
     Mtf7Processor &processor;
 };

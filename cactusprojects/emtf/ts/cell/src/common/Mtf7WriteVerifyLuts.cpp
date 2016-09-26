@@ -291,15 +291,15 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
     for (uint32_t i = 0; i < RL_MEM_SIZE/2; i++)
         addr_buf[i] = (i*2); // address progresses by 2 because two words at a time are written
 
-    log("Setting write delay registers");
+    log("Setting write and read delay registers");
 
-    init( processor );
-    setWriteDelays( processor );
-    //setReadDelays( processor );
+    init();
+    setWriteDelays();
+    setReadDelays();
 
     log("Writing blocks to the board");
 
-    write_mrs(processor, 0x01010101, ODT_ON); // turn ODT on, only on one chip at the end of each quad
+    write_mrs(0x01010101, ODT_ON); // turn ODT on, only on one chip at the end of each quad
 
     ///clock_t start = clock();
 
@@ -327,7 +327,7 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
     ///clock_t end = clock() - start;
     ///std::cout<< "Write time: "<< (double)end / ((double)CLOCKS_PER_SEC) << " s" << std::endl;
 
-    write_mrs(processor, 0xffffffff, ODT_OFF); // turn ODT off
+    write_mrs(0xffffffff, ODT_OFF); // turn ODT off
 
     delete [] data_buf;
     delete [] addr_buf;
@@ -343,7 +343,7 @@ emtf::VerifyPtLut::VerifyPtLut(const std::string& aId, swatch::core::ActionableO
 
 swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParameterSet& params)
 {
-    setStatusMsg("Check the Pt LUT to the board.");
+    setStatusMsg("Check the Pt LUT on the board.");
 
     log("Allocating space for pT LUT in RAM");
     setProgress(0.);
@@ -384,10 +384,10 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
         throw std::runtime_error("cannot open file: /opt/madorsky/data/ptlut.dat");
     }
 
-    log("Setting read delay registers");
-    setReadDelays( processor );
+//    log("Setting read delay registers");
+//    setReadDelays();
 
-    setStatusMsg("Reading blocks from the board");
+    log("Reading blocks from the board");
 
     bool error = false;
     for(unsigned int block=0; block<1024; block++)
@@ -430,7 +430,7 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
         for(int j = 0; j < XFERS_FW_DATA; j++)
             processor.readBlock64("ptlut_mem", XFER_SIZE_B, (char*)(data_buf + j*XFER_SIZE_B/8), j*XFER_SIZE_B );
 
-        if( (block%100) == 0 ) log("Progress: ",block,"/0x400");
+        ///if( (block%100) == 0 ) log("Progress: ",block,"/0x400");
 
         // now compare
         for(int j = 0, err_count = 0; j < FW_DATA_SIZE_B/8; j++)
@@ -463,7 +463,7 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
 }
 
 
-void emtf::log(const char *prefix, uint64_t val, const char *suffix)
+void emtf::WritePtLut::log(const char *prefix, uint64_t val, const char *suffix)
 {
     std::stringstream oss;
     oss << prefix << std::hex << val << std::dec << suffix;
@@ -471,7 +471,13 @@ void emtf::log(const char *prefix, uint64_t val, const char *suffix)
     LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( oss.str() ) );
 }
 
-void emtf::log(const char *message)
+void emtf::VerifyPtLut::log(const char *message)
+{
+    log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
+    LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( message ) );
+}
+
+void emtf::WritePtLut::log(const char *message)
 {
     log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
     LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( message ) );
@@ -482,7 +488,7 @@ void emtf::log(const char *message)
 #define MR1 0x400e0
 #define MR2 0x80000 // normal operation
 
-int emtf::init( Mtf7Processor &processor )
+int emtf::WritePtLut::init(void)
 {
     uint64_t wr_lat  = 4;
     uint64_t rd_lat  = 15;// for version with RX FIFO
@@ -513,11 +519,11 @@ int emtf::init( Mtf7Processor &processor )
     uint64_t mrs[3] = {MR0, MR1, MR2};
     for (int i = 0; i < 3; i++)
     {
-        write_mrs(processor, 0xffffffff, mrs[i]);
+        write_mrs(0xffffffff, mrs[i]);
         usleep (10000);
     }
 
-    write_mrs(processor, 0xffffffff, ODT_OFF);
+    write_mrs(0xffffffff, ODT_OFF);
 
     uint64_t value = 0;
     processor.read64("ptlut_delay_ctl_locked", value);
@@ -541,7 +547,7 @@ int emtf::init( Mtf7Processor &processor )
     processor.write64("ptlut_core_rq_mask",0x7); // ptlut requests enable mask
 }
 
-int emtf::write_mrs( Mtf7Processor &processor, uint32_t cs, uint32_t code )
+int emtf::WritePtLut::write_mrs(uint32_t cs, uint32_t code)
 {
     // chip select mask into data buffer
     // bits 17:0 to bits 17:0
@@ -561,7 +567,7 @@ int emtf::write_mrs( Mtf7Processor &processor, uint32_t cs, uint32_t code )
     return 0;
 }
 
-int emtf::setWriteDelays( Mtf7Processor &processor )
+int emtf::WritePtLut::setWriteDelays(void)
 {
     const unsigned short wdel00[72] =
         { 10, 9, 8,10, 8, 9, 8, 8,10, 9, 9, 9,10, 9, 9, 9, 9,10,
@@ -680,7 +686,7 @@ int emtf::setWriteDelays( Mtf7Processor &processor )
     return 0;
 }
 
-int emtf::setReadDelays( Mtf7Processor &processor )
+int emtf::WritePtLut::setReadDelays(void)
 {
     const unsigned short rdel00[72] =
       { 12,13,14,13,14,12,12,13,13,13,14,14,14,14,13,12,14,14,

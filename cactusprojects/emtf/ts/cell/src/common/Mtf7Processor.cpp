@@ -43,7 +43,7 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
                                              NotEqualCondition<int>(3563),
                                              NotEqualCondition<int>(3563))),
     outputTrackRate(registerMetric<double>("outputTrackRateInHz")),
-    brokenLinks(registerMetric<uint16_t>("Number of broken input links",
+    brokenLinks(registerMetric<uint16_t>("numberOfBrokenInputLinks",
                                          GreaterThanCondition<uint16_t>(config::brokenLinksErrorProcessor()),
                                          RangeCondition<uint16_t>(config::brokenLinksWarningProcessor(),
                                                                   config::brokenLinksErrorProcessor()))),
@@ -91,8 +91,8 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     Command & cDaqReportWoTrack = registerCommand<Mtf7DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
     // Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
-    Command & cWritePtLut = registerCommand<WritePtLut>("Write the pT LUT to the board");
-    Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the pT LUT to the board");
+    Command & cWritePtLut = registerCommand<WritePtLut>("Write the Pt LUT to the board");
+    Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the Pt LUT on the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
