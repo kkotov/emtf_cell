@@ -390,7 +390,7 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
     log("Reading blocks from the board");
 
     bool error = false;
-    for(unsigned int block=0; block<1024; block++)
+    for(unsigned int block=0; block<100000; block++)
     {
         // Generating random addresses for selective read'n'compares
         for(unsigned int j=0, prev_rand=0; j<FW_ADDR_SIZE_B/sizeof(uint32_t); j++)

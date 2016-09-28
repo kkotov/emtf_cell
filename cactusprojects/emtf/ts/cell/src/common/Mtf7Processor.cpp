@@ -117,7 +117,7 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
 
     // processor run control state machine
     RunControlFSM &pFSM = getRunControlFSM();
-    pFSM.coldReset.add(cReboot);
+    pFSM.coldReset.add(cReboot).add(cfgSeq);
     // pFSM.setup.add(cCheckFWVersion); // TODO: when we enable that we'll need a new DB key
     pFSM.configure.add(cfgSeq);
     // pFSM.align.add(cGthModuleReset);

@@ -29,175 +29,175 @@ flash_cnt_fw_start                    memory        0        00000034           
 flash_core_config_sm_state            memory        0        00000038           0000000f                1           0            Core FPGA config state machine state
 flash_icap_word                       memory        0        00000038           ffffffff                0           1            ICAP write word, used to reconfigure Control FPGA
 core_link_rst                         memory        0        0000004C           00000001                0           1            Core link reset
-prim_conv_params_me1a_01              memory        0        00080000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1a_01              memory        0        00080400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_th_cor_me1a_01              memory        0        00080800           000000000000003f        1           1            Primitive converter theta correction LUT
-prim_conv_id_me1a_01                  memory        0        00080C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1a_02              memory        0        00081000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1a_02              memory        0        00081400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_th_cor_me1a_02              memory        0        00081800           000000000000003f        1           1            Primitive converter theta correction LUT
-prim_conv_id_me1a_02                  memory        0        00081C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1a_03              memory        0        00082000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1a_03              memory        0        00082400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_th_cor_me1a_03              memory        0        00082800           000000000000003f        1           1            Primitive converter theta correction LUT
-prim_conv_id_me1a_03                  memory        0        00082C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1a_04              memory        0        00083000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1a_04              memory        0        00083400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1a_04                  memory        0        00083800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1a_05              memory        0        00084000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1a_05              memory        0        00084400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1a_05                  memory        0        00084800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1a_06              memory        0        00085000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1a_06              memory        0        00085400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1a_06                  memory        0        00085800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1a_07              memory        0        00086000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1a_07              memory        0        00086400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1a_07                  memory        0        00086800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1a_08              memory        0        00087000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1a_08              memory        0        00087400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1a_08                  memory        0        00087800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1a_09              memory        0        00088000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1a_09              memory        0        00088400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1a_09                  memory        0        00088800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1b_01              memory        0        00089000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1b_01              memory        0        00089400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_th_cor_me1b_01              memory        0        00089800           000000000000003f        1           1            Primitive converter theta correction LUT
-prim_conv_id_me1b_01                  memory        0        00089C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1b_02              memory        0        0008A000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1b_02              memory        0        0008A400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_th_cor_me1b_02              memory        0        0008A800           000000000000003f        1           1            Primitive converter theta correction LUT
-prim_conv_id_me1b_02                  memory        0        0008AC00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1b_03              memory        0        0008B000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1b_03              memory        0        0008B400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_th_cor_me1b_03              memory        0        0008B800           000000000000003f        1           1            Primitive converter theta correction LUT
-prim_conv_id_me1b_03                  memory        0        0008BC00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1b_04              memory        0        0008C000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1b_04              memory        0        0008C400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1b_04                  memory        0        0008C800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1b_05              memory        0        0008D000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1b_05              memory        0        0008D400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1b_05                  memory        0        0008D800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1b_06              memory        0        0008E000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1b_06              memory        0        0008E400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1b_06                  memory        0        0008E800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1b_07              memory        0        0008F000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1b_07              memory        0        0008F400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1b_07                  memory        0        0008F800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1b_08              memory        0        00090000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1b_08              memory        0        00090400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1b_08                  memory        0        00090800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1b_09              memory        0        00091000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1b_09              memory        0        00091400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1b_09                  memory        0        00091800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2_01               memory        0        00092000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2_01               memory        0        00092400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2_01                   memory        0        00092800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2_02               memory        0        00093000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2_02               memory        0        00093400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2_02                   memory        0        00093800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2_03               memory        0        00094000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2_03               memory        0        00094400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2_03                   memory        0        00094800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2_04               memory        0        00095000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2_04               memory        0        00095400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2_04                   memory        0        00095800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2_05               memory        0        00096000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2_05               memory        0        00096400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2_05                   memory        0        00096800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2_06               memory        0        00097000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2_06               memory        0        00097400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2_06                   memory        0        00097800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2_07               memory        0        00098000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2_07               memory        0        00098400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2_07                   memory        0        00098800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2_08               memory        0        00099000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2_08               memory        0        00099400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2_08                   memory        0        00099800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2_09               memory        0        0009A000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2_09               memory        0        0009A400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2_09                   memory        0        0009A800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3_01               memory        0        0009B000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3_01               memory        0        0009B400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3_01                   memory        0        0009B800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3_02               memory        0        0009C000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3_02               memory        0        0009C400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3_02                   memory        0        0009C800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3_03               memory        0        0009D000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3_03               memory        0        0009D400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3_03                   memory        0        0009D800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3_04               memory        0        0009E000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3_04               memory        0        0009E400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3_04                   memory        0        0009E800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3_05               memory        0        0009F000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3_05               memory        0        0009F400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3_05                   memory        0        0009F800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3_06               memory        0        000A0000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3_06               memory        0        000A0400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3_06                   memory        0        000A0800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3_07               memory        0        000A1000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3_07               memory        0        000A1400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3_07                   memory        0        000A1800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3_08               memory        0        000A2000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3_08               memory        0        000A2400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3_08                   memory        0        000A2800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3_09               memory        0        000A3000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3_09               memory        0        000A3400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3_09                   memory        0        000A3800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4_01               memory        0        000A4000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4_01               memory        0        000A4400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4_01                   memory        0        000A4800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4_02               memory        0        000A5000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4_02               memory        0        000A5400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4_02                   memory        0        000A5800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4_03               memory        0        000A6000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4_03               memory        0        000A6400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4_03                   memory        0        000A6800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4_04               memory        0        000A7000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4_04               memory        0        000A7400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4_04                   memory        0        000A7800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4_05               memory        0        000A8000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4_05               memory        0        000A8400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4_05                   memory        0        000A8800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4_06               memory        0        000A9000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4_06               memory        0        000A9400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4_06                   memory        0        000A9800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4_07               memory        0        000AA000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4_07               memory        0        000AA400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4_07                   memory        0        000AA800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4_08               memory        0        000AB000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4_08               memory        0        000AB400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4_08                   memory        0        000AB800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4_09               memory        0        000AC000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4_09               memory        0        000AC400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4_09                   memory        0        000AC800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1n_03              memory        0        000AD000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1n_03              memory        0        000AD400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_th_cor_me1n_03              memory        0        000AD800           000000000000003f        1           1            Primitive converter theta correction LUT
-prim_conv_id_me1n_03                  memory        0        000ADC00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1n_06              memory        0        000AE000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1n_06              memory        0        000AE400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1n_06                  memory        0        000AE800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me1n_09              memory        0        000AF000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me1n_09              memory        0        000AF400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me1n_09                  memory        0        000AF800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2n_03              memory        0        000B0000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2n_03              memory        0        000B0400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2n_03                  memory        0        000B0800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me2n_09              memory        0        000B1000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me2n_09              memory        0        000B1400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me2n_09                  memory        0        000B1800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3n_03              memory        0        000B2000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3n_03              memory        0        000B2400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3n_03                  memory        0        000B2800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me3n_09              memory        0        000B3000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me3n_09              memory        0        000B3400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me3n_09                  memory        0        000B3800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4n_03              memory        0        000B4000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4n_03              memory        0        000B4400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4n_03                  memory        0        000B4800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
-prim_conv_params_me4n_09              memory        0        000B5000           0000000000001fff        1           1            Primitive converter parameters
-prim_conv_th_lut_me4n_09              memory        0        000B5400           000000000000003f        1           1            Primitive converter theta LUT
-prim_conv_id_me4n_09                  memory        0        000B5800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_01              memory        1        00080000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_01              memory        1        00080400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1a_01              memory        1        00080800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1a_01                  memory        1        00080C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_02              memory        1        00081000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_02              memory        1        00081400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1a_02              memory        1        00081800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1a_02                  memory        1        00081C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_03              memory        1        00082000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_03              memory        1        00082400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1a_03              memory        1        00082800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1a_03                  memory        1        00082C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_04              memory        1        00083000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_04              memory        1        00083400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_04                  memory        1        00083800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_05              memory        1        00084000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_05              memory        1        00084400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_05                  memory        1        00084800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_06              memory        1        00085000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_06              memory        1        00085400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_06                  memory        1        00085800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_07              memory        1        00086000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_07              memory        1        00086400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_07                  memory        1        00086800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_08              memory        1        00087000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_08              memory        1        00087400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_08                  memory        1        00087800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_09              memory        1        00088000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_09              memory        1        00088400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_09                  memory        1        00088800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_01              memory        1        00089000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_01              memory        1        00089400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1b_01              memory        1        00089800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1b_01                  memory        1        00089C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_02              memory        1        0008A000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_02              memory        1        0008A400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1b_02              memory        1        0008A800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1b_02                  memory        1        0008AC00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_03              memory        1        0008B000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_03              memory        1        0008B400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1b_03              memory        1        0008B800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1b_03                  memory        1        0008BC00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_04              memory        1        0008C000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_04              memory        1        0008C400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_04                  memory        1        0008C800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_05              memory        1        0008D000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_05              memory        1        0008D400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_05                  memory        1        0008D800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_06              memory        1        0008E000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_06              memory        1        0008E400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_06                  memory        1        0008E800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_07              memory        1        0008F000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_07              memory        1        0008F400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_07                  memory        1        0008F800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_08              memory        1        00090000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_08              memory        1        00090400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_08                  memory        1        00090800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_09              memory        1        00091000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_09              memory        1        00091400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_09                  memory        1        00091800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_01               memory        1        00092000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_01               memory        1        00092400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_01                   memory        1        00092800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_02               memory        1        00093000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_02               memory        1        00093400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_02                   memory        1        00093800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_03               memory        1        00094000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_03               memory        1        00094400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_03                   memory        1        00094800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_04               memory        1        00095000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_04               memory        1        00095400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_04                   memory        1        00095800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_05               memory        1        00096000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_05               memory        1        00096400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_05                   memory        1        00096800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_06               memory        1        00097000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_06               memory        1        00097400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_06                   memory        1        00097800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_07               memory        1        00098000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_07               memory        1        00098400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_07                   memory        1        00098800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_08               memory        1        00099000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_08               memory        1        00099400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_08                   memory        1        00099800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_09               memory        1        0009A000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_09               memory        1        0009A400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_09                   memory        1        0009A800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_01               memory        1        0009B000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_01               memory        1        0009B400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_01                   memory        1        0009B800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_02               memory        1        0009C000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_02               memory        1        0009C400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_02                   memory        1        0009C800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_03               memory        1        0009D000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_03               memory        1        0009D400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_03                   memory        1        0009D800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_04               memory        1        0009E000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_04               memory        1        0009E400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_04                   memory        1        0009E800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_05               memory        1        0009F000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_05               memory        1        0009F400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_05                   memory        1        0009F800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_06               memory        1        000A0000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_06               memory        1        000A0400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_06                   memory        1        000A0800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_07               memory        1        000A1000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_07               memory        1        000A1400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_07                   memory        1        000A1800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_08               memory        1        000A2000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_08               memory        1        000A2400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_08                   memory        1        000A2800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_09               memory        1        000A3000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_09               memory        1        000A3400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_09                   memory        1        000A3800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_01               memory        1        000A4000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_01               memory        1        000A4400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_01                   memory        1        000A4800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_02               memory        1        000A5000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_02               memory        1        000A5400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_02                   memory        1        000A5800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_03               memory        1        000A6000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_03               memory        1        000A6400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_03                   memory        1        000A6800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_04               memory        1        000A7000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_04               memory        1        000A7400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_04                   memory        1        000A7800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_05               memory        1        000A8000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_05               memory        1        000A8400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_05                   memory        1        000A8800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_06               memory        1        000A9000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_06               memory        1        000A9400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_06                   memory        1        000A9800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_07               memory        1        000AA000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_07               memory        1        000AA400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_07                   memory        1        000AA800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_08               memory        1        000AB000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_08               memory        1        000AB400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_08                   memory        1        000AB800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_09               memory        1        000AC000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_09               memory        1        000AC400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_09                   memory        1        000AC800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1n_03              memory        1        000AD000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1n_03              memory        1        000AD400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1n_03              memory        1        000AD800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1n_03                  memory        1        000ADC00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1n_06              memory        1        000AE000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1n_06              memory        1        000AE400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1n_06                  memory        1        000AE800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1n_09              memory        1        000AF000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1n_09              memory        1        000AF400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1n_09                  memory        1        000AF800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2n_03              memory        1        000B0000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2n_03              memory        1        000B0400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2n_03                  memory        1        000B0800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2n_09              memory        1        000B1000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2n_09              memory        1        000B1400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2n_09                  memory        1        000B1800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3n_03              memory        1        000B2000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3n_03              memory        1        000B2400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3n_03                  memory        1        000B2800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3n_09              memory        1        000B3000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3n_09              memory        1        000B3400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3n_09                  memory        1        000B3800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4n_03              memory        1        000B4000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4n_03              memory        1        000B4400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4n_03                  memory        1        000B4800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4n_09              memory        1        000B5000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4n_09              memory        1        000B5400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4n_09                  memory        1        000B5800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
 gth_rst                               memory        0        000B6000           0000000000000001        1           1            GTH reset
 inject_test_data                      memory        0        000B6000           0000000000000002        1           1            inject test data
 spy_mem_rst                           memory        0        000B6000           0000000000000004        1           1            spy memory reset
