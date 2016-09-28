@@ -95,12 +95,14 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the Pt LUT on the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
+    Command & cVerifyPtLutVersion = registerCommand<VerifyPtLutVersion>("Verify the Pt LUT version");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
     Command & cResetCoreLink = registerCommand<ResetCoreLink>("Core link reset");
     Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
     Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
-    CommandSequence &cfgSeq = registerSequence("Configure Sequence",cVerifyPtLut).
+    CommandSequence &cfgSeq = registerSequence("Configure Sequence", cVerifyPtLutVersion).
+                                                                then(cVerifyPtLut).
                                                                 then(cVerifyPcLutsVersion).
                                                                 then(cVerifyPcLuts).
                                                                 then(cDaqModuleRst).

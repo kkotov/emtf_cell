@@ -259,11 +259,11 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
     // each 32-bit word contains one 18-bit word for RLDRAM
     uint32_t *data_buf = new uint32_t [ RL_MEM_SIZE ];
     if( data_buf == NULL ) 
-        throw std::runtime_error("data_buf: not enough memory\n"); 
+        throw std::runtime_error("data_buf: not enough memory"); 
 
     uint32_t *addr_buf = new uint32_t [ RL_MEM_SIZE/2 ];
     if( addr_buf == NULL ) 
-        throw std::runtime_error("addr_buf: not enough memory\n"); 
+        throw std::runtime_error("addr_buf: not enough memory"); 
 
     bzero(data_buf, RL_MEM_SIZE * sizeof(uint32_t) );
     bzero(addr_buf, RL_MEM_SIZE * sizeof(uint32_t)/2 );
@@ -271,7 +271,7 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
     log("Reading pT LUT into the memory");
 
     // read from file
-    FILE* ptlut_in = fopen("/opt/madorsky/data/ptlut.dat", "rb");
+    FILE* ptlut_in = fopen(config::ptLutPath().c_str(), "rb");
     if( ptlut_in != NULL ) {
         //log_printf ("reading 0x%llx bytes from /opt/madorsky/data/ptlut.dat\n", RL_DATA_SIZE_B);
         size_t result = fread( data_buf, 1, RL_MEM_SIZE * sizeof(uint32_t), ptlut_in );
@@ -282,7 +282,7 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
         }
         fclose( ptlut_in );
     } else {
-        throw std::runtime_error("cannot open file: /opt/madorsky/data/ptlut.dat");
+        throw std::runtime_error(string("cannot open file: ") + config::ptLutPath().c_str());
     }
 
     log("Generating chunks of address blocks");
@@ -337,6 +337,46 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
 }
 
 
+
+emtf::VerifyPtLutVersion::VerifyPtLutVersion(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+    Command(aId, aActionable, xdata::Integer(0))
+{
+    registerParameter("pt_lut_version", xdata::UnsignedInteger(1));
+}
+
+swatch::core::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::XParameterSet& params)
+{
+    setStatusMsg("Check the Pt LUT version.");
+
+    Command::State commandStatus = ActionSnapshot::kDone;
+
+    const uint32_t ptLutVersionDB = (params.get<xdata::UnsignedInteger>("pt_lut_version").value_);
+
+    uint32_t ptLutVersionFile = 0;
+
+
+    ifstream file( config::ptLutPath(), ios::in | std::ios::binary);
+    if(file.is_open())
+    {
+        file.read((char*)&ptLutVersionFile, sizeof(ptLutVersionFile));
+        file.close();
+
+        std::stringstream oss;
+        oss << "Pt LUT version in file: " << ptLutVersionFile;
+        log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
+        LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( oss.str() ) );
+    }
+
+    if(ptLutVersionFile != ptLutVersionDB)
+    {
+        commandStatus = ActionSnapshot::kError;
+    }
+
+    return commandStatus;
+}
+
+
+
 emtf::VerifyPtLut::VerifyPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<Mtf7Processor>()){}
@@ -352,15 +392,15 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
     // each 32-bit word contains one 18-bit word for RLDRAM
     uint64_t *data_buf = new uint64_t [ FW_DATA_SIZE_B/sizeof(uint64_t) ];
     if( data_buf == NULL ) 
-        throw std::runtime_error("data_buf: not enough memory\n"); 
+        throw std::runtime_error("data_buf: not enough memory"); 
 
     uint32_t *addr_buf = new uint32_t [ FW_ADDR_SIZE_B/sizeof(uint32_t) ];
     if( addr_buf == NULL ) 
-        throw std::runtime_error("addr_buf: not enough memory\n"); 
+        throw std::runtime_error("addr_buf: not enough memory"); 
 
     uint64_t *ref_buf = new uint64_t [ RL_MEM_SIZE ];
     if( data_buf == NULL ) 
-        throw std::runtime_error("data_buf: not enough memory\n"); 
+        throw std::runtime_error("data_buf: not enough memory"); 
 
 
     bzero(data_buf, FW_DATA_SIZE_B);
@@ -370,7 +410,7 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
     log("Reading pT LUT into the memory");
 
     // read from file
-    FILE* ptlut_in = fopen("/opt/madorsky/data/ptlut.dat", "rb");
+    FILE* ptlut_in = fopen( config::ptLutPath().c_str(), "rb");
     if( ptlut_in != NULL ) {
         //log_printf ("reading 0x%llx bytes from /opt/madorsky/data/ptlut.dat\n", RL_DATA_SIZE_B);
         size_t result = fread( ref_buf, 1, RL_MEM_SIZE * sizeof(uint32_t), ptlut_in );
@@ -381,7 +421,7 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
         }
         fclose( ptlut_in );
     } else {
-        throw std::runtime_error("cannot open file: /opt/madorsky/data/ptlut.dat");
+        throw std::runtime_error( string("cannot open file: ") + config::ptLutPath() );
     }
 
 //    log("Setting read delay registers");

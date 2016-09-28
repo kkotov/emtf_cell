@@ -136,6 +136,20 @@ private:
     Mtf7Processor &processor;
 };
 
+class VerifyPtLutVersion : public swatch::core::Command
+{
+public:
+    VerifyPtLutVersion(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    ~VerifyPtLutVersion(){}
+
+    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+
+private:
+    // hide the copy constructor and the assignment operator because the class allocates memory
+    VerifyPtLutVersion(const VerifyPtLutVersion &);
+    VerifyPtLutVersion operator=(const VerifyPtLutVersion &);
+};
+
 
 
 } // namespace
