@@ -6,11 +6,26 @@ import sys
 import getpass
 
 """
-A simple helper script that, provided with a new configuration of any
+A simple helper script that, provided with new configurations of any
 of the four kinds (hw/processor/daq/algo), uploads the corresponding
-XML file into the relevant table indexing it with a next version of
-key and creates a top level key for this new configuration
+XML files into the relevant table indexing it with a next version of
+key and creates the top-level key for this new configuration.
+
+Running it with no arguments or with the key prototype (-k) argument
+does not modify the DB and can be used to monitor the keys.
+
+The prinout always starts with "top" version of the keys that will
+be incremented and assigned to the new configuration whenever the
+later is requested to be uploaded to the DB.
+
+If optional key prototype (-k) is provided, the keys found in the
+prototype will printed and, if upload is requested, used in the new
+version of the key to aggregate the unchanged configurations.
+
+If key prototype is absent, the latest top-level key is used as
+the prototype.
 """
+
 # parse the options
 parser = OptionParser()
 parser.add_option( "-c",
@@ -45,7 +60,8 @@ parser.add_option( "-k",
                    "--key",
                    dest="key",
                    default=None,
-                   help="Prototype system key that we use to build a new key"
+                   help="Prototype system key that we use to build a new key",
+                   metavar="KEY"
                  )
 
 (options, args) = parser.parse_args()
