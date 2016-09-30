@@ -45,7 +45,7 @@ parser.add_option( "-k",
                    "--key",
                    dest="key",
                    default=None,
-                   help="Seeding system key that we use to build the new key"
+                   help="Prototype system key that we use to build a new key"
                  )
 
 (options, args) = parser.parse_args()
@@ -148,16 +148,17 @@ if len(sys.argv) == 1:
 
 # load in the xmls specified in the script options
 payload = {}
-seedingKey = keyTemplate['key'] + str(keyVersion['key']) # choose last as default
+prototypeKey = keyTemplate['key'] + str(keyVersion['key']) # choose last as default
 
 for kind,argument in vars(options).iteritems() :
 
     if kind == 'key' :
 
-        seedingKey = argument
+        prototypeKey = argument
 
-        # print reference keys from the seeding key
+        # print sub keys from the prototype key
         myre = re.compile(r'(INFRAKEY)|(HW)|(PROC)|(ALGO)|(DAQ)|(-{80})')
+
         query = """select
                        TOP_KEYS.INFRA as INFRAKEY,
                        INFRA_KEYS.MTF7 as PROC,
@@ -176,7 +177,7 @@ for kind,argument in vars(options).iteritems() :
                                ID = '{0}'
                        ) TOP_KEYS
                        on 
-                           TOP_KEYS.INFRA = INFRA_KEYS.ID;""".format(seedingKey)
+                           TOP_KEYS.INFRA = INFRA_KEYS.ID;""".format(prototypeKey)
 
         sqlplus = subprocess.Popen( sqlplusCmd,
                                     shell  = False,
@@ -186,7 +187,7 @@ for kind,argument in vars(options).iteritems() :
 
         retval = sqlplus.communicate(query)[0]
 
-        print 'Reference versions for the chosen ' + seedingKey + ' key are:\n' 
+        print 'Sub-keys in the chosen ' + prototypeKey + ' key are:\n' 
         for line in re.split('\n',retval):
             if len(line) and myre.match(line) == None :
                 print line
@@ -204,7 +205,7 @@ if len(payload) == 0 :
     exit(0)
 
 
-# inserting the payloads into conf tables
+# insert the payloads into conf tables
 for kind,xmlText in payload.iteritems():
 
     query1 = """insert into CMS_TRG_L1_CONF.{0}
@@ -244,9 +245,9 @@ for kind,xmlText in payload.iteritems():
                + str(keyVersion[kind] + 1)
                + ' key')
 
-# inserting the keys into key tables
+# insert the keys into key tables
 
-#  intermediate level
+#  intermediate INFRA_KEYS level for 'daq' and 'processor'
 if 'daq' in payload or 'processor' in payload:
     # start building a query updating the EMTF_INFRA_KEYS table
     query = """insert into CMS_TRG_L1_CONF.EMTF_INFRA_KEYS
@@ -268,14 +269,14 @@ if 'daq' in payload or 'processor' in payload:
         query += keyTemplate['daq'] + str(keyVersion['daq'] + 1)
         query += "'"
     else :
-        # inherit reference version from the seeding key
+        # inherit reference version from the prototype key
         query += """,(select
                           INFRA_KEYS.AMC13
                       from
                           CMS_TRG_L1_CONF.EMTF_INFRA_KEYS INFRA_KEYS,
                           CMS_TRG_L1_CONF.EMTF_KEYS         TOP_KEYS
                       where INFRA_KEYS.ID = TOP_KEYS.INFRA
-                      and     TOP_KEYS.ID = '{0}')""".format(seedingKey)
+                      and     TOP_KEYS.ID = '{0}')""".format(prototypeKey)
 
     if 'processor' in payload:
         # create a new (next) version
@@ -283,14 +284,14 @@ if 'daq' in payload or 'processor' in payload:
         query += keyTemplate['processor'] + str(keyVersion['processor'] + 1)
         query += "'"
     else :
-        # inherit reference version from the seeding key
+        # inherit reference version from the prototype key
         query += """,(select
                           INFRA_KEYS.MTF7
                       from
                           CMS_TRG_L1_CONF.EMTF_INFRA_KEYS INFRA_KEYS,
                           CMS_TRG_L1_CONF.EMTF_KEYS         TOP_KEYS
                       where INFRA_KEYS.ID = TOP_KEYS.INFRA
-                      and     TOP_KEYS.ID = '{0}')""".format(seedingKey)
+                      and     TOP_KEYS.ID = '{0}')""".format(prototypeKey)
 
     query += ");"
 
@@ -331,13 +332,13 @@ if 'algo' in payload :
     query += keyTemplate['algo'] + str(keyVersion['algo'] + 1)
     query += "'"
 else :
-    # inherit reference version from the seeding key
+    # inherit reference version from the prototype key
     query += """,(select
                       ALGO
                   from
                       CMS_TRG_L1_CONF.EMTF_KEYS
                   where
-                      ID = '{0}')""".format(seedingKey)
+                      ID = '{0}')""".format(prototypeKey)
 
 if 'hardware' in payload :
     # create a new (next) version
@@ -345,13 +346,13 @@ if 'hardware' in payload :
     query += keyTemplate['hardware'] + str(keyVersion['hardware'] + 1)
     query += "'"
 else :
-    # inherit reference version from the seeding key
+    # inherit reference version from the prototype key
     query += """,(select
                       HW
                   from
                       CMS_TRG_L1_CONF.EMTF_KEYS
                   where
-                      ID = '{0}')""".format(seedingKey)
+                      ID = '{0}')""".format(prototypeKey)
 
 if 'daq' in payload or 'processor' in payload :
     # create a new (next) version
@@ -359,13 +360,13 @@ if 'daq' in payload or 'processor' in payload :
     query += keyTemplate['infraKey'] + str(keyVersion['infraKey'] + 1)
     query += "'"
 else :
-    # inherit reference version from the seeding key
+    # inherit reference version from the prototype key
     query += """,(select
                       INFRA
                   from
                       CMS_TRG_L1_CONF.EMTF_KEYS
                   where
-                      ID = '{0}')""".format(seedingKey)
+                      ID = '{0}')""".format(prototypeKey)
 
 query += ");"
 
