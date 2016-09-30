@@ -60,7 +60,7 @@ parser.add_option( "-k",
                    "--key",
                    dest="key",
                    default=None,
-                   help="Prototype system key that we use to build a new key",
+                   help="prototype system key that we use to build a new key",
                    metavar="KEY"
                  )
 
@@ -203,7 +203,7 @@ for kind,argument in vars(options).iteritems() :
 
         retval = sqlplus.communicate(query)[0]
 
-        print 'Sub-keys in the chosen ' + prototypeKey + ' key are:\n' 
+        print 'Keys in the chosen ' + prototypeKey + ' prototype key:\n' 
         for line in re.split('\n',retval):
             if len(line) and myre.match(line) == None :
                 print line
