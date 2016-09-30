@@ -84,7 +84,7 @@ keyTemplate = {
                 'daq'      : 'EMTF_AMC13_base_conf/v'
               } #'rs':'EMTF_RS/v',
 
-# read-only version of the DB command
+# command line DB client
 sqlplusCmd = [ 'env',
                'LD_LIBRARY_PATH=/opt/xdaq/lib/',
                '/opt/xdaq/bin/sqlplus',
