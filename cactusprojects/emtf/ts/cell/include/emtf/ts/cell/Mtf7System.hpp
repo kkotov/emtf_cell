@@ -2,7 +2,7 @@
 #define __MTF7_SYSTEM_HPP__
 
 #include "swatch/system/System.hpp"
-
+#include <vector>
 
 namespace emtf {
 

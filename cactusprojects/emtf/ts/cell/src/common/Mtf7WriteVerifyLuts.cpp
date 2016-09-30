@@ -8,6 +8,7 @@
 #include <fstream>
 #include <map>
 #include "boost/lexical_cast.hpp"
+#include <time.h>
 
 using namespace std;
 using namespace swatch;
@@ -241,35 +242,36 @@ swatch::core::Command::State VerifyPcLutsVersion::code(const swatch::core::XPara
 
 #include<stdexcept>
 
-emtf::WritePtLuts::WritePtLuts(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<Mtf7Processor>()){}
 
-swatch::core::Command::State emtf::WritePtLuts::code(const swatch::core::XParameterSet& params)
-{
-//    setStatusMsg("Write the Pt LUT to the board.");
+using namespace log4cplus;
 
-    setStatusMsg("Allocating space for pT LUT in RAM");
+swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParameterSet& params)
+{
+    setStatusMsg("Write the Pt LUT to the board.");
+
+    log("Allocating space for pT LUT in RAM");
+    setProgress(0.);
 
     // reserve buffers for tests
     // each 32-bit word contains one 18-bit word for RLDRAM
     uint32_t *data_buf = new uint32_t [ RL_MEM_SIZE ];
     if( data_buf == NULL ) 
-        throw std::runtime_error("data_buf: not enough memory\n"); 
+        throw std::runtime_error("data_buf: not enough memory"); 
 
     uint32_t *addr_buf = new uint32_t [ RL_MEM_SIZE/2 ];
     if( addr_buf == NULL ) 
-        throw std::runtime_error("addr_buf: not enough memory\n"); 
+        throw std::runtime_error("addr_buf: not enough memory"); 
 
     bzero(data_buf, RL_MEM_SIZE * sizeof(uint32_t) );
     bzero(addr_buf, RL_MEM_SIZE * sizeof(uint32_t)/2 );
 
-    setProgress(0.);
-
-    setStatusMsg("Reading pT LUT into the memory");
+    log("Reading pT LUT into the memory");
 
     // read from file
-    FILE* ptlut_in = fopen("/opt/madorsky/data/ptlut.dat", "rb");
+    FILE* ptlut_in = fopen(config::ptLutPath().c_str(), "rb");
     if( ptlut_in != NULL ) {
         //log_printf ("reading 0x%llx bytes from /opt/madorsky/data/ptlut.dat\n", RL_DATA_SIZE_B);
         size_t result = fread( data_buf, 1, RL_MEM_SIZE * sizeof(uint32_t), ptlut_in );
@@ -280,26 +282,28 @@ swatch::core::Command::State emtf::WritePtLuts::code(const swatch::core::XParame
         }
         fclose( ptlut_in );
     } else {
-        throw std::runtime_error("cannot open file: /opt/madorsky/data/ptlut.dat");
+        throw std::runtime_error(string("cannot open file: ") + config::ptLutPath().c_str());
     }
 
-    setStatusMsg("Generating chunks of address blocks");
+    log("Generating chunks of address blocks");
 
     // just fill addresses for file contents
     for (uint32_t i = 0; i < RL_MEM_SIZE/2; i++)
         addr_buf[i] = (i*2); // address progresses by 2 because two words at a time are written
 
-    setStatusMsg("Setting write delay registers");
+    log("Setting write and read delay registers");
 
+    init();
     setWriteDelays();
+    setReadDelays();
 
-    setStatusMsg("Writing blocks to the board");
+    log("Writing blocks to the board");
 
     write_mrs(0x01010101, ODT_ON); // turn ODT on, only on one chip at the end of each quad
 
-    for (int i = 0; i < RL_BUFS; i++) {
+    ///clock_t start = clock();
 
-        //std::cout<<"Progress: "<<i<<"/"<<RL_BUFS<<std::endl;
+    for (int i = 0; i < RL_BUFS; i++) {
 
         setProgress(i/float(RL_BUFS));
 
@@ -316,8 +320,12 @@ swatch::core::Command::State emtf::WritePtLuts::code(const swatch::core::XParame
         processor.write64("ptlut_write_cmd", 0x0);
 
         // wait until not busy
-        for(uint64_t val=0; val==1; processor.read64("ptlut_busy", val) ); // maybe sleep a bit?
+        for(uint64_t val=1; val==1; processor.read64("ptlut_busy", val) ); // maybe sleep a bit?
     }
+
+
+    ///clock_t end = clock() - start;
+    ///std::cout<< "Write time: "<< (double)end / ((double)CLOCKS_PER_SEC) << " s" << std::endl;
 
     write_mrs(0xffffffff, ODT_OFF); // turn ODT off
 
@@ -328,7 +336,257 @@ swatch::core::Command::State emtf::WritePtLuts::code(const swatch::core::XParame
     return commandStatus;
 }
 
-int emtf::WritePtLuts::write_mrs(uint32_t cs, uint32_t code)
+
+emtf::VerifyPtLutVersion::VerifyPtLutVersion(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+    Command(aId, aActionable, xdata::Integer(0))
+{
+    registerParameter("pt_lut_version", xdata::UnsignedInteger(1));
+}
+
+swatch::core::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::XParameterSet& params)
+{
+    setStatusMsg("Check the Pt LUT version.");
+
+    Command::State commandStatus = ActionSnapshot::kDone;
+
+    const uint32_t ptLutVersionDB = (params.get<xdata::UnsignedInteger>("pt_lut_version").value_);
+
+    uint32_t ptLutVersionFile = 0;
+
+
+    ifstream file( config::ptLutPath(), ios::in | std::ios::binary);
+    if(file.is_open())
+    {
+        file.read((char*)&ptLutVersionFile, sizeof(ptLutVersionFile));
+        file.close();
+
+        std::stringstream oss;
+        oss << "Pt LUT version in file: " << ptLutVersionFile;
+        log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
+        LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( oss.str() ) );
+    }
+
+    if(ptLutVersionFile != ptLutVersionDB)
+    {
+        commandStatus = ActionSnapshot::kError;
+    }
+
+    return commandStatus;
+}
+
+
+
+emtf::VerifyPtLut::VerifyPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+    Command(aId, aActionable, xdata::Integer(0)),
+    processor(getActionable<Mtf7Processor>()){}
+
+swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParameterSet& params)
+{
+    setStatusMsg("Check the Pt LUT on the board.");
+
+    log("Allocating space for pT LUT in RAM");
+    setProgress(0.);
+
+    // reserve buffers for tests
+    // each 32-bit word contains one 18-bit word for RLDRAM
+    uint64_t *data_buf = new uint64_t [ FW_DATA_SIZE_B/sizeof(uint64_t) ];
+    if( data_buf == NULL ) 
+        throw std::runtime_error("data_buf: not enough memory"); 
+
+    uint32_t *addr_buf = new uint32_t [ FW_ADDR_SIZE_B/sizeof(uint32_t) ];
+    if( addr_buf == NULL ) 
+        throw std::runtime_error("addr_buf: not enough memory"); 
+
+    uint64_t *ref_buf = new uint64_t [ RL_MEM_SIZE ];
+    if( data_buf == NULL ) 
+        throw std::runtime_error("data_buf: not enough memory"); 
+
+
+    bzero(data_buf, FW_DATA_SIZE_B);
+    bzero(addr_buf, FW_ADDR_SIZE_B);
+    bzero(ref_buf,  RL_MEM_SIZE * sizeof(uint32_t) );
+
+    log("Reading pT LUT into the memory");
+
+    // read from file
+    FILE* ptlut_in = fopen( config::ptLutPath().c_str(), "rb");
+    if( ptlut_in != NULL ) {
+        //log_printf ("reading 0x%llx bytes from /opt/madorsky/data/ptlut.dat\n", RL_DATA_SIZE_B);
+        size_t result = fread( ref_buf, 1, RL_MEM_SIZE * sizeof(uint32_t), ptlut_in );
+        if( result != RL_MEM_SIZE * sizeof(uint32_t) ){
+            std::ostringstream msg;
+            msg << "reading failure, read bytes: 0x" << std::hex << result << std::flush;
+            throw std::runtime_error( msg.str() );
+        }
+        fclose( ptlut_in );
+    } else {
+        throw std::runtime_error( string("cannot open file: ") + config::ptLutPath() );
+    }
+
+//    log("Setting read delay registers");
+//    setReadDelays();
+
+    log("Reading blocks from the board");
+
+    bool error = false;
+    for(unsigned int block=0; block<100000; block++)
+    {
+        // Generating random addresses for selective read'n'compares
+        for(unsigned int j=0, prev_rand=0; j<FW_ADDR_SIZE_B/sizeof(uint32_t); j++)
+        {
+            uint32_t new_rand = 0;
+            // make sure the new address does not hit same bank in same chip as old one
+            // for 8-ns chips, just one old clock can be analyzed
+            // for 10-ns chips, two clocks have to be analyzed
+            while ( 1 ) {
+                new_rand = ( random() & 0x1ffffffe ); // j%96
+                uint32_t prev_bank =  prev_rand & 0x1f;
+                uint32_t prev_chip = (prev_rand >> 25) & 0xf;
+                uint32_t new_bank =  new_rand & 0x1f;
+                uint32_t new_chip = (new_rand >> 25) & 0xf;
+                if( prev_bank != new_bank || prev_chip != new_chip ) break;
+            }
+            prev_rand = new_rand;
+
+            addr_buf[j] = new_rand;
+        }
+
+        // fill address buffer in FW
+        for(int j = 0; j < XFERS_FW_ADDR; j++)
+            processor.writeBlock64("ptlut_addr", XFER_SIZE_B, (char*)(addr_buf + j*XFER_SIZE_B/4), j*XFER_SIZE_B);
+
+        // send command
+        processor.write64("ptlut_read_cmd", 0x1);
+        // remove
+        processor.write64("ptlut_read_cmd", 0x0);
+
+        // wait until not busy
+        for(uint64_t val=1; val==1; processor.read64("ptlut_busy", val) ); // maybe sleep a bit?
+
+        memset(data_buf, 0x55, sizeof(data_buf));
+
+        // fill data buffer in FW
+        for(int j = 0; j < XFERS_FW_DATA; j++)
+            processor.readBlock64("ptlut_mem", XFER_SIZE_B, (char*)(data_buf + j*XFER_SIZE_B/8), j*XFER_SIZE_B );
+
+        ///if( (block%100) == 0 ) log("Progress: ",block,"/0x400");
+
+        // now compare
+        for(int j = 0, err_count = 0; j < FW_DATA_SIZE_B/8; j++)
+        {
+            // get written data from global buffer, from random address
+            uint64_t wd = ref_buf[addr_buf[j]/2];
+            // get data that were read from that random address
+            uint64_t rd = data_buf[j];
+            uint64_t xord = wd ^ rd;
+            if (xord != 0)
+            {
+                if (err_count < 150)
+                {
+                    printf("j: %04x addr: %04x w: %04x r: %04x e: %04x\n",
+                               j, addr_buf[j], wd, rd, xord);
+                }
+                err_count++;
+                error = true;
+            }
+        }
+
+    }
+
+    delete [] data_buf;
+    delete [] addr_buf;
+    delete [] ref_buf;
+
+    Command::State commandStatus = (error ? ActionSnapshot::kError : ActionSnapshot::kDone);
+    return commandStatus;
+}
+
+
+void emtf::WritePtLut::log(const char *prefix, uint64_t val, const char *suffix)
+{
+    std::stringstream oss;
+    oss << prefix << std::hex << val << std::dec << suffix;
+    log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
+    LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( oss.str() ) );
+}
+
+void emtf::VerifyPtLut::log(const char *message)
+{
+    log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
+    LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( message ) );
+}
+
+void emtf::WritePtLut::log(const char *message)
+{
+    log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
+    LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( message ) );
+}
+
+// contents of MRTs, see RLDRAM3_registers.xlsx
+#define MR0 0x10 // for 093E memory
+#define MR1 0x400e0
+#define MR2 0x80000 // normal operation
+
+int emtf::WritePtLut::init(void)
+{
+    uint64_t wr_lat  = 4;
+    uint64_t rd_lat  = 15;// for version with RX FIFO
+    uint64_t wr_term = wr_lat + 0x403; //0x408;//0x407;
+    uint64_t rd_term = rd_lat + 0x3fe;//0x40a;
+    uint64_t wr_shift = 1;
+    uint64_t rd_shift = 0;
+    uint64_t qr_sel = rd_lat - 5;
+    uint64_t qw_sel = wr_lat - 2;
+    uint64_t we_sel = rd_lat - 4; //8;
+
+    processor.write64("ptlut_wr_term_count",wr_term);
+    processor.write64("ptlut_rd_term_count",rd_term);
+    processor.write64("ptlut_wr_latency",wr_lat);
+    processor.write64("ptlut_rd_latency",rd_lat);
+    processor.write64("ptlut_wr_phase_shift",wr_shift);
+    processor.write64("ptlut_rd_phase_shift",rd_shift);
+    processor.write64("ptlut_dpm_wr_del",we_sel);
+    processor.write64("ptlut_wr_quad_del",qw_sel);
+    processor.write64("ptlut_rd_quad_del",qr_sel);
+
+    processor.write64("ptlut_chips_rst",0x1);
+    usleep(10000);
+
+    processor.write64("ptlut_chips_rst",0x0);
+    usleep(10000);
+
+    uint64_t mrs[3] = {MR0, MR1, MR2};
+    for (int i = 0; i < 3; i++)
+    {
+        write_mrs(0xffffffff, mrs[i]);
+        usleep (10000);
+    }
+
+    write_mrs(0xffffffff, ODT_OFF);
+
+    uint64_t value = 0;
+    processor.read64("ptlut_delay_ctl_locked", value);
+    log("delay_ctrl lock status: 0x", ((value >> 22) & 0xf) );
+
+    // reset IDELAY_CONTROL
+    processor.write64("ptlut_dbdel_rst",0x1); // IO and IDELAY_CONTROL reset
+    usleep(10000);
+
+    // remove reset bit
+    processor.write64("ptlut_dbdel_rst", 0x0);
+
+    processor.read64("ptlut_delay_ctl_locked", value);
+    log("delay_ctrl lock status: 0x", ((value >> 22) & 0xf) );
+
+    // enable refresh, program RX clock domain crossing polarity
+    processor.write64("ptlut_refresh_en",0x1);
+    // program wait times after refresh and read cycles
+    processor.write64("ptlut_rd_bank_timeout",0x1);
+    processor.write64("ptlut_refresh_bank_timout",0x1);
+    processor.write64("ptlut_core_rq_mask",0x7); // ptlut requests enable mask
+}
+
+int emtf::WritePtLut::write_mrs(uint32_t cs, uint32_t code)
 {
     // chip select mask into data buffer
     // bits 17:0 to bits 17:0
@@ -336,10 +594,11 @@ int emtf::WritePtLuts::write_mrs(uint32_t cs, uint32_t code)
     uint64_t value = cs;
     value = ((value << 14) & 0x3fff00000000ULL) | (cs & 0x3ffffULL);
 
-    processor.write64("ptlut_mem", value);
+    processor.writeBlock64("ptlut_mem", 8, (char*)&value, 0);
 
     // write command code into address buffer A=0
-    processor.write64("ptlut_addr", code);
+    uint64_t _code = code;
+    processor.writeBlock64("ptlut_addr", 8, (char*)&_code, 0);
 
     // send command
     processor.write64("ptlut_mrs_cmd", 0x1);
@@ -347,13 +606,19 @@ int emtf::WritePtLuts::write_mrs(uint32_t cs, uint32_t code)
     return 0;
 }
 
-int emtf::WritePtLuts::setWriteDelays(void)
+int emtf::WritePtLut::setWriteDelays(void)
 {
     const unsigned short wdel00[72] =
         { 10, 9, 8,10, 8, 9, 8, 8,10, 9, 9, 9,10, 9, 9, 9, 9,10,
           11,11,11,11,10,11,11,10,11,11,10,10,10, 9,10,10,10,10,
           8, 7, 8, 8, 9,10, 8, 6, 8, 9, 7, 9, 8,10,10, 9, 7, 9,
           8, 9, 9, 9, 9, 9, 9, 9, 8, 9,10,10, 9,10, 9,10, 9, 9 };
+
+//    const unsigned short wdel01[72] = // one of the boards in b.904
+//        {10,10, 8,11, 8, 9, 8, 8,10, 9, 9, 8,10, 8, 9, 8, 8, 9,
+//         10, 9, 9, 9, 8,10,10, 9, 9,11,10,10,10,10,10,10,10,10,
+//          9, 7, 8, 7, 8,10, 8, 6, 8, 9, 6, 9, 8, 9,10, 9, 7, 9,
+//          8, 9, 8, 9, 9, 8, 9, 9, 8, 8, 9, 9, 8, 9, 8, 9, 9, 8};
 
     const unsigned short wdel01[72] =
         {  9, 9, 8,10, 8, 9, 8, 8, 9, 9, 9, 9,10, 9, 9, 8, 9,10,
@@ -449,144 +714,30 @@ int emtf::WritePtLuts::setWriteDelays(void)
         std::stringstream reg;
         reg << "ptlut_db_out_del_" << i;
         processor.write64( reg.str(), wdel[i] );
+        processor.write64("ptlut_dbdel_ld", 0x1);
+        processor.write64("ptlut_dbdel_ld", 0x0);
     }
 
     processor.write64("ptlut_inp_clk_del", 0x5);
+    processor.write64("ptlut_dbdel_ld", 0x1);
+    processor.write64("ptlut_dbdel_ld", 0x0);
 
     return 0;
 }
 
-
-
-emtf::VerifyPtLuts::VerifyPtLuts(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    Command(aId, aActionable, xdata::Integer(0)),
-    processor(getActionable<Mtf7Processor>()){}
-
-swatch::core::Command::State emtf::VerifyPtLuts::code(const swatch::core::XParameterSet& params)
-{
-    setStatusMsg("Allocating space for pT LUT in RAM");
-
-    // reserve buffers for tests
-    // each 32-bit word contains one 18-bit word for RLDRAM
-    uint32_t *data_buf = new uint32_t [ FW_DATA_SIZE_B/sizeof(uint32_t) ];
-    if( data_buf == NULL ) 
-        throw std::runtime_error("data_buf: not enough memory\n"); 
-
-    uint32_t *addr_buf = new uint32_t [ FW_ADDR_SIZE_B/sizeof(uint32_t) ];
-    if( addr_buf == NULL ) 
-        throw std::runtime_error("addr_buf: not enough memory\n"); 
-
-    uint32_t *ref_buf = new uint32_t [ RL_MEM_SIZE ];
-    if( data_buf == NULL ) 
-        throw std::runtime_error("data_buf: not enough memory\n"); 
-
-
-    bzero(data_buf, FW_DATA_SIZE_B);
-    bzero(addr_buf, FW_ADDR_SIZE_B);
-    bzero(ref_buf,  RL_MEM_SIZE * sizeof(uint32_t) );
-
-    setProgress(0.);
-
-    setStatusMsg("Reading pT LUT into the memory");
-
-    // read from file
-    FILE* ptlut_in = fopen("/opt/madorsky/data/ptlut.dat", "rb");
-    if( ptlut_in != NULL ) {
-        //log_printf ("reading 0x%llx bytes from /opt/madorsky/data/ptlut.dat\n", RL_DATA_SIZE_B);
-        size_t result = fread( ref_buf, 1, RL_MEM_SIZE * sizeof(uint32_t), ptlut_in );
-        if( result != RL_MEM_SIZE * sizeof(uint32_t) ){
-            std::ostringstream msg;
-            msg << "reading failure, read bytes: 0x" << std::hex << result << std::flush;
-            throw std::runtime_error( msg.str() );
-        }
-        fclose( ptlut_in );
-    } else {
-        throw std::runtime_error("cannot open file: /opt/madorsky/data/ptlut.dat");
-    }
-
-    setStatusMsg("Setting read delay registers");
-
-    setReadDelays();
-
-    setStatusMsg("Reading blocks from the board");
-
-    for(unsigned int block=0; block<100; block++)
-    {
-        // Generating random addresses for selective read'n'compares
-        for(unsigned int j=0, prev_rand=0; j<FW_ADDR_SIZE_B/sizeof(uint32_t); j++)
-        {
-            uint32_t new_rand = 0;
-            // make sure the new address does not hit same bank in same chip as old one
-            // for 8-ns chips, just one old clock can be analyzed
-            // for 10-ns chips, two clocks have to be analyzed
-            while ( 1 ) {
-                new_rand = ( random() & 0x1ffffffe );
-                uint32_t prev_bank =  prev_rand & 0x1f;
-                uint32_t prev_chip = (prev_rand >> 25) & 0xf;
-                uint32_t new_bank =  new_rand & 0x1f;
-                uint32_t new_chip = (new_rand >> 25) & 0xf;
-                if( prev_bank != new_bank || prev_chip != new_chip ) break;
-                prev_rand = new_rand;
-            }
-
-            addr_buf[j] = new_rand;
-        }
-
-        // fill address buffer in FW
-        for(int j = 0; j < XFERS_FW_ADDR; j++)
-            processor.writeBlock64("ptlut_addr", XFER_SIZE_B, (char*)(addr_buf + j*XFER_SIZE_B/4), j*XFER_SIZE_B);
-
-        // send command
-        processor.write64("ptlut_read_cmd", 0x1);
-        // remove
-        processor.write64("ptlut_read_cmd", 0x0);
-
-        // wait until not busy
-        for(uint64_t val=0; val==1; processor.read64("ptlut_busy", val) ); // maybe sleep a bit?
-
-        memset(data_buf, 0x55, sizeof(data_buf));
-
-        // fill data buffer in FW
-        for(int j = 0; j < XFERS_FW_DATA; j++)
-            processor.readBlock64("ptlut_mem", XFER_SIZE_B, (char*)(data_buf + j*XFER_SIZE_B/4), j*XFER_SIZE_B );
-
-        std::cout<<"Progress: "<<block<<"/"<<100<<std::endl;
-
-        // now compare
-        for(int j = 0, err_count = 0; j < FW_DATA_SIZE_B/8; j++)
-        {
-            // get written data from global buffer, from random address
-            uint32_t wd = ref_buf[addr_buf[j]/2];
-            // get data that were read from that random address
-            uint32_t rd = data_buf[j];
-            uint32_t xord = wd ^ rd;
-            if (xord != 0)
-            {
-                if (err_count < 150)
-                {
-                    printf("j: %04x addr: %04x w: %04x r: %04x e: %04x\n",
-                               j, addr_buf[j], wd, rd, xord);
-                }
-                err_count++;
-            }
-        }
-    }
-
-    delete [] data_buf;
-    delete [] addr_buf;
-    delete [] ref_buf;
-
-    Command::State commandStatus = ActionSnapshot::kDone;
-    return commandStatus;
-}
-
-int emtf::VerifyPtLuts::setReadDelays(void)
+int emtf::WritePtLut::setReadDelays(void)
 {
     const unsigned short rdel00[72] =
       { 12,13,14,13,14,12,12,13,13,13,14,14,14,14,13,12,14,14,
         11,11,10,11,11,11,11,11,11,12,11,11,12,11,11,12,12,12,
         11,10,11,10,11,11,11,11,10,12,11,11,11,12,11,11,12,11,
         11,11,11,12,11,11,12,11,11,13,12,12,12,12,11,12,11,11 };
+
+//    const unsigned short rdel01[72] = // one of the boards in b.904
+//      { 13,14,14,14,14,13,13,14,14,14,14,14,14,15,14,13,14,15,
+//        12,12,12,13,12,12,11,12,11,12,12,13,13,12,12,12,13,12,
+//        11,11,11,11,11,11,12,12,11,11,11,11,11,12,11,12,12,12,
+//        12,11,11,11,12,10,11,11,11,12,11,11,11,12,10,11,11,11 };
 
     const unsigned short rdel01[72] =
       { 13,14,14,14,14,13,13,14,13,14,16,15,15,16,15,13,15,14,
@@ -682,9 +833,13 @@ int emtf::VerifyPtLuts::setReadDelays(void)
         std::stringstream reg;
         reg << "ptlut_db_inp_del_" << i;
         processor.write64( reg.str(), rdel[i] );
+        processor.write64("ptlut_dbdel_ld", 0x1);
+        processor.write64("ptlut_dbdel_ld", 0x0);
     }
 
     processor.write64("ptlut_inp_clk_del", 0x5);
+    processor.write64("ptlut_dbdel_ld", 0x1);
+    processor.write64("ptlut_dbdel_ld", 0x0);
 
     return 0;
 }

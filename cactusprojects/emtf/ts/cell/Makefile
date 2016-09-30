@@ -13,9 +13,9 @@ Project=cactusprojects
 Package=emtf/ts/cell
 
 export PACKAGE_VER_MAJOR=0
-export PACKAGE_VER_MINOR=2
+export PACKAGE_VER_MINOR=3
 export PACKAGE_VER_PATCH=0
-export PACKAGE_RELEASE=0
+export PACKAGE_RELEASE=1
 
 Sources=\
 	version.cc \
@@ -28,12 +28,14 @@ Sources=\
 	Mtf7AlgoInterface.cpp \
     Mtf7Common.cpp \
 	Mtf7Resets.cpp \
+	Mtf7Reboot.cpp \
 	Mtf7Loopback.cpp \
 	Mtf7DAQConfigRegisters.cpp \
 	Mtf7SpyFifo.cpp \
 	Mtf7LinksAlignmentReferences.cpp \
 	Mtf7ConfigCommands.cpp \
 	Mtf7WriteVerifyLuts.cpp \
+	TransitionCommands.cpp
 
 IncludeDirs = \
 	/home/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/include/ \

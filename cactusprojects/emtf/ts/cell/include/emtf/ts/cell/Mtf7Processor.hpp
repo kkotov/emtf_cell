@@ -14,7 +14,8 @@
 
 namespace emtf {
 
-class Mtf7Processor : public swatch::processor::Processor {
+class Mtf7Processor : public swatch::processor::Processor
+{
 public:
     Mtf7Processor(const swatch::core::AbstractStub& aStub);
     ~Mtf7Processor();
@@ -23,32 +24,42 @@ public:
 
     void read(std::string reg, uint32_t &value)
     {
-        driver_->read(reg, &value);
+        driver->read(reg, &value);
     }
 
     void write(std::string reg, uint32_t value)
     {
-        driver_->write(reg, value);
+        driver->write(reg, value);
     }
 
     void read64(std::string reg, uint64_t &value)
     {
-        driver_->read64(reg, &value);
+        driver->read64(reg, &value);
     }
 
     void write64(std::string reg, uint64_t value)
     {
-        driver_->write64(reg, value);
+        driver->write64(reg, value);
     }
 
     void readBlock(std::string reg, uint32_t length, char *buffer)
     {
-        driver_->readBlock(reg, length, buffer);
+        driver->readBlock(reg, length, buffer);
     }
 
     void writeBlock(std::string reg, uint32_t length, const char *buffer)
     {
-        driver_->writeBlock(reg, length, const_cast<char *>(buffer));
+        driver->writeBlock(reg, length, const_cast<char *>(buffer));
+    }
+
+    void readBlock64(std::string reg, uint32_t length, char *buffer, uint64_t offset=0)
+    {
+        driver->readBlock64(reg, length, buffer, HAL::HAL_DO_INCREMENT, offset);
+    }
+
+    void writeBlock64(std::string reg, uint32_t length, char *buffer, uint64_t offset=0)
+    {
+        driver->writeBlock64(reg, length, buffer, HAL::HAL_NO_VERIFY, HAL::HAL_DO_INCREMENT, offset);
     }
 
     void read64reg(std::string reg, uint64_t &value)
@@ -91,6 +102,8 @@ public:
         return sectorIndex[deviceIndex() % 6];
     }
 
+    uint16_t countBrokenLinks(void);
+
     std::string readControlFirmwareVersion(uint32_t *controlFirmwareVersion = NULL);
     std::string readCoreFirmwareVersion(uint32_t *coreFirmwareVersion = NULL);
 
@@ -101,17 +114,19 @@ private:
     int    readBC0counter(void);
     double readTrackRate (void);
 
-    swatch::core::Metric<bool>&        ext_pll_lock_status;
-    swatch::core::Metric<int>&         bc0_period_counter;
-    swatch::core::Metric<double>&      output_track_rate;
-    swatch::core::Metric<std::string>& controlFirmwareVersion;
-    swatch::core::Metric<std::string>& coreFirmwareVersion;
+    swatch::core::Metric<bool>        & extPllLockStatus;
+    swatch::core::Metric<int>         & bc0PeriodCounter;
+    swatch::core::Metric<double>      & outputTrackRate;
+    swatch::core::Metric<uint16_t>    & brokenLinks;
+    swatch::core::Metric<std::string> & controlFirmwareVersion;
+    swatch::core::Metric<std::string> & coreFirmwareVersion;
 
     HAL::PCIExprLinuxBusAdapter     busAdapter;
     HAL::PCIAddressTableASCIIReader * addressTableReader;
     HAL::PCIAddressTable            * addressTable;
-    HAL::PCIExprDevice              * driver_;
+    HAL::PCIExprDevice              * driver;
 
+    log4cplus::Logger generalLogger;
     log4cplus::Logger rateLogger;
 };
 

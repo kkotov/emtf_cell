@@ -5,7 +5,12 @@
 #include "emtf/ts/cell/Mtf7Common.hpp"
 #include "swatch/processor/Processor.hpp"
 #include "swatch/dtm/DaqTTCManager.hpp"
+#include "swatch/core/MetricConditions.hpp"
+#include "swatch/core/MonitorableObject.hpp"
 #include <string>
+
+using namespace std;
+using namespace swatch::core;
 
 #include <log4cplus/logger.h>
 #include <log4cplus/configurator.h>
@@ -18,7 +23,22 @@ using namespace std;
 
 SWATCH_REGISTER_CLASS(emtf::Mtf7System);
 
-Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) : swatch::system::System(aStub)
+
+static const uint16_t * countBrokenLinks(const vector<MetricSnapshot>& aSnapshots)
+{
+    uint16_t result = 0;
+
+    for (auto it=aSnapshots.begin(); it != aSnapshots.end(); it++)
+    {
+        result += it->getValue<uint16_t>();
+    }
+
+    return new uint16_t(result);
+}
+
+
+Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
+    swatch::system::System(aStub)
 {
     // system run control state machine
     typedef swatch::processor::RunControlFSM ProcFSM_t;
@@ -48,6 +68,18 @@ Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) : swatch::system
     fsm.stopFromPaused.add(getDaqTTCs(), DaqTTCFSM_t::kStatePaused, DaqTTCFSM_t::kTrStop).add(getProcessors(), ProcFSM_t::kStateRunning, ProcFSM_t::kTrStop);
 
 
+    vector<AbstractMetric*> brokenLinksMetrics;
+    for(auto it=getProcessors().begin(); it!=getProcessors().end(); ++it)
+    {
+        brokenLinksMetrics.push_back(&(*it)->getMetric("numberOfBrokenInputLinks"));
+    }
+
+    ComplexMetric<uint16_t> & brokenLinks = registerComplexMetric<uint16_t>("Total number of broken input links", brokenLinksMetrics.begin(), brokenLinksMetrics.end(), ComplexMetric<uint16_t>::CalculateFunction_t(&countBrokenLinks));
+    setErrorCondition(brokenLinks, GreaterThanCondition<uint16_t>(config::brokenLinksErrorSystem()));
+    setWarningCondition(brokenLinks, RangeCondition<uint16_t>(config::brokenLinksWarningSystem(),
+                                                              config::brokenLinksErrorSystem()));
+
+
     const string emtfLog4cplusPropertyFile(config::log4cplusPropertyFile());
 
     log4cplus::Logger generalLogger(log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()));
@@ -60,6 +92,7 @@ Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) : swatch::system
 Mtf7System::~Mtf7System()
 {
 }
+
 
 } // namespace
 

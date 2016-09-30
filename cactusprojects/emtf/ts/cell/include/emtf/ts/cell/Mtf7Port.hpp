@@ -15,6 +15,7 @@ public:
     ~Mtf7InputPort();
 
     void retrieveMetricValues();
+    void logLinkStatus(bool forceLog=false);
 
 private:
     const std::string id;
@@ -33,7 +34,6 @@ private:
 
     log4cplus::Logger linkLogger;
 
-    void logLinkStatus();
     bool lockedOld;
     bool alignedOld;
     bool crcOld;
