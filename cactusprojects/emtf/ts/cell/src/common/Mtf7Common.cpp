@@ -81,7 +81,7 @@ namespace config {
 
     const std::string ptLutPath()
     {
-        return "/opt/madorsky/data/ptlut.dat";
+        return "/home/emtfts/emtf_cell_config/ptlut.dat";
     }
 
     const uint16_t brokenLinksWarningProcessor()
