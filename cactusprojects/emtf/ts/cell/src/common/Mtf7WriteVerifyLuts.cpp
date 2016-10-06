@@ -230,6 +230,7 @@ swatch::core::Command::State VerifyPcLutsVersion::code(const swatch::core::XPara
 
 uint32_t* emtf::PtLut::data_buf = 0;
 uint32_t* emtf::PtLut::addr_buf = 0;
+boost::mutex emtf::PtLut::mtx;
 
 uint32_t emtf::PtLut::size(void) throw ()
 {
