@@ -95,6 +95,30 @@ public:
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 };
 
+// Singleton holding the gigantic pT LUT
+#include <boost/thread/mutex.hpp>
+class PtLut
+{
+public:
+
+    static uint32_t* getAddress(void) throw (std::runtime_error) ;
+    static uint32_t* getData   (void) throw (std::runtime_error) ;
+    static uint32_t  size      (void) throw ();
+
+private:
+    static boost::mutex mtx;
+
+    PtLut(void){}
+    PtLut(const PtLut &){}
+    PtLut& operator=(const PtLut &){ return *this; }
+
+    static void readLUT(void) throw ( std::bad_alloc, std::ios_base::failure, std::runtime_error ) ;
+
+    static uint32_t *data_buf;
+    static uint32_t *addr_buf;
+};
+
+
 class WritePtLut : public swatch::core::Command
 {
 public:

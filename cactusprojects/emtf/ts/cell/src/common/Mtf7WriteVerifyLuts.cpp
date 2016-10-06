@@ -223,9 +223,113 @@ swatch::core::Command::State VerifyPcLutsVersion::code(const swatch::core::XPara
 
 } // namespace
 
+
 #define CHIP_SIZE 0x2000000L // size of one RLDRAM chip in 18-bit words (32 MW)
 #define CHIP_COUNT 16L // how many RLDRAM chips on board
 #define RL_MEM_SIZE (CHIP_SIZE*CHIP_COUNT) //size of RLDRAM in 18-bit words (512 MW = 1GB)
+
+uint32_t* emtf::PtLut::data_buf = 0;
+uint32_t* emtf::PtLut::addr_buf = 0;
+
+uint32_t emtf::PtLut::size(void) throw ()
+{
+    uint32_t retval = 0;
+    boost::unique_lock<boost::mutex> lock(emtf::PtLut::mtx);
+
+    if( data_buf != 0 && addr_buf != 0 )
+        retval = RL_MEM_SIZE;
+
+    return retval;
+}
+
+uint32_t* emtf::PtLut::getData(void) throw (std::runtime_error)
+{
+    boost::unique_lock<boost::mutex> lock(emtf::PtLut::mtx);
+
+    if( data_buf == 0 )
+        try
+        {
+            readLUT();
+        }
+        catch ( std::exception &e )
+        {
+            if( data_buf )
+            {
+                delete [] data_buf;
+                data_buf = 0;
+            }
+            throw ( std::runtime_error( e.what() ) );
+        }
+        catch ( ... )
+        {
+            if( data_buf )
+            {
+                delete [] data_buf;
+                data_buf = 0;
+            }
+            throw( std::runtime_error( "Unidentified problem while reading Pt LUT" ) );
+        }
+
+    return data_buf;
+}
+
+uint32_t* emtf::PtLut::getAddress(void) throw (std::runtime_error)
+{
+    boost::unique_lock<boost::mutex> lock(emtf::PtLut::mtx);
+
+    if( addr_buf == 0 ){
+        try
+        {
+            addr_buf = new uint32_t [ RL_MEM_SIZE/2 ];
+        }
+        catch ( std::bad_alloc &e )
+        {
+            addr_buf = 0;
+            throw( std::runtime_error( e.what() ) );
+        }
+        catch ( ... )
+        {
+            if( addr_buf )
+            {
+                delete [] addr_buf;
+                addr_buf = 0;
+            }
+            throw( std::runtime_error( "Unidentified problem while generating Pt LUT addresses" ) );
+        }
+
+        bzero(addr_buf, RL_MEM_SIZE * sizeof(uint32_t)/2 );
+
+        // just fill addresses for file contents
+        for (uint32_t i = 0; i < RL_MEM_SIZE/2; i++)
+            addr_buf[i] = (i*2); // address progresses by 2 because two words at a time are written
+    }
+
+    return addr_buf;
+}
+
+void emtf::PtLut::readLUT(void) throw ( std::bad_alloc, std::ios_base::failure, std::runtime_error )
+{
+    // reserve buffers
+    // each 32-bit word contains one 18-bit word for RLDRAM
+    data_buf = new uint32_t [ RL_MEM_SIZE ];
+
+    bzero(data_buf, RL_MEM_SIZE * sizeof(uint32_t) );
+
+    ifstream file( config::ptLutPath(), ios::in | std::ios::binary);
+    if( file.is_open() )
+    {
+        file.read( (char*)data_buf,  RL_MEM_SIZE * sizeof(uint32_t) );
+        if( file || file.gcount() != RL_MEM_SIZE * sizeof(uint32_t) )
+        { 
+            std::ostringstream msg;
+            msg << "reading failure, read bytes: 0x" << std::hex << file.gcount() << " bytes" << std::flush;
+            file.close();
+            throw ( std::runtime_error( msg.str() ) );
+        }
+        file.close();
+    }
+}
+
 // each 32-bit PC word contains one 18-bit RLDRAM word
 #define RL_DATA_SIZE_B (RL_MEM_SIZE*4L) // size of memory data buffer in bytes
 #define FW_DATA_SIZE_B 0x2000 // size of data buffer in firmware, bytes
@@ -255,41 +359,8 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
     log("Allocating space for pT LUT in RAM");
     setProgress(0.);
 
-    // reserve buffers for tests
-    // each 32-bit word contains one 18-bit word for RLDRAM
-    uint32_t *data_buf = new uint32_t [ RL_MEM_SIZE ];
-    if( data_buf == NULL ) 
-        throw std::runtime_error("data_buf: not enough memory"); 
-
-    uint32_t *addr_buf = new uint32_t [ RL_MEM_SIZE/2 ];
-    if( addr_buf == NULL ) 
-        throw std::runtime_error("addr_buf: not enough memory"); 
-
-    bzero(data_buf, RL_MEM_SIZE * sizeof(uint32_t) );
-    bzero(addr_buf, RL_MEM_SIZE * sizeof(uint32_t)/2 );
-
-    log("Reading pT LUT into the memory");
-
-    // read from file
-    FILE* ptlut_in = fopen(config::ptLutPath().c_str(), "rb");
-    if( ptlut_in != NULL ) {
-        //log_printf ("reading 0x%llx bytes from /opt/madorsky/data/ptlut.dat\n", RL_DATA_SIZE_B);
-        size_t result = fread( data_buf, 1, RL_MEM_SIZE * sizeof(uint32_t), ptlut_in );
-        if( result != RL_MEM_SIZE * sizeof(uint32_t) ){
-            std::ostringstream msg;
-            msg << "reading failure, read bytes: 0x" << std::hex << result << std::flush;
-            throw std::runtime_error( msg.str() );
-        }
-        fclose( ptlut_in );
-    } else {
-        throw std::runtime_error(string("cannot open file: ") + config::ptLutPath().c_str());
-    }
-
-    log("Generating chunks of address blocks");
-
-    // just fill addresses for file contents
-    for (uint32_t i = 0; i < RL_MEM_SIZE/2; i++)
-        addr_buf[i] = (i*2); // address progresses by 2 because two words at a time are written
+    uint32_t *data_buf = emtf::PtLut::getData();
+    uint32_t *addr_buf = emtf::PtLut::getAddress();
 
     log("Setting write and read delay registers");
 
@@ -328,9 +399,6 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
     ///std::cout<< "Write time: "<< (double)end / ((double)CLOCKS_PER_SEC) << " s" << std::endl;
 
     write_mrs(0xffffffff, ODT_OFF); // turn ODT off
-
-    delete [] data_buf;
-    delete [] addr_buf;
 
     Command::State commandStatus = ActionSnapshot::kDone;
     return commandStatus;
@@ -390,39 +458,13 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
 
     // reserve buffers for tests
     // each 32-bit word contains one 18-bit word for RLDRAM
-    uint64_t *data_buf = new uint64_t [ FW_DATA_SIZE_B/sizeof(uint64_t) ];
-    if( data_buf == NULL ) 
-        throw std::runtime_error("data_buf: not enough memory"); 
+    boost::shared_ptr<uint64_t[]> data_buf( new uint64_t [ FW_DATA_SIZE_B/sizeof(uint64_t) ] );
+    boost::shared_ptr<uint32_t[]> addr_buf( new uint32_t [ FW_ADDR_SIZE_B/sizeof(uint32_t) ] );
 
-    uint32_t *addr_buf = new uint32_t [ FW_ADDR_SIZE_B/sizeof(uint32_t) ];
-    if( addr_buf == NULL ) 
-        throw std::runtime_error("addr_buf: not enough memory"); 
+    uint64_t *ref_buf = (uint64_t *)emtf::PtLut::getData();
 
-    uint64_t *ref_buf = new uint64_t [ RL_MEM_SIZE ];
-    if( data_buf == NULL ) 
-        throw std::runtime_error("data_buf: not enough memory"); 
-
-
-    bzero(data_buf, FW_DATA_SIZE_B);
-    bzero(addr_buf, FW_ADDR_SIZE_B);
-    bzero(ref_buf,  RL_MEM_SIZE * sizeof(uint32_t) );
-
-    log("Reading pT LUT into the memory");
-
-    // read from file
-    FILE* ptlut_in = fopen( config::ptLutPath().c_str(), "rb");
-    if( ptlut_in != NULL ) {
-        //log_printf ("reading 0x%llx bytes from /opt/madorsky/data/ptlut.dat\n", RL_DATA_SIZE_B);
-        size_t result = fread( ref_buf, 1, RL_MEM_SIZE * sizeof(uint32_t), ptlut_in );
-        if( result != RL_MEM_SIZE * sizeof(uint32_t) ){
-            std::ostringstream msg;
-            msg << "reading failure, read bytes: 0x" << std::hex << result << std::flush;
-            throw std::runtime_error( msg.str() );
-        }
-        fclose( ptlut_in );
-    } else {
-        throw std::runtime_error( string("cannot open file: ") + config::ptLutPath() );
-    }
+    bzero(data_buf.get(), FW_DATA_SIZE_B);
+    bzero(addr_buf.get(), FW_ADDR_SIZE_B);
 
 //    log("Setting read delay registers");
 //    setReadDelays();
@@ -449,12 +491,12 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
             }
             prev_rand = new_rand;
 
-            addr_buf[j] = new_rand;
+            addr_buf.get()[j] = new_rand;
         }
 
         // fill address buffer in FW
         for(int j = 0; j < XFERS_FW_ADDR; j++)
-            processor.writeBlock64("ptlut_addr", XFER_SIZE_B, (char*)(addr_buf + j*XFER_SIZE_B/4), j*XFER_SIZE_B);
+            processor.writeBlock64("ptlut_addr", XFER_SIZE_B, (char*)(addr_buf.get() + j*XFER_SIZE_B/4), j*XFER_SIZE_B);
 
         // send command
         processor.write64("ptlut_read_cmd", 0x1);
@@ -464,11 +506,11 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
         // wait until not busy
         for(uint64_t val=1; val==1; processor.read64("ptlut_busy", val) ); // maybe sleep a bit?
 
-        memset(data_buf, 0x55, sizeof(data_buf));
+        memset(data_buf.get(), 0x55, sizeof(data_buf));
 
         // fill data buffer in FW
         for(int j = 0; j < XFERS_FW_DATA; j++)
-            processor.readBlock64("ptlut_mem", XFER_SIZE_B, (char*)(data_buf + j*XFER_SIZE_B/8), j*XFER_SIZE_B );
+            processor.readBlock64("ptlut_mem", XFER_SIZE_B, (char*)(data_buf.get() + j*XFER_SIZE_B/8), j*XFER_SIZE_B );
 
         ///if( (block%100) == 0 ) log("Progress: ",block,"/0x400");
 
@@ -476,16 +518,18 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
         for(int j = 0, err_count = 0; j < FW_DATA_SIZE_B/8; j++)
         {
             // get written data from global buffer, from random address
-            uint64_t wd = ref_buf[addr_buf[j]/2];
+            uint64_t wd = ref_buf[addr_buf.get()[j]/2];
             // get data that were read from that random address
-            uint64_t rd = data_buf[j];
+            uint64_t rd = data_buf.get()[j];
             uint64_t xord = wd ^ rd;
             if (xord != 0)
             {
                 if (err_count < 150)
                 {
-                    printf("j: %04x addr: %04x w: %04x r: %04x e: %04x\n",
-                               j, addr_buf[j], wd, rd, xord);
+                    std::ostringstream msg;
+                    msg << "Mismatch: j:" << j << " addr: "<< std::hex << addr_buf[j]
+                        << " w: " << wd << " r: " << rd << " e: " << xord << std::dec << std::flush;
+                    log( msg.str().c_str() );
                 }
                 err_count++;
                 error = true;
@@ -494,12 +538,7 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
 
     }
 
-    delete [] data_buf;
-    delete [] addr_buf;
-    delete [] ref_buf;
-
-    Command::State commandStatus = (error ? ActionSnapshot::kError : ActionSnapshot::kDone);
-    return commandStatus;
+    return (error ? ActionSnapshot::kError : ActionSnapshot::kDone);
 }
 
 
