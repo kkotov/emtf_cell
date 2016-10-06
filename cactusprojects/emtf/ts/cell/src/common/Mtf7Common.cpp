@@ -79,6 +79,11 @@ namespace config {
         return "/home/emtfts/emtf_cell_config/vl_lut/";
     }
 
+    const std::string ptLutPath()
+    {
+        return "/opt/madorsky/data/ptlut.dat";
+    }
+
     const uint16_t brokenLinksWarningProcessor()
     {
         return 1;

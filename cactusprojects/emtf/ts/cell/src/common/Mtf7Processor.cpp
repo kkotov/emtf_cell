@@ -9,6 +9,7 @@
 #include "swatch/core/StateMachine.hpp"
 #include "emtf/ts/cell/Mtf7Common.hpp"
 #include "emtf/ts/cell/Mtf7Resets.hpp"
+#include "emtf/ts/cell/Mtf7Reboot.hpp"
 #include "emtf/ts/cell/Mtf7Loopback.hpp"
 #include "emtf/ts/cell/Mtf7DAQConfigRegisters.hpp"
 #include "emtf/ts/cell/Mtf7SpyFifo.hpp"
@@ -34,21 +35,21 @@ namespace emtf {
 
 SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
 
-Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
-    extPllLockStatus(registerMetric<bool>("Ext pll lock status",
+Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
+    extPllLockStatus(registerMetric<bool>("extPllLockStatus",
                                              NotEqualCondition<bool>(true),
                                              NotEqualCondition<bool>(true))),
-    bc0PeriodCounter(registerMetric<int>("Bc0 period counter",
-                                           NotEqualCondition<int>(3563),
-                                           NotEqualCondition<int>(3563))),
-    outputTrackRate(registerMetric<double>("Output track rate (Hz)")),
-    brokenLinks(registerMetric<uint16_t>("Number of broken input links",
+    bc0PeriodCounter(registerMetric<int>("bc0PeriodCounter",
+                                             NotEqualCondition<int>(3563),
+                                             NotEqualCondition<int>(3563))),
+    outputTrackRate(registerMetric<double>("outputTrackRateInHz")),
+    brokenLinks(registerMetric<uint16_t>("numberOfBrokenInputLinks",
                                          GreaterThanCondition<uint16_t>(config::brokenLinksErrorProcessor()),
                                          RangeCondition<uint16_t>(config::brokenLinksWarningProcessor(),
                                                                   config::brokenLinksErrorProcessor()))),
-    controlFirmwareVersion(registerMetric<string>("Control Firmware Version Timestamp")),
-    coreFirmwareVersion(registerMetric<string>   ("Core Firmware Version Timestamp")),
-    Processor(aStub),
+    controlFirmwareVersion(registerMetric<string>("controlFwVersionTimestamp")),
+    coreFirmwareVersion(registerMetric<string>   ("coreFwaVersionTimestamp")),
+    swatch::processor::Processor(aStub),
     addressTableReader(NULL),
     addressTable(NULL),
     driver(NULL),
@@ -90,11 +91,19 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     Command & cDaqReportWoTrack = registerCommand<Mtf7DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
     // Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
+    Command & cWritePtLut = registerCommand<WritePtLut>("Write the Pt LUT to the board");
+    Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the Pt LUT on the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
+    Command & cVerifyPtLutVersion = registerCommand<VerifyPtLutVersion>("Verify the Pt LUT version");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
+    Command & cResetCoreLink = registerCommand<ResetCoreLink>("Core link reset");
+    Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
+    Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
-    CommandSequence &cfgSeq = registerSequence("Configure Sequence", cVerifyPcLutsVersion).
+    CommandSequence &cfgSeq = registerSequence("Configure Sequence", cVerifyPtLutVersion).
+                                                                then(cVerifyPtLut).
+                                                                then(cVerifyPcLutsVersion).
                                                                 then(cVerifyPcLuts).
                                                                 then(cDaqModuleRst).
                                                                 then(cSetDaqCfgRegs).
@@ -102,8 +111,15 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
                                                                 then(cSetSingleHits).
                                                                 then(cDaqReportWoTrack);
 
+    CommandSequence &ptLutSeq = registerSequence("Load and Verify Pt LUT", cResetCoreLink).
+                                                                then(cPtLutClockReset).
+                                                                then(cWritePtLut).
+                                                                then(cVerifyPtLut);
+
+
     // processor run control state machine
     RunControlFSM &pFSM = getRunControlFSM();
+    pFSM.coldReset.add(cReboot).add(ptLutSeq);
     // pFSM.setup.add(cCheckFWVersion); // TODO: when we enable that we'll need a new DB key
     pFSM.configure.add(cfgSeq);
     // pFSM.align.add(cGthModuleReset);

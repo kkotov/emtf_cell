@@ -71,10 +71,10 @@ Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
     vector<AbstractMetric*> brokenLinksMetrics;
     for(auto it=getProcessors().begin(); it!=getProcessors().end(); ++it)
     {
-        brokenLinksMetrics.push_back(&(*it)->getMetric("Number of broken input links"));
+        brokenLinksMetrics.push_back(&(*it)->getMetric("numberOfBrokenInputLinks"));
     }
 
-    ComplexMetric<uint16_t> & brokenLinks = registerComplexMetric<uint16_t>("Total number of broken input links", brokenLinksMetrics.begin(), brokenLinksMetrics.end(), &countBrokenLinks);
+    ComplexMetric<uint16_t> & brokenLinks = registerComplexMetric<uint16_t>("Total number of broken input links", brokenLinksMetrics.begin(), brokenLinksMetrics.end(), ComplexMetric<uint16_t>::CalculateFunction_t(&countBrokenLinks));
     setErrorCondition(brokenLinks, GreaterThanCondition<uint16_t>(config::brokenLinksErrorSystem()));
     setWarningCondition(brokenLinks, RangeCondition<uint16_t>(config::brokenLinksWarningSystem(),
                                                               config::brokenLinksErrorSystem()));
