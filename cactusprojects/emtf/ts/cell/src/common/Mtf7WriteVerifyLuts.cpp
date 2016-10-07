@@ -320,8 +320,8 @@ void emtf::PtLut::readLUT(void) throw ( std::bad_alloc, std::ios_base::failure, 
     if( file.is_open() )
     {
         file.read( (char*)data_buf,  RL_MEM_SIZE * sizeof(uint32_t) );
-        if( file || file.gcount() != RL_MEM_SIZE * sizeof(uint32_t) )
-        { 
+        if( file.bad() || file.gcount() != RL_MEM_SIZE * sizeof(uint32_t) )
+        {
             std::ostringstream msg;
             msg << "reading failure, read bytes: 0x" << std::hex << file.gcount() << " bytes" << std::flush;
             file.close();
@@ -525,7 +525,7 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
             uint64_t xord = wd ^ rd;
             if (xord != 0)
             {
-                if (err_count < 150)
+                if (err_count < 0) // suppress it for now
                 {
                     std::ostringstream msg;
                     msg << "Mismatch: j:" << j << " addr: "<< std::hex << addr_buf[j]
