@@ -431,7 +431,7 @@ swatch::core::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::
         std::stringstream oss;
         oss << "Pt LUT version in file: " << ptLutVersionFile;
         log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
-        LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( oss.str() ) );
+        LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(oss.str()));
     }
 
     if(ptLutVersionFile != ptLutVersionDB)
@@ -546,19 +546,19 @@ void emtf::WritePtLut::log(const char *prefix, uint64_t val, const char *suffix)
     std::stringstream oss;
     oss << prefix << std::hex << val << std::dec << suffix;
     log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
-    LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( oss.str() ) );
+    LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(oss.str()));
 }
 
 void emtf::VerifyPtLut::log(const char *message)
 {
     log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
-    LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( message ) );
+    LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(message));
 }
 
 void emtf::WritePtLut::log(const char *message)
 {
     log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
-    LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( message ) );
+    LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(message));
 }
 
 // contents of MRTs, see RLDRAM3_registers.xlsx
