@@ -80,11 +80,14 @@ do
 done
 
 # sed "s|__HOSTNAME__PORT__|`hostname`:3333|" ${HERE}/../../etc/swatchcell/common.configure > $CONFIGURE_FILE
-sed "s|__HOSTNAME__PORT__|`hostname`:3234|" /opt/xdaq/etc/swatchcell/common.configure > $CONFIGURE_FILE
+#sed "s|__HOSTNAME__PORT__|`hostname`:3234|" /opt/xdaq/etc/swatchcell/common.configure > $CONFIGURE_FILE
+sed "s|__HOSTNAME__PORT__|`hostname`:3234|" ./common.configure > $CONFIGURE_FILE
 sed -i "s|__SUBSYSTEM_CELL_CLASS__|${SUBSYSTEM_CELL_CLASS}|" ${CONFIGURE_FILE}
 sed -i "s|__SUBSYSTEM_ID__|${SUBSYSTEM_ID}|" ${CONFIGURE_FILE}
 sed -i "s|__MODULES_TO_LOAD__|${MODULE_TAGS}|" ${CONFIGURE_FILE}
 
+
+export PWD_PATH=/home/emtfts/cactus_dev/cactusprojects/emtf/ts/cell
 
 export SWATCH_LOG4CPLUS_CONFIG=log4cplus.properties
 # sed "s|__LOGFILE__|${TMP_RUNCELL_DIR}/swatch.log|" ${HERE}/../../etc/swatchcell/log4cplus.properties  >  ${SWATCH_LOG4CPLUS_CONFIG}

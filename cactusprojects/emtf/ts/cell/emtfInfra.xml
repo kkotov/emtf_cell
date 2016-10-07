@@ -6,7 +6,7 @@
 
         <param cmd="Set DAQ Config Registers" id="BX_offset" type="uint">3540</param>
         <param cmd="Set DAQ Config Registers" id="Valor_window" type="uint">6</param>
-        <param cmd="Set DAQ Config Registers" id="Valor_delay" type="uint">49</param>
+        <param cmd="Set DAQ Config Registers" id="Valor_delay" type="uint">51</param>
         <param cmd="Set DAQ Config Registers" id="L1a_window" type="uint">6</param>
         <param cmd="Set DAQ Config Registers" id="L1a_delay" type="uint">56</param>
         <param cmd="Set DAQ Config Registers" id="Stress" type="bool">False</param>
