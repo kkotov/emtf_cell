@@ -119,43 +119,28 @@ private:
 };
 
 
-class WritePtLut : public swatch::core::Command
+class VerifyWritePtLut : public swatch::core::Command
 {
 public:
-    WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
-    ~WritePtLut(){}
+    VerifyWritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    ~VerifyWritePtLut(){}
 
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory
-    WritePtLut(const WritePtLut &);
-    WritePtLut operator=(const WritePtLut &);
+    VerifyWritePtLut(const VerifyWritePtLut &);
+    VerifyWritePtLut operator=(const VerifyWritePtLut &);
 
-    int init(void);
-    int write_mrs(uint32_t cs, uint32_t code );
-    int setWriteDelays(void);
-    int setReadDelays (void);
+    void init(void);
+    void write_mrs(uint32_t cs, uint32_t code );
+    void setWriteDelays(void);
+    void setReadDelays (void);
     void log(const char *prefix, uint64_t val, const char *suffix="");
     void log(const char *message);
 
-    Mtf7Processor &processor;
-};
-
-class VerifyPtLut : public swatch::core::Command
-{
-public:
-    VerifyPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
-    ~VerifyPtLut(){}
-
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
-
-private:
-    // hide the copy constructor and the assignment operator because the class allocates memory
-    VerifyPtLut(const VerifyPtLut &);
-    VerifyPtLut operator=(const VerifyPtLut &);
-
-    void log(const char *message);
+    bool verify(void); // returns true if error occurs
+    void write (void);
 
     Mtf7Processor &processor;
 };
