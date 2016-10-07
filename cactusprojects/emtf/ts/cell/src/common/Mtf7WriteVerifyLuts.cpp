@@ -357,10 +357,14 @@ swatch::core::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XP
 {
     if( verify() )
     {
+        log("Pt LUT verification failed, trying to write ...");
         write();
-        if( verify() ) 
+        if( verify() ){ 
+            log("Pt LUT verification failed second time");
             return ActionSnapshot::kError;
+        }
     }
+    log("Pt LUT verification succeed");
     return ActionSnapshot::kDone;
 }
 
