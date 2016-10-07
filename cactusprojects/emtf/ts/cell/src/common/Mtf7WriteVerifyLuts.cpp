@@ -347,13 +347,24 @@ void emtf::PtLut::readLUT(void) throw ( std::bad_alloc, std::ios_base::failure, 
 
 #include<stdexcept>
 
-emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::VerifyWritePtLut::VerifyWritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<Mtf7Processor>()){}
 
 using namespace log4cplus;
 
-swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParameterSet& params)
+swatch::core::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XParameterSet& params)
+{
+    if( verify() )
+    {
+        write();
+        if( verify() ) 
+            return ActionSnapshot::kError;
+    }
+    return ActionSnapshot::kDone;
+}
+
+void emtf::VerifyWritePtLut::write(void)
 {
     setStatusMsg("Write the Pt LUT to the board.");
 
@@ -399,9 +410,6 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
     ///std::cout<< "Write time: "<< (double)end / ((double)CLOCKS_PER_SEC) << " s" << std::endl;
 
     write_mrs(0xffffffff, ODT_OFF); // turn ODT off
-
-    Command::State commandStatus = ActionSnapshot::kDone;
-    return commandStatus;
 }
 
 
@@ -443,13 +451,7 @@ swatch::core::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::
     return commandStatus;
 }
 
-
-
-emtf::VerifyPtLut::VerifyPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    Command(aId, aActionable, xdata::Integer(0)),
-    processor(getActionable<Mtf7Processor>()){}
-
-swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParameterSet& params)
+bool emtf::VerifyWritePtLut::verify(void)
 {
     setStatusMsg("Check the Pt LUT on the board.");
 
@@ -538,11 +540,11 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
 
     }
 
-    return (error ? ActionSnapshot::kError : ActionSnapshot::kDone);
+    return error;
 }
 
 
-void emtf::WritePtLut::log(const char *prefix, uint64_t val, const char *suffix)
+void emtf::VerifyWritePtLut::log(const char *prefix, uint64_t val, const char *suffix)
 {
     std::stringstream oss;
     oss << prefix << std::hex << val << std::dec << suffix;
@@ -550,13 +552,7 @@ void emtf::WritePtLut::log(const char *prefix, uint64_t val, const char *suffix)
     LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(oss.str()));
 }
 
-void emtf::VerifyPtLut::log(const char *message)
-{
-    log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
-    LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(message));
-}
-
-void emtf::WritePtLut::log(const char *message)
+void emtf::VerifyWritePtLut::log(const char *message)
 {
     log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
     LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(message));
@@ -567,7 +563,7 @@ void emtf::WritePtLut::log(const char *message)
 #define MR1 0x400e0
 #define MR2 0x80000 // normal operation
 
-int emtf::WritePtLut::init(void)
+void emtf::VerifyWritePtLut::init(void)
 {
     uint64_t wr_lat  = 4;
     uint64_t rd_lat  = 15;// for version with RX FIFO
@@ -626,7 +622,7 @@ int emtf::WritePtLut::init(void)
     processor.write64("ptlut_core_rq_mask",0x7); // ptlut requests enable mask
 }
 
-int emtf::WritePtLut::write_mrs(uint32_t cs, uint32_t code)
+void emtf::VerifyWritePtLut::write_mrs(uint32_t cs, uint32_t code)
 {
     // chip select mask into data buffer
     // bits 17:0 to bits 17:0
@@ -643,10 +639,9 @@ int emtf::WritePtLut::write_mrs(uint32_t cs, uint32_t code)
     // send command
     processor.write64("ptlut_mrs_cmd", 0x1);
     processor.write64("ptlut_mrs_cmd", 0x0);
-    return 0;
 }
 
-int emtf::WritePtLut::setWriteDelays(void)
+void emtf::VerifyWritePtLut::setWriteDelays(void)
 {
     const unsigned short wdel00[72] =
         { 10, 9, 8,10, 8, 9, 8, 8,10, 9, 9, 9,10, 9, 9, 9, 9,10,
@@ -761,11 +756,9 @@ int emtf::WritePtLut::setWriteDelays(void)
     processor.write64("ptlut_inp_clk_del", 0x5);
     processor.write64("ptlut_dbdel_ld", 0x1);
     processor.write64("ptlut_dbdel_ld", 0x0);
-
-    return 0;
 }
 
-int emtf::WritePtLut::setReadDelays(void)
+void emtf::VerifyWritePtLut::setReadDelays(void)
 {
     const unsigned short rdel00[72] =
       { 12,13,14,13,14,12,12,13,13,13,14,14,14,14,13,12,14,14,
@@ -880,9 +873,4 @@ int emtf::WritePtLut::setReadDelays(void)
     processor.write64("ptlut_inp_clk_del", 0x5);
     processor.write64("ptlut_dbdel_ld", 0x1);
     processor.write64("ptlut_dbdel_ld", 0x0);
-
-    return 0;
 }
-
-
-

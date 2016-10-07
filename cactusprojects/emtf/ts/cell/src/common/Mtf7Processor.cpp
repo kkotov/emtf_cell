@@ -91,8 +91,7 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     Command & cDaqReportWoTrack = registerCommand<Mtf7DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
     // Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
-    Command & cWritePtLut = registerCommand<WritePtLut>("Write the Pt LUT to the board");
-    Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the Pt LUT on the board");
+    Command & cVerifyWritePtLut = registerCommand<VerifyWritePtLut>("Verify the Pt LUT on the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
     Command & cVerifyPtLutVersion = registerCommand<VerifyPtLutVersion>("Verify the Pt LUT version");
@@ -102,7 +101,7 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
     CommandSequence &cfgSeq = registerSequence("Configure Sequence", cVerifyPtLutVersion).
-                                                                then(cVerifyPtLut).
+                                                                then(cVerifyWritePtLut).
                                                                 then(cVerifyPcLutsVersion).
                                                                 then(cVerifyPcLuts).
                                                                 then(cDaqModuleRst).
@@ -113,8 +112,7 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
 
     CommandSequence &ptLutSeq = registerSequence("Load and Verify Pt LUT", cResetCoreLink).
                                                                 then(cPtLutClockReset).
-                                                                then(cWritePtLut).
-                                                                then(cVerifyPtLut);
+                                                                then(cVerifyWritePtLut);
 
 
     // processor run control state machine
