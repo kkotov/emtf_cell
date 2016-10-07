@@ -23,7 +23,7 @@ void Reboot::log(const char *prefix, uint32_t val, const char *suffix)
     std::stringstream oss;
     oss << prefix << std::hex << val << std::dec << suffix;
     log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
-    LOG4CPLUS_INFO( generalLogger, LOG4CPLUS_TEXT( oss.str() ) );
+    LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT( oss.str()));
 //    setStatusMsg(oss.str());
 }
 

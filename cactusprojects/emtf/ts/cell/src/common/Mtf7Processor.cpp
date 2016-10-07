@@ -174,7 +174,7 @@ double Mtf7Processor::readTrackRate(void)
 
     const string rateMsg(getStub().id + " output track rate: " + boost::lexical_cast<string>(rate) + " Hz");
 
-    LOG4CPLUS_WARN(rateLogger, LOG4CPLUS_TEXT(rateMsg));
+    LOG4CPLUS_TRACE(rateLogger, LOG4CPLUS_TEXT(rateMsg));
 
     return rate;
 }

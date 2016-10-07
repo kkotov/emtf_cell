@@ -209,7 +209,7 @@ void Mtf7InputPort::logLinkStatus(bool forceLog)
                      "aligned: " + boolToString(alignedOk) + ", " + \
                      "crc: " + boolToString(crcOk) + ", " + \
                      "id: " + boolToString(idOk);
-        LOG4CPLUS_WARN(linkLogger, LOG4CPLUS_TEXT(msg));
+        LOG4CPLUS_TRACE(linkLogger, LOG4CPLUS_TEXT(msg));
     }
 }
 
