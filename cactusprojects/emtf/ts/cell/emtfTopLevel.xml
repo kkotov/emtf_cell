@@ -1,6 +1,7 @@
 <db>
     <key id="emtf_key">
-        <load module="./emtfSequenceParameters.xml" />
+        <load module="./emtfInfra.xml" />
+        <load module="./emtfAlgo.xml" />
         <load module="./amc13Config.xml" />
         <load module="./emtfRunSettings.xml" />
     </key>

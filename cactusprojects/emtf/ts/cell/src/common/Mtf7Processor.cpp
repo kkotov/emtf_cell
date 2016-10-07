@@ -168,7 +168,7 @@ int Mtf7Processor::readBC0counter(void)
 double Mtf7Processor::readTrackRate(void)
 {
     uint64_t output_track_counter = 0u;
-    read64("output_track_rate", output_track_counter);
+    // read64("output_track_rate", output_track_counter);
 
     double rate = output_track_counter/0.00327;
 

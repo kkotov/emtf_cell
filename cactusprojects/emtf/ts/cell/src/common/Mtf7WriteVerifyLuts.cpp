@@ -357,7 +357,6 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
 {
     setStatusMsg("Write the Pt LUT to the board.");
 
-    log("Allocating space for pT LUT in RAM");
     setProgress(0.);
 
     uint32_t *data_buf = emtf::PtLut::getData();
@@ -473,7 +472,7 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
     log("Reading blocks from the board");
 
     bool error = false;
-    for(unsigned int block=0; block<100000; block++)
+    for(unsigned int block=0; block<1000; block++)
     {
         // Generating random addresses for selective read'n'compares
         for(unsigned int j=0, prev_rand=0; j<FW_ADDR_SIZE_B/sizeof(uint32_t); j++)
