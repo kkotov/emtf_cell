@@ -101,9 +101,9 @@ class PtLut
 {
 public:
 
-    static uint32_t* getAddress(void) throw (std::runtime_error) ;
-    static uint32_t* getData   (void) throw (std::runtime_error) ;
-    static uint32_t  size      (void) throw ();
+    static const uint32_t* getAddress(void) throw (std::runtime_error) ;
+    static const uint32_t* getData   (void) throw (std::runtime_error) ;
+    static       uint32_t  size      (void) throw ();
 
 private:
     static boost::mutex mtx;
