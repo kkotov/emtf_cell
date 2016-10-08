@@ -243,7 +243,7 @@ uint32_t emtf::PtLut::size(void) throw ()
     return retval;
 }
 
-uint32_t* emtf::PtLut::getData(void) throw (std::runtime_error)
+const uint32_t* emtf::PtLut::getData(void) throw (std::runtime_error)
 {
     boost::unique_lock<boost::mutex> lock(emtf::PtLut::mtx);
 
@@ -274,7 +274,7 @@ uint32_t* emtf::PtLut::getData(void) throw (std::runtime_error)
     return data_buf;
 }
 
-uint32_t* emtf::PtLut::getAddress(void) throw (std::runtime_error)
+const uint32_t* emtf::PtLut::getAddress(void) throw (std::runtime_error)
 {
     boost::unique_lock<boost::mutex> lock(emtf::PtLut::mtx);
 
@@ -374,8 +374,8 @@ void emtf::VerifyWritePtLut::write(void)
 
     setProgress(0.);
 
-    uint32_t *data_buf = emtf::PtLut::getData();
-    uint32_t *addr_buf = emtf::PtLut::getAddress();
+    const uint32_t *data_buf = emtf::PtLut::getData();
+    const uint32_t *addr_buf = emtf::PtLut::getAddress();
 
     log("Setting write and read delay registers");
 
@@ -466,7 +466,7 @@ bool emtf::VerifyWritePtLut::verify(void)
     boost::shared_ptr<uint64_t[]> data_buf( new uint64_t [ FW_DATA_SIZE_B/sizeof(uint64_t) ] );
     boost::shared_ptr<uint32_t[]> addr_buf( new uint32_t [ FW_ADDR_SIZE_B/sizeof(uint32_t) ] );
 
-    uint64_t *ref_buf = (uint64_t *)emtf::PtLut::getData();
+    const uint64_t *ref_buf = (uint64_t *)emtf::PtLut::getData();
 
     bzero(data_buf.get(), FW_DATA_SIZE_B);
     bzero(addr_buf.get(), FW_ADDR_SIZE_B);
