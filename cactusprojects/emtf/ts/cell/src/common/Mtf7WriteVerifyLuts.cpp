@@ -358,7 +358,6 @@ uint32_t emtf::PtLut::size(void) throw ()
 
     return retval;
 }
-<<<<<<< HEAD
 
 const uint32_t* emtf::PtLut::getData(void) throw (std::runtime_error)
 {
@@ -433,82 +432,6 @@ void emtf::PtLut::readLUT(void) throw ( std::bad_alloc, std::ios_base::failure, 
 
     bzero(data_buf, RL_MEM_SIZE * sizeof(uint32_t) );
 
-=======
-
-const uint32_t* emtf::PtLut::getData(void) throw (std::runtime_error)
-{
-    boost::unique_lock<boost::mutex> lock(emtf::PtLut::mtx);
-
-    if( data_buf == 0 )
-        try
-        {
-            readLUT();
-        }
-        catch ( std::exception &e )
-        {
-            if( data_buf )
-            {
-                delete [] data_buf;
-                data_buf = 0;
-            }
-            throw ( std::runtime_error( e.what() ) );
-        }
-        catch ( ... )
-        {
-            if( data_buf )
-            {
-                delete [] data_buf;
-                data_buf = 0;
-            }
-            throw( std::runtime_error( "Unidentified problem while reading Pt LUT" ) );
-        }
-
-    return data_buf;
-}
-
-const uint32_t* emtf::PtLut::getAddress(void) throw (std::runtime_error)
-{
-    boost::unique_lock<boost::mutex> lock(emtf::PtLut::mtx);
-
-    if( addr_buf == 0 ){
-        try
-        {
-            addr_buf = new uint32_t [ RL_MEM_SIZE/2 ];
-        }
-        catch ( std::bad_alloc &e )
-        {
-            addr_buf = 0;
-            throw( std::runtime_error( e.what() ) );
-        }
-        catch ( ... )
-        {
-            if( addr_buf )
-            {
-                delete [] addr_buf;
-                addr_buf = 0;
-            }
-            throw( std::runtime_error( "Unidentified problem while generating Pt LUT addresses" ) );
-        }
-
-        bzero(addr_buf, RL_MEM_SIZE * sizeof(uint32_t)/2 );
-
-        // just fill addresses for file contents
-        for (uint32_t i = 0; i < RL_MEM_SIZE/2; i++)
-            addr_buf[i] = (i*2); // address progresses by 2 because two words at a time are written
-    }
-
-    return addr_buf;
-}
-
-void emtf::PtLut::readLUT(void) throw ( std::bad_alloc, std::ios_base::failure, std::runtime_error )
-{
-    // reserve buffers
-    // each 32-bit word contains one 18-bit word for RLDRAM
-    data_buf = new uint32_t [ RL_MEM_SIZE ];
-
-    bzero(data_buf, RL_MEM_SIZE * sizeof(uint32_t) );
-
->>>>>>> 88bac95ca9323e77e161b19395b1809b359e8d20
     ifstream file( config::ptLutPath(), ios::in | std::ios::binary);
     if( file.is_open() )
     {
@@ -536,7 +459,6 @@ void emtf::PtLut::readLUT(void) throw ( std::bad_alloc, std::ios_base::failure, 
 #define XFERS_FW_ADDR (FW_ADDR_SIZE_B/XFER_SIZE_B) // count of transfers per fw addr buffer
 #define RL_BUFS_ALL (RL_DATA_SIZE_B/FW_DATA_SIZE_B) // count of data&address buffers to fill = 0x40000
 #define RL_BUFS (RL_BUFS_ALL)
-<<<<<<< HEAD
 
 #define ODT_ON  0x40008
 #define ODT_OFF 0x40000
@@ -560,31 +482,6 @@ static void writePtLut(emtf::Mtf7Processor &processor)
 
     // Writing blocks to the board
 
-=======
-
-#define ODT_ON  0x40008
-#define ODT_OFF 0x40000
-
-static void initPtLut(emtf::Mtf7Processor &processor);
-static void write_mrs(emtf::Mtf7Processor &processor, uint32_t cs, uint32_t code);
-static void setWritePtLutDelays(emtf::Mtf7Processor &processor);
-static void setReadPtLutDelays(emtf::Mtf7Processor &processor);
-
-static void writePtLut(emtf::Mtf7Processor &processor)
-{
-
-    const uint32_t *data_buf = emtf::PtLut::getData();
-    const uint32_t *addr_buf = emtf::PtLut::getAddress();
-
-    // Setting write and read delay registers
-
-    initPtLut(processor);
-    setWritePtLutDelays(processor);
-    setReadPtLutDelays(processor);
-
-    // Writing blocks to the board
-
->>>>>>> 88bac95ca9323e77e161b19395b1809b359e8d20
     write_mrs(processor, 0x01010101, ODT_ON); // turn ODT on, only on one chip at the end of each quad
 
     ///clock_t start = clock();
