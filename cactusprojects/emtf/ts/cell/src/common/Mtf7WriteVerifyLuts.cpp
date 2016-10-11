@@ -511,44 +511,6 @@ static void writePtLut(emtf::Mtf7Processor &processor)
     write_mrs(processor, 0xffffffff, ODT_OFF); // turn ODT off
 }
 
-
-emtf::VerifyPtLutVersion::VerifyPtLutVersion(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    Command(aId, aActionable, xdata::Integer(0))
-{
-    registerParameter("pt_lut_version", xdata::UnsignedInteger(1));
-}
-
-swatch::core::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::XParameterSet& params)
-{
-    setStatusMsg("Check the Pt LUT version.");
-
-    Command::State commandStatus = ActionSnapshot::kDone;
-
-    const uint32_t ptLutVersionDB = (params.get<xdata::UnsignedInteger>("pt_lut_version").value_);
-
-    uint32_t ptLutVersionFile = 0;
-
-
-    ifstream file( config::ptLutPath(), ios::in | std::ios::binary);
-    if(file.is_open())
-    {
-        file.read((char*)&ptLutVersionFile, sizeof(ptLutVersionFile));
-        file.close();
-
-        std::stringstream oss;
-        oss << "Pt LUT version in file: " << ptLutVersionFile;
-        log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
-        LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(oss.str()));
-    }
-
-    if(ptLutVersionFile != ptLutVersionDB)
-    {
-        commandStatus = ActionSnapshot::kError;
-    }
-
-    return commandStatus;
-}
-
 static bool verifyPtLut(emtf::Mtf7Processor &processor)
 {
     // reserve buffers for tests
