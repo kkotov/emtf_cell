@@ -101,9 +101,9 @@ class PtLut
 {
 public:
 
-    static uint32_t* getAddress(void) throw (std::runtime_error) ;
-    static uint32_t* getData   (void) throw (std::runtime_error) ;
-    static uint32_t  size      (void) throw ();
+    static const uint32_t* getAddress(void) throw (std::runtime_error) ;
+    static const uint32_t* getData   (void) throw (std::runtime_error) ;
+    static       uint32_t  size      (void) throw ();
 
 private:
     static boost::mutex mtx;
@@ -119,25 +119,18 @@ private:
 };
 
 
-class WritePtLut : public swatch::core::Command
+class VerifyWritePtLut : public swatch::core::Command
 {
 public:
-    WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
-    ~WritePtLut(){}
+    VerifyWritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    ~VerifyWritePtLut(){}
 
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory
-    WritePtLut(const WritePtLut &);
-    WritePtLut operator=(const WritePtLut &);
-
-    int init(void);
-    int write_mrs(uint32_t cs, uint32_t code );
-    int setWriteDelays(void);
-    int setReadDelays (void);
-    void log(const char *prefix, uint64_t val, const char *suffix="");
-    void log(const char *message);
+    VerifyWritePtLut(const VerifyWritePtLut &);
+    VerifyWritePtLut operator=(const VerifyWritePtLut &);
 
     Mtf7Processor &processor;
 };
@@ -152,10 +145,24 @@ public:
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory
-    VerifyPtLut(const VerifyPtLut &);
-    VerifyPtLut operator=(const VerifyPtLut &);
+    VerifyPtLut(const VerifyWritePtLut &);
+    VerifyPtLut operator=(const VerifyWritePtLut &);
 
-    void log(const char *message);
+    Mtf7Processor &processor;
+};
+
+class WritePtLut : public swatch::core::Command
+{
+public:
+    WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    ~WritePtLut(){}
+
+    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+
+private:
+    // hide the copy constructor and the assignment operator because the class allocates memory
+    WritePtLut(const VerifyWritePtLut &);
+    WritePtLut operator=(const VerifyWritePtLut &);
 
     Mtf7Processor &processor;
 };
@@ -173,7 +180,6 @@ private:
     VerifyPtLutVersion(const VerifyPtLutVersion &);
     VerifyPtLutVersion operator=(const VerifyPtLutVersion &);
 };
-
 
 
 } // namespace
