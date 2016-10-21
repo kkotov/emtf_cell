@@ -102,8 +102,6 @@ public:
         return sectorIndex[deviceIndex() % 6];
     }
 
-    uint16_t countBrokenLinks(void);
-
     std::string readControlFirmwareVersion(uint32_t *controlFirmwareVersion = NULL);
     std::string readCoreFirmwareVersion(uint32_t *coreFirmwareVersion = NULL);
 
@@ -117,7 +115,6 @@ private:
     swatch::core::Metric<bool>        & extPllLockStatus;
     swatch::core::Metric<int>         & bc0PeriodCounter;
     swatch::core::Metric<double>      & outputTrackRate;
-    swatch::core::Metric<uint16_t>    & brokenLinks;
     swatch::core::Metric<std::string> & controlFirmwareVersion;
     swatch::core::Metric<std::string> & coreFirmwareVersion;
 

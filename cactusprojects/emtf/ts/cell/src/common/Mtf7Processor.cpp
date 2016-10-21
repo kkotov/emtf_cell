@@ -33,6 +33,28 @@ using namespace log4cplus;
 
 namespace emtf {
 
+
+static bool filterOutMaskedPorts(const swatch::core::MonitorableObject& object)
+{
+    return !dynamic_cast<const InputPort&>(object).isMasked();
+}
+
+static const uint16_t* countObjectsInError(const std::vector<swatch::core::MonitorableObjectSnapshot>& objects)
+{
+    uint16_t count = 0;
+
+    for(auto it=objects.begin(); it!=objects.end(); ++it)
+    {
+        if(it->getStatusFlag() != kGood)
+        {
+            ++count;
+        }
+    }
+
+    return new uint16_t(count);
+}
+
+
 SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
 
 Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
@@ -43,10 +65,6 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
                                              NotEqualCondition<int>(3563),
                                              NotEqualCondition<int>(3563))),
     outputTrackRate(registerMetric<double>("outputTrackRateInHz")),
-    brokenLinks(registerMetric<uint16_t>("numberOfBrokenInputLinks",
-                                         GreaterThanCondition<uint16_t>(config::brokenLinksErrorProcessor()),
-                                         RangeCondition<uint16_t>(config::brokenLinksWarningProcessor(),
-                                                                  config::brokenLinksErrorProcessor()))),
     controlFirmwareVersion(registerMetric<string>("controlFwVersionTimestamp")),
     coreFirmwareVersion(registerMetric<string>   ("coreFwaVersionTimestamp")),
     swatch::processor::Processor(aStub),
@@ -83,6 +101,21 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     }
 
 
+    vector<MonitorableObject*> inputPorts;
+    for(auto it=getInputPorts().getPorts().begin(); it!=getInputPorts().getPorts().end(); ++it)
+    {
+        inputPorts.push_back(*it);
+    }
+    ComplexMetric<uint16_t> & brokenLinks = registerComplexMetric<uint16_t>("numberOfBrokenInputLinks",
+                                                                            inputPorts.begin(),
+                                                                            inputPorts.end(),
+                                                                            ComplexMetric<uint16_t>::CalculateFunction2_t(&countObjectsInError),
+                                                                            &filterOutMaskedPorts);
+    setErrorCondition(brokenLinks, GreaterThanCondition<uint16_t>(config::brokenLinksErrorProcessor()));
+    setWarningCondition(brokenLinks, RangeCondition<uint16_t>(config::brokenLinksWarningProcessor(),
+                                                              config::brokenLinksErrorProcessor()));
+
+
     Command & cDaqModuleRst = registerCommand<DAQModuleReset>("DAQ Module Reset");
     // Command & cGthModuleReset = registerCommand<ResetGthTransceivers>("GTH Module Reset");
     Command & cSetDaqCfgRegs = registerCommand<Mtf7DAQConfigRegisters>("Set DAQ Config Registers");
@@ -90,27 +123,32 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     Command & cSetSingleHits = registerCommand<Mtf7SetSingleHits>("Enable the single hit algorithm");
     Command & cDaqReportWoTrack = registerCommand<Mtf7DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
+
     // Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
+    Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
+    Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
+
     Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the Pt LUT on the board");
     Command & cWritePtLut = registerCommand<WritePtLut>("Write the Pt LUT to the board");
     Command & cVerifyWritePtLut = registerCommand<VerifyWritePtLut>("Verify and Write the Pt LUT on the board");
-    Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
-    Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
     Command & cVerifyPtLutVersion = registerCommand<VerifyPtLutVersion>("Verify the Pt LUT version");
+
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
     Command & cResetCoreLink = registerCommand<ResetCoreLink>("Core link reset");
     Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
     Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
-    CommandSequence &cfgSeq = registerSequence("Configure Sequence", cVerifyPtLutVersion).
-                                                                then(cVerifyWritePtLut).
-                                                                then(cVerifyPcLutsVersion).
-                                                                then(cVerifyPcLuts).
-                                                                then(cDaqModuleRst).
+    CommandSequence &cfgSeq = registerSequence("Configure Sequence", cDaqModuleRst).
                                                                 then(cSetDaqCfgRegs).
                                                                 then(cSetBC0AndDataDelay).
                                                                 then(cSetSingleHits).
-                                                                then(cDaqReportWoTrack);
+                                                                then(cDaqReportWoTrack).
+                                                                then(cVerifyPcLutsVersion).
+                                                                then(cVerifyPcLuts).
+                                                                then(cVerifyPtLutVersion).
+                                                                then(cVerifyWritePtLut);
+
+
 
     CommandSequence &ptLutSeq = registerSequence("Load and Verify Pt LUT", cResetCoreLink).
                                                                 then(cPtLutClockReset).
@@ -119,9 +157,9 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
 
     // processor run control state machine
     RunControlFSM &pFSM = getRunControlFSM();
-    pFSM.coldReset.add(cReboot).add(ptLutSeq);
+    // pFSM.coldReset.add(cReboot).add(ptLutSeq);
     // pFSM.setup.add(cCheckFWVersion); // TODO: when we enable that we'll need a new DB key
-    pFSM.configure.add(cfgSeq);
+    // pFSM.configure.add(cfgSeq);
     // pFSM.align.add(cGthModuleReset);
     pFSM.start.add(cOnStart);
 
@@ -179,20 +217,20 @@ double Mtf7Processor::readTrackRate(void)
     return rate;
 }
 
-uint16_t Mtf7Processor::countBrokenLinks(void)
-{
-    uint16_t counter = 0;
-
-    for(auto it=getInputPorts().getPorts().begin(); it!=getInputPorts().getPorts().end(); ++it)
-    {
-        if( (!(*it)->isMasked()) && (kGood != (*it)->getStatusFlag()) )
-        {
-            ++counter;
-        }
-    }
-
-    return counter;
-}
+// uint16_t Mtf7Processor::countBrokenLinks(void)
+// {
+//     uint16_t counter = 0;
+//
+//     for(auto it=getInputPorts().getPorts().begin(); it!=getInputPorts().getPorts().end(); ++it)
+//     {
+//         if( (!(*it)->isMasked()) && (kGood != (*it)->getStatusFlag()) )
+//         {
+//             ++counter;
+//         }
+//     }
+//
+//     return counter;
+// }
 
 string Mtf7Processor::readControlFirmwareVersion(uint32_t *firmwareVersion)
 {
@@ -280,10 +318,9 @@ void Mtf7Processor::retrieveMetricValues()
     setMetricValue<uint64_t>(mMetricFirmwareVersion, readFirmwareVersion());
     setMetricValue<string>  (controlFirmwareVersion, readControlFirmwareVersion());
     setMetricValue<string>  (coreFirmwareVersion,    readCoreFirmwareVersion());
-    setMetricValue<bool>    (extPllLockStatus,    readPLLstatus());
-    setMetricValue<int>     (bc0PeriodCounter,     readBC0counter());
-    setMetricValue<double>  (outputTrackRate,      readTrackRate());
-    setMetricValue<uint16_t>(brokenLinks,            countBrokenLinks());
+    setMetricValue<bool>    (extPllLockStatus,       readPLLstatus());
+    setMetricValue<int>     (bc0PeriodCounter,       readBC0counter());
+    setMetricValue<double>  (outputTrackRate,        readTrackRate());
 }
 
 } // namespace

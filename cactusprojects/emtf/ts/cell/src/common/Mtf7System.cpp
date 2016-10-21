@@ -68,13 +68,13 @@ Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
     fsm.stopFromPaused.add(getDaqTTCs(), DaqTTCFSM_t::kStatePaused, DaqTTCFSM_t::kTrStop).add(getProcessors(), ProcFSM_t::kStateRunning, ProcFSM_t::kTrStop);
 
 
-    vector<AbstractMetric*> brokenLinksMetrics;
+    vector<AbstractMetric*> processors;
     for(auto it=getProcessors().begin(); it!=getProcessors().end(); ++it)
     {
-        brokenLinksMetrics.push_back(&(*it)->getMetric("numberOfBrokenInputLinks"));
+        processors.push_back(&(*it)->getMetric("numberOfBrokenInputLinks"));
     }
 
-    ComplexMetric<uint16_t> & brokenLinks = registerComplexMetric<uint16_t>("totalNumberOfBrokenInputLinks", brokenLinksMetrics.begin(), brokenLinksMetrics.end(), ComplexMetric<uint16_t>::CalculateFunction_t(&countBrokenLinks));
+    ComplexMetric<uint16_t> & brokenLinks = registerComplexMetric<uint16_t>("totalNumberOfBrokenInputLinks", processors.begin(), processors.end(), ComplexMetric<uint16_t>::CalculateFunction_t(&countBrokenLinks));
     setErrorCondition(brokenLinks, GreaterThanCondition<uint16_t>(config::brokenLinksErrorSystem()));
     setWarningCondition(brokenLinks, RangeCondition<uint16_t>(config::brokenLinksWarningSystem(),
                                                               config::brokenLinksErrorSystem()));
