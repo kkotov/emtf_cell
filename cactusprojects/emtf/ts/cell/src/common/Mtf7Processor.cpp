@@ -19,6 +19,7 @@
 #include <fstream>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/date_time/posix_time/posix_time_types.hpp"
+#include <boost/format.hpp>
 
 #include "swatch/core/StateMachine.hpp"
 #include "swatch/core/MetricConditions.hpp"
@@ -64,7 +65,9 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     bc0PeriodCounter(registerMetric<int>("bc0PeriodCounter",
                                              NotEqualCondition<int>(3563),
                                              NotEqualCondition<int>(3563))),
-    outputTrackRate(registerMetric<double>("outputTrackRateInHz")),
+    outputTrack0Rate(registerMetric<uint32_t>("outputTrack0Rate")),
+    outputTrack1Rate(registerMetric<uint32_t>("outputTrack1Rate")),
+    outputTrack2Rate(registerMetric<uint32_t>("outputTrack2Rate")),
     controlFirmwareVersion(registerMetric<string>("controlFwVersionTimestamp")),
     coreFirmwareVersion(registerMetric<string>   ("coreFwaVersionTimestamp")),
     swatch::processor::Processor(aStub),
@@ -203,34 +206,20 @@ int Mtf7Processor::readBC0counter(void)
     return bc0_period_cnt;
 }
 
-double Mtf7Processor::readTrackRate(void)
+uint32_t Mtf7Processor::readTrackRate(uint16_t track)
 {
-    uint64_t output_track_counter = 0u;
-    // read64("output_track_rate", output_track_counter);
+    uint64_t trackCounter = 0u;
 
-    double rate = output_track_counter/0.00327;
+    boost::format regNameTemplate("rate_track_%u_1");
+    read64((regNameTemplate % track).str(), trackCounter);
 
-    const string rateMsg(getStub().id + " output track rate: " + boost::lexical_cast<string>(rate) + " Hz");
+    boost::format msgTemplate(" output track_%u rate: %u Hz");
+    const string trackRateMsg(getStub().id + (msgTemplate % track % trackCounter).str());
 
-    LOG4CPLUS_TRACE(rateLogger, LOG4CPLUS_TEXT(rateMsg));
+    LOG4CPLUS_TRACE(rateLogger, LOG4CPLUS_TEXT(trackRateMsg));
 
-    return rate;
+    return trackCounter;
 }
-
-// uint16_t Mtf7Processor::countBrokenLinks(void)
-// {
-//     uint16_t counter = 0;
-//
-//     for(auto it=getInputPorts().getPorts().begin(); it!=getInputPorts().getPorts().end(); ++it)
-//     {
-//         if( (!(*it)->isMasked()) && (kGood != (*it)->getStatusFlag()) )
-//         {
-//             ++counter;
-//         }
-//     }
-//
-//     return counter;
-// }
 
 string Mtf7Processor::readControlFirmwareVersion(uint32_t *firmwareVersion)
 {
@@ -320,7 +309,9 @@ void Mtf7Processor::retrieveMetricValues()
     setMetricValue<string>  (coreFirmwareVersion,    readCoreFirmwareVersion());
     setMetricValue<bool>    (extPllLockStatus,       readPLLstatus());
     setMetricValue<int>     (bc0PeriodCounter,       readBC0counter());
-    setMetricValue<double>  (outputTrackRate,        readTrackRate());
+    setMetricValue<uint32_t>(outputTrack0Rate,       readTrackRate(0));
+    setMetricValue<uint32_t>(outputTrack1Rate,       readTrackRate(1));
+    setMetricValue<uint32_t>(outputTrack2Rate,       readTrackRate(2));
 }
 
 } // namespace
