@@ -213,8 +213,8 @@ uint32_t Mtf7Processor::readTrackRate(uint16_t track)
     boost::format regNameTemplate("rate_track_%u_1");
     read64((regNameTemplate % track).str(), trackCounter);
 
-    boost::format msgTemplate(" output track_%u rate: %u Hz");
-    const string trackRateMsg(getStub().id + (msgTemplate % track % trackCounter).str());
+    boost::format msgTemplate("%s output track_%u rate: %u Hz");
+    const string trackRateMsg((msgTemplate % getStub().id % track % trackCounter).str());
 
     LOG4CPLUS_TRACE(rateLogger, LOG4CPLUS_TEXT(trackRateMsg));
 
