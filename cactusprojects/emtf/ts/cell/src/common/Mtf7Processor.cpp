@@ -118,6 +118,8 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     setWarningCondition(brokenLinks, RangeCondition<uint16_t>(config::brokenLinksWarningProcessor(),
                                                               config::brokenLinksErrorProcessor()));
 
+    generateLctPairs();
+
 
     Command & cDaqModuleRst = registerCommand<DAQModuleReset>("DAQ Module Reset");
     // Command & cGthModuleReset = registerCommand<ResetGthTransceivers>("GTH Module Reset");
@@ -221,6 +223,67 @@ uint32_t Mtf7Processor::readTrackRate(uint16_t track)
     return trackCounter;
 }
 
+uint32_t Mtf7Processor::lctRate(string lctName)
+{
+    uint64_t inputLctRate = 0u;
+
+    read64(lctName, inputLctRate);
+
+    return inputLctRate;
+}
+
+void Mtf7Processor::generateLctPairs()
+{
+    vector<string> stationNames = {"me1a", "me1b", "me2", "me3", "me4"};
+
+    boost::format metricTemplate("rateLct_%s_0%u");
+    boost::format registerTemplate("rate_lct_%s_0%u");
+
+    string metricName;
+    Metric<uint32_t> *metric;
+
+    // generate the metricName-registerName pairs for the stations 1a, 1b, 2, 3 and 4
+    for(auto it=stationNames.begin(); it!=stationNames.end(); ++it)
+    {
+        for(uint32_t i=1; i<=9; ++i)
+        {
+            metricName = (metricTemplate % (*it) % i).str();
+            metric = &registerMetric<uint32_t>(metricName);
+
+            pair<Metric<uint32_t> *, string> pair(metric, (registerTemplate % (*it) % i).str());
+
+            lctRates.push_back(pair);
+        }
+    }
+
+
+    // generate the metricName-registerName pairs for the neighbour stations 1n
+    for(uint32_t i=3; i<=9; i+=3)
+    {
+        metricName = (metricTemplate % "me1n" % i).str();
+        metric = &registerMetric<uint32_t>(metricName);
+
+        pair<Metric<uint32_t> *, string> pair(metric, (registerTemplate % "me1n" % i).str());
+
+        lctRates.push_back(pair);
+    }
+
+    // generate the metricName-registerName pairs for the neighbour stations 2n, 3n and 4n
+    vector<string> stationNeighbourNames = {"me2n", "me3n", "me4n"};
+    for(auto it=stationNeighbourNames.begin(); it!=stationNeighbourNames.end(); ++it)
+    {
+        for(uint32_t i=3; i<=9; i+=6)
+        {
+            metricName = (metricTemplate % (*it) % i).str();
+            metric = &registerMetric<uint32_t>(metricName);
+
+            pair<Metric<uint32_t> *, string> pair(metric, (registerTemplate % (*it) % i).str());
+
+            lctRates.push_back(pair);
+        }
+    }
+}
+
 string Mtf7Processor::readControlFirmwareVersion(uint32_t *firmwareVersion)
 {
     uint32_t ctlFpgaFwSec = 0u;
@@ -312,6 +375,12 @@ void Mtf7Processor::retrieveMetricValues()
     setMetricValue<uint32_t>(outputTrack0Rate,       readTrackRate(0));
     setMetricValue<uint32_t>(outputTrack1Rate,       readTrackRate(1));
     setMetricValue<uint32_t>(outputTrack2Rate,       readTrackRate(2));
+
+    // update the metrics for the LCTs
+    for(auto it=lctRates.begin(); it!=lctRates.end(); ++it)
+    {
+        setMetricValue<uint32_t>(*(*it).first, lctRate((*it).second));
+    }
 }
 
 } // namespace

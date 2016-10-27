@@ -9,6 +9,8 @@
 #include "emtf/pciExprLinuxBusAdapter/PCIExprDevice.hh"
 #include "boost/lexical_cast.hpp"
 #include <string>
+#include <vector>
+#include <utility>
 #include <log4cplus/logger.h>
 #include <log4cplus/loggingmacros.h>
 
@@ -113,11 +115,16 @@ private:
 
     uint32_t readTrackRate(uint16_t track);
 
+    uint32_t lctRate(std::string lctName);
+    void generateLctPairs();
+
     swatch::core::Metric<bool>        & extPllLockStatus;
     swatch::core::Metric<int>         & bc0PeriodCounter;
     swatch::core::Metric<uint32_t>    & outputTrack0Rate;
     swatch::core::Metric<uint32_t>    & outputTrack1Rate;
     swatch::core::Metric<uint32_t>    & outputTrack2Rate;
+    std::vector<std::pair<swatch::core::Metric<uint32_t> *,
+                          std::string>> lctRates;
     swatch::core::Metric<std::string> & controlFirmwareVersion;
     swatch::core::Metric<std::string> & coreFirmwareVersion;
 
