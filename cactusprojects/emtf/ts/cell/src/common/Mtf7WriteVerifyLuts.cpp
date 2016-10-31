@@ -13,6 +13,7 @@
 using namespace std;
 using namespace swatch;
 using namespace core;
+using namespace log4cplus;
 
 
 namespace emtf {
@@ -104,7 +105,7 @@ bool PcLuts::loadData(string regName, string fileName, map<string, vector<unsign
 }
 
 
-WritePcLuts::WritePcLuts(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+WritePcLuts::WritePcLuts(const string& aId, ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<Mtf7Processor>()),
     pcLuts(NULL)
@@ -112,7 +113,7 @@ WritePcLuts::WritePcLuts(const std::string& aId, swatch::core::ActionableObject&
     pcLuts = new PcLuts(processor.endcap(), processor.sector());
 }
 
-swatch::core::Command::State WritePcLuts::code(const swatch::core::XParameterSet& params)
+Command::State WritePcLuts::code(const XParameterSet& params)
 {
     setStatusMsg("Write the PC LUTs to the board.");
 
@@ -140,7 +141,7 @@ void WritePcLuts::write(Mtf7Processor &processor, map<string, vector<unsigned lo
 }
 
 
-VerifyPcLuts::VerifyPcLuts(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+VerifyPcLuts::VerifyPcLuts(const string& aId, ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<Mtf7Processor>()),
     pcLuts(NULL)
@@ -148,7 +149,7 @@ VerifyPcLuts::VerifyPcLuts(const std::string& aId, swatch::core::ActionableObjec
     pcLuts = new PcLuts(processor.endcap(), processor.sector());
 }
 
-swatch::core::Command::State VerifyPcLuts::code(const swatch::core::XParameterSet& params)
+Command::State VerifyPcLuts::code(const XParameterSet& params)
 {
     setStatusMsg("Verify the PC LUTs.");
 
@@ -194,7 +195,7 @@ VerifyPcLutsVersion::VerifyPcLutsVersion(const std::string& aId, swatch::core::A
 VerifyPcLutsVersion::~VerifyPcLutsVersion()
 { }
 
-swatch::core::Command::State VerifyPcLutsVersion::code(const swatch::core::XParameterSet& params)
+Command::State VerifyPcLutsVersion::code(const XParameterSet& params)
 {
     setStatusMsg("Check the PC LUTs version.");
 
@@ -224,7 +225,6 @@ swatch::core::Command::State VerifyPcLutsVersion::code(const swatch::core::XPara
 } // namespace
 
 
-using namespace log4cplus;
 
 static void print(const char *message)
 {

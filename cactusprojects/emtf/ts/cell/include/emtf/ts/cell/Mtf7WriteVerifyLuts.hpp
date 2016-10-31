@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <boost/format.hpp>
+#include <boost/thread/mutex.hpp>
 
 namespace emtf {
 
@@ -96,7 +97,6 @@ public:
 };
 
 // Singleton holding the gigantic pT LUT
-#include <boost/thread/mutex.hpp>
 class PtLut
 {
 public:
