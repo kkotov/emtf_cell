@@ -58,25 +58,20 @@ static const uint16_t* countObjectsInError(const std::vector<swatch::core::Monit
 
 SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
 
-Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
-    extPllLockStatus(registerMetric<bool>("extPllLockStatus",
-                                             NotEqualCondition<bool>(true),
-                                             NotEqualCondition<bool>(true))),
-    bc0PeriodCounter(registerMetric<int>("bc0PeriodCounter",
-                                             NotEqualCondition<int>(3563),
-                                             NotEqualCondition<int>(3563))),
+Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
+    Processor(aStub),
+    extPllLockStatus(registerMetric<bool>("extPllLockStatus", NotEqualCondition<bool>(true), NotEqualCondition<bool>(true))),
+    bc0PeriodCounter(registerMetric<int>("bc0PeriodCounter", NotEqualCondition<int>(3563), NotEqualCondition<int>(3563))),
     outputTrack0Rate(registerMetric<uint32_t>("outputTrack0Rate")),
     outputTrack1Rate(registerMetric<uint32_t>("outputTrack1Rate")),
     outputTrack2Rate(registerMetric<uint32_t>("outputTrack2Rate")),
     controlFirmwareVersion(registerMetric<string>("controlFwVersionTimestamp")),
-    coreFirmwareVersion(registerMetric<string>   ("coreFwaVersionTimestamp")),
-    swatch::processor::Processor(aStub),
+    coreFirmwareVersion(registerMetric<string>("coreFwaVersionTimestamp")),
     addressTableReader(NULL),
     addressTable(NULL),
     driver(NULL),
     generalLogger(Logger::getInstance(config::log4cplusGeneralLogger())),
     rateLogger(Logger::getInstance(config::log4cplusRateLogger()))
-
 {
     const ProcessorStub& stub = getStub();
 
@@ -98,7 +93,7 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
         getInputPorts().addPort(new Mtf7InputPort(it->id, it->number, aStub.id, *driver));
     }
 
-    for(std::vector<ProcessorPortStub>::const_iterator it = stub.txPorts.begin(); it != stub.txPorts.end(); it++)
+    for(vector<ProcessorPortStub>::const_iterator it = stub.txPorts.begin(); it != stub.txPorts.end(); it++)
     {
         getOutputPorts().addPort(new Mtf7OutputPort(it->id, it->number, *driver));
     }
@@ -121,52 +116,50 @@ Mtf7Processor::Mtf7Processor(const swatch::core::AbstractStub& aStub) :
     generateLctPairs();
 
 
+    Command & cResetCoreLink = registerCommand<ResetCoreLink>("Core link reset");
     Command & cDaqModuleRst = registerCommand<DAQModuleReset>("DAQ Module Reset");
-    // Command & cGthModuleReset = registerCommand<ResetGthTransceivers>("GTH Module Reset");
+    Command & cGthModuleReset = registerCommand<ResetGthTransceivers>("GTH Module Reset");
     Command & cSetDaqCfgRegs = registerCommand<Mtf7DAQConfigRegisters>("Set DAQ Config Registers");
     Command & cSetBC0AndDataDelay = registerCommand<Mtf7SetDelaysAndTriggerSource>("Set BC0 and Data Delay");
     Command & cSetSingleHits = registerCommand<Mtf7SetSingleHits>("Enable the single hit algorithm");
     Command & cDaqReportWoTrack = registerCommand<Mtf7DaqReportWoTrack>("Enable the firmware report in DAQ stream");
+    Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
+    Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
+    // Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
+
     // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
 
-    // Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
+    Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
 
-    Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the Pt LUT on the board");
-    Command & cWritePtLut = registerCommand<WritePtLut>("Write the Pt LUT to the board");
+    // Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the Pt LUT on the board");
+    // Command & cWritePtLut = registerCommand<WritePtLut>("Write the Pt LUT to the board");
     Command & cVerifyWritePtLut = registerCommand<VerifyWritePtLut>("Verify and Write the Pt LUT on the board");
     Command & cVerifyPtLutVersion = registerCommand<VerifyPtLutVersion>("Verify the Pt LUT version");
 
-    Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
-    Command & cResetCoreLink = registerCommand<ResetCoreLink>("Core link reset");
-    Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
-    Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
+    CommandSequence &coldStartSeq = registerSequence("Cold reset sequence", cResetCoreLink).
+                                                                       then(cGthModuleReset).
+                                                                       then(cPtLutClockReset).
+                                                                       then(cWritePcLuts).
+                                                                       then(cVerifyWritePtLut);
 
-    CommandSequence &cfgSeq = registerSequence("Configure Sequence", cDaqModuleRst).
-                                                                then(cSetDaqCfgRegs).
-                                                                then(cSetBC0AndDataDelay).
-                                                                then(cSetSingleHits).
-                                                                then(cDaqReportWoTrack).
-                                                                then(cVerifyPcLutsVersion).
-                                                                then(cVerifyPcLuts).
-                                                                then(cVerifyPtLutVersion).
-                                                                then(cVerifyWritePtLut);
-
-
-
-    CommandSequence &ptLutSeq = registerSequence("Load and Verify Pt LUT", cResetCoreLink).
-                                                                then(cPtLutClockReset).
-                                                                then(cVerifyWritePtLut);
-
+    CommandSequence &startSeq = registerSequence("Start sequence", cDaqModuleRst).
+                                                              then(cSetDaqCfgRegs).
+                                                              then(cSetBC0AndDataDelay).
+                                                              then(cSetSingleHits).
+                                                              then(cDaqReportWoTrack).
+                                                              then(cWritePcLuts).
+                                                              then(cVerifyPcLuts).
+                                                              then(cVerifyPcLutsVersion).
+                                                              then(cVerifyWritePtLut).
+                                                              then(cVerifyPtLutVersion).
+                                                              then(cOnStart);
 
     // processor run control state machine
     RunControlFSM &pFSM = getRunControlFSM();
-    // pFSM.coldReset.add(cReboot).add(ptLutSeq);
-    // pFSM.setup.add(cCheckFWVersion); // TODO: when we enable that we'll need a new DB key
-    // pFSM.configure.add(cfgSeq);
-    // pFSM.align.add(cGthModuleReset);
-    pFSM.start.add(cOnStart);
+    pFSM.coldReset.add(coldStartSeq);
+    pFSM.start.add(startSeq);
 
     const string processorMessage("Board " + aStub.id + " (/dev/utca_sp12" + getStub().uri + ") " + "initialized successfully");
     LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(processorMessage));
