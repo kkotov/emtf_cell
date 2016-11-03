@@ -125,7 +125,7 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     Command & cDaqReportWoTrack = registerCommand<Mtf7DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
     Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
-    // Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
+    Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
     // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
 
@@ -133,27 +133,29 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
     Command & cVerifyPcLutsVersion = registerCommand<VerifyPcLutsVersion>("Verify the PC LUTs version");
 
-    // Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the Pt LUT on the board");
-    // Command & cWritePtLut = registerCommand<WritePtLut>("Write the Pt LUT to the board");
+    Command & cVerifyPtLut = registerCommand<VerifyPtLut>("Verify the Pt LUT on the board");
+    Command & cWritePtLut = registerCommand<WritePtLut>("Write the Pt LUT to the board");
     Command & cVerifyWritePtLut = registerCommand<VerifyWritePtLut>("Verify and Write the Pt LUT on the board");
     Command & cVerifyPtLutVersion = registerCommand<VerifyPtLutVersion>("Verify the Pt LUT version");
 
-    CommandSequence &coldStartSeq = registerSequence("Cold reset sequence", cResetCoreLink).
+    CommandSequence &coldStartSeq = registerSequence("Cold reset sequence", cReboot).
+                                                                       then(cResetCoreLink).
                                                                        then(cGthModuleReset).
                                                                        then(cPtLutClockReset).
                                                                        then(cWritePcLuts).
-                                                                       then(cVerifyWritePtLut);
+                                                                       then(cWritePtLut).
+                                                                       then(cVerifyPtLut);
 
     CommandSequence &startSeq = registerSequence("Start sequence", cDaqModuleRst).
                                                               then(cSetDaqCfgRegs).
                                                               then(cSetBC0AndDataDelay).
                                                               then(cSetSingleHits).
                                                               then(cDaqReportWoTrack).
+                                                              then(cVerifyPcLutsVersion).
                                                               then(cWritePcLuts).
                                                               then(cVerifyPcLuts).
-                                                              then(cVerifyPcLutsVersion).
-                                                              then(cVerifyWritePtLut).
                                                               then(cVerifyPtLutVersion).
+                                                              then(cVerifyWritePtLut).
                                                               then(cOnStart);
 
     // processor run control state machine
