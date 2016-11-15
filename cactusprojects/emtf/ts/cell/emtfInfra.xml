@@ -1,5 +1,5 @@
 <infra id="emtf">
-    <context id="processors">
+    <context id="emtfProcessors">
         <param cmd="Set BC0 and Data Delay" id="BC0_offset" type="uint">24</param>
         <param cmd="Set BC0 and Data Delay" id="DAQ_delay" type="int">272</param>
         <param cmd="Set BC0 and Data Delay" id="GMT_comma_delay" type="uint">34</param>

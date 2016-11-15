@@ -1,5 +1,5 @@
 <run-settings id="emtf">
-    <context id="processors">
+    <context id="emtfProcessors">
         <state id="Halted">
             <mon-obj id="inputPorts" status="disabled" />
         </state>

@@ -14,7 +14,7 @@
     <processor id="EMTF+1">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>0</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
@@ -33,7 +33,7 @@
     <processor id="EMTF+6">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>1</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
@@ -52,7 +52,7 @@
     <processor id="EMTF+3">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>2</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
@@ -71,7 +71,7 @@
     <processor id="EMTF+4">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>3</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
@@ -90,7 +90,7 @@
     <processor id="EMTF+2">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>4</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
@@ -109,7 +109,7 @@
     <processor id="EMTF+5">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>5</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
@@ -128,7 +128,7 @@
     <processor id="EMTF-1">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>6</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
@@ -147,7 +147,7 @@
     <processor id="EMTF-6">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>7</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
@@ -166,7 +166,7 @@
     <processor id="EMTF-3">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>8</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
@@ -185,7 +185,7 @@
     <processor id="EMTF-4">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>9</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
@@ -204,7 +204,7 @@
     <processor id="EMTF-2">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>10</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>
@@ -223,7 +223,7 @@
     <processor id="EMTF-5">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>11</uri>
       <address-table>/home/emtfts/emtf_cell_config/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05f</crate>

@@ -10,7 +10,7 @@
     <processor id="EMTF+1">
       <creator>emtf::Mtf7Processor</creator>
       <hw-type>MTF7</hw-type>
-      <role>procRoleA</role>
+      <role>emtfProcessors</role>
       <uri>1</uri>
       <address-table>/nfshome0/kkotov/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
