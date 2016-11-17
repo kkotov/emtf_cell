@@ -277,10 +277,10 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
     setStatusMsg("Verifying the Pt LUT on the board.");
     setProgress(0.);
 
-    bool success = verifyPtLut(processor);
+    bool error = verifyPtLut(processor);
     setProgress(1.);
 
-    return (success ? ActionSnapshot::kDone : ActionSnapshot::kError);
+    return (error ? ActionSnapshot::kError : ActionSnapshot::kDone );
 }
 
 emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
