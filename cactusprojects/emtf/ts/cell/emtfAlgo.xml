@@ -3,7 +3,7 @@
 	    <param id="control_firmware_version" type="string">2016-2-3 18:29:26</param>
 	    <param id="core_firmware_version" type="string">2016-5-11 4:51:32</param>
 	    <param id="pc_lut_version" type="string">2016-07-18</param>
-        <param id="pt_lut_version" type="uint">1540</param>
+        <param id="pt_lut_version" type="uint">1541</param>
     </context>
 </algo>
 
