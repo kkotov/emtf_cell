@@ -71,7 +71,8 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     addressTable(NULL),
     driver(NULL),
     generalLogger(Logger::getInstance(config::log4cplusGeneralLogger())),
-    rateLogger(Logger::getInstance(config::log4cplusRateLogger()))
+    rateLogger(Logger::getInstance(config::log4cplusRateLogger())),
+    lctLogger(Logger::getInstance(config::log4cplusLctLogger()))
 {
     const ProcessorStub& stub = getStub();
 
@@ -371,10 +372,17 @@ void Mtf7Processor::retrieveMetricValues()
     setMetricValue<uint32_t>(outputTrack1Rate,       readTrackRate(1));
     setMetricValue<uint32_t>(outputTrack2Rate,       readTrackRate(2));
 
-    // update the metrics for the LCTs
+    // update the metrics for the LCTs and log them
     for(auto it=lctRates.begin(); it!=lctRates.end(); ++it)
     {
-        setMetricValue<uint32_t>(*(*it).first, lctRate((*it).second));
+        const uint32_t rate = lctRate((*it).second);
+
+        setMetricValue<uint32_t>(*(*it).first, rate);
+
+        boost::format msgTemplate("%s lct: %s, rate: %u");
+        const string lctRateMsg((msgTemplate % getStub().id % (*it).second % rate).str());
+
+        LOG4CPLUS_TRACE(lctLogger, LOG4CPLUS_TEXT(lctRateMsg));
     }
 }
 

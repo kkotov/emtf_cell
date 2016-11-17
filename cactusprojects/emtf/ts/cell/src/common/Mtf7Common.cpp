@@ -69,6 +69,11 @@ namespace config {
         return "emtfRateLogger";
     }
 
+    const string log4cplusLctLogger()
+    {
+        return "emtfLctLogger";
+    }
+
     const string log4cplusPropertyFile()
     {
         return getenv("EMTF_LOGGER_PROPERTY_FILE") ? getenv("EMTF_LOGGER_PROPERTY_FILE") : "/home/emtfts/emtf_cell_config/log4cplus.properties";

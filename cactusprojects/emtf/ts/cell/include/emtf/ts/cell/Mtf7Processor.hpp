@@ -135,6 +135,7 @@ private:
 
     log4cplus::Logger generalLogger;
     log4cplus::Logger rateLogger;
+    log4cplus::Logger lctLogger;
 };
 
 } // namespace
