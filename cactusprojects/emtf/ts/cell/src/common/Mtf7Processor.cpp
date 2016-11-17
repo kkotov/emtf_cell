@@ -146,22 +146,22 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
                                                                        then(cWritePtLut).
                                                                        then(cVerifyPtLut);
 
-    CommandSequence &startSeq = registerSequence("Start sequence", cDaqModuleRst).
-                                                              then(cSetDaqCfgRegs).
-                                                              then(cSetBC0AndDataDelay).
-                                                              then(cSetSingleHits).
-                                                              then(cDaqReportWoTrack).
-                                                              then(cVerifyPcLutsVersion).
-                                                              then(cWritePcLuts).
-                                                              then(cVerifyPcLuts).
-                                                              then(cVerifyPtLutVersion).
-                                                              then(cVerifyWritePtLut).
-                                                              then(cOnStart);
+    CommandSequence &configureSeq = registerSequence("Configure sequence", cDaqModuleRst).
+                                                                      then(cSetDaqCfgRegs).
+                                                                      then(cSetBC0AndDataDelay).
+                                                                      then(cSetSingleHits).
+                                                                      then(cDaqReportWoTrack).
+                                                                      then(cVerifyPcLutsVersion).
+                                                                      then(cWritePcLuts).
+                                                                      then(cVerifyPcLuts).
+                                                                      then(cVerifyPtLutVersion).
+                                                                      then(cVerifyWritePtLut).
+                                                                      then(cOnStart);
 
     // processor run control state machine
     RunControlFSM &pFSM = getRunControlFSM();
     pFSM.coldReset.add(coldStartSeq);
-    pFSM.start.add(startSeq);
+    pFSM.configure.add(configureSeq);
 
     const string processorMessage("Board " + aStub.id + " (/dev/utca_sp12" + getStub().uri + ") " + "initialized successfully");
     LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(processorMessage));
