@@ -8,8 +8,8 @@ momentum (or transverse momentum), is evaluated from track's bending in the inho
 magnetic field.
 
 The EMTF system is controlled and monitored via PCI express (PCIe) connection to a regular
-PC running the EMTF cell instance. The EMTF cell is a system-specific implementation of 
-[SWATCH](http://cactus.web.cern.ch/cactus/tsdocs/index.html) cell. This application
-provides an expert-level interface to the system and in the same time allows the central
-SWATCH framework to orchestrate all systems of the L1T coherently. This repository contains
+PC running the EMTF cell instance. EMTF cell is a system-specific implementation of 
+[SWATCH](http://cactus.web.cern.ch/cactus/tsdocs/index.html) cell. EMTF cell provides an
+expert-level interface to the system and in the same time allows the central SWATCH
+framework to orchestrate all systems of the L1T coherently. Current repository contains
 the EMTF cell implementation. 
