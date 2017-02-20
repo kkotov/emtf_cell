@@ -38,19 +38,17 @@ Sources=\
 	TransitionCommands.cpp
 
 IncludeDirs = \
-	/home/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/include/ \
 	$(XDAQ_ROOT)/include \
 	$(CACTUS_ROOT)/include \
 	$(TRIGGER_EMTF_TS_CELL_INCLUDE_PREFIX) \
 	$(TRIGGER_EMTF_INCLUDE_PREFIX) \
 	$(XDAQ_ROOT)/include/hal \
-	/home/emtfts/cactus_trunk/cactusprojects/emtf/pciExprLinuxBusAdapter/include \
+	$(BUILD_HOME)/cactusprojects/emtf/pciExprLinuxBusAdapter/include \
 
 UserCFlags =
 UserCCFlags = -g -ggdb -O0 -std=c++0x
 
-UserDynamicLinkFlags= -Xlinker -rpath -Xlinker /home/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/lib/linux/x86_64_slc6/ \
-                      -Xlinker -rpath -Xlinker /home/emtfts/cactus_trunk/cactusprojects/emtf/pciExprLinuxBusAdapter/lib/linux/x86_64_slc6/ \
+UserDynamicLinkFlags=
 
 DependentLibraryDirs = \
 	$(XDAQ_ROOT)/lib \
@@ -59,8 +57,7 @@ DependentLibraryDirs = \
 	$(TRIGGER_EMTF_SPBASEINTERACTIONS_LIB_PREFIX) \
 	$(TRIGGER_EMTF_SPFUNCTIONS_LIB_PREFIX) \
 	$(TRIGGER_EMTF_SPLUTSANDFIRMWARE_LIB_PREFIX) \
-	/home/emtfts/cactus_trunk/cactusprojects/emtf/pciExprLinuxBusAdapter/lib/linux/x86_64_slc6 \
-	/home/emtfts/cactus_trunk/cactusprojects/emtf/daq/hal/generic/lib/linux/x86_64_slc6/ \
+	$(BUILD_HOME)/cactusprojects/emtf/pciExprLinuxBusAdapter/lib/linux/$(XDAQ_PLATFORM)
 
 DependentLibraries = tsframework \
                      swatchcellframework \
@@ -76,7 +73,7 @@ UserExecutableLinkFlags =
 # potentially need conditional processing
 #
 
-Libraries =
+Libraries = 
 
 #
 # Compile the source files and create a shared library

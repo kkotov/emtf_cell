@@ -1,6 +1,7 @@
 #include "PCIExprLinuxBusAdapter.hh"
 #include <sstream>
 #include <iomanip>
+#include <unistd.h>
 
 HAL::PCIExprLinuxBusAdapter::PCIExprLinuxBusAdapter() throw (HAL::BusAdapterException)
   try

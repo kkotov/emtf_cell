@@ -15,7 +15,6 @@ export PACKAGE_RELEASE=1
 Project=cactusprojects/emtf
 
 Packages= \
-        daq/hal \
         pciExprLinuxBusAdapter \
         ts/cell \
 
