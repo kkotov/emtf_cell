@@ -55,7 +55,7 @@ UserSourcePath = \
 
 LibraryDirs=
 
-DependentLibraries= GenericHAL
+DependentLibraries= GenericHAL PCILinuxBusAdapter
 
 UserCFlags =
 UserCCFlags = -g -DLINUX
