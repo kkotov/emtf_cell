@@ -13,8 +13,8 @@ Project=cactusprojects
 Package=emtf/ts/cell
 
 export PACKAGE_VER_MAJOR=0
-export PACKAGE_VER_MINOR=6
-export PACKAGE_VER_PATCH=2
+export PACKAGE_VER_MINOR=7
+export PACKAGE_VER_PATCH=0
 export PACKAGE_RELEASE=0
 
 Sources=\
@@ -43,7 +43,6 @@ IncludeDirs = \
 	$(TRIGGER_EMTF_TS_CELL_INCLUDE_PREFIX) \
 	$(TRIGGER_EMTF_INCLUDE_PREFIX) \
 	$(XDAQ_ROOT)/include/hal \
-	$(BUILD_HOME)/cactusprojects/emtf/pciExprLinuxBusAdapter/include \
 
 UserCFlags =
 UserCCFlags = -g -ggdb -O0 -std=c++0x
@@ -57,7 +56,6 @@ DependentLibraryDirs = \
 	$(TRIGGER_EMTF_SPBASEINTERACTIONS_LIB_PREFIX) \
 	$(TRIGGER_EMTF_SPFUNCTIONS_LIB_PREFIX) \
 	$(TRIGGER_EMTF_SPLUTSANDFIRMWARE_LIB_PREFIX) \
-	$(BUILD_HOME)/cactusprojects/emtf/pciExprLinuxBusAdapter/lib/linux/$(XDAQ_PLATFORM)
 
 DependentLibraries = tsframework \
                      swatchcellframework \
@@ -73,7 +71,7 @@ UserExecutableLinkFlags =
 # potentially need conditional processing
 #
 
-Libraries = 
+Libraries =
 
 #
 # Compile the source files and create a shared library
