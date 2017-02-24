@@ -2,10 +2,9 @@
 
 HERE=$(python -c "import os.path; print os.path.dirname(os.path.abspath('$BASH_SOURCE'))")
 export EMTF_ROOT=${HERE}
-export LD_LIBRARY_PATH="${EMTF_ROOT}../../pciExprLinuxBusAdapter/lib/linux/x86_64_centos7/:${EMTF_ROOT}/lib/linux/x86_64_centos7/"
+export LD_LIBRARY_PATH="${EMTF_ROOT}/lib/linux/x86_64_centos7/"
 
 export SUBSYSTEM_ID=emtf
-SUBSYSTEM_CELL_LIB_PATH="$SUBSYSTEM_CELL_LIB_PATH;file:///${EMTF_ROOT}/../../pciExprLinuxBusAdapter/lib/linux/x86_64_centos7/libPCIExprLinuxBusAdapter.so"
 SUBSYSTEM_CELL_LIB_PATH="$SUBSYSTEM_CELL_LIB_PATH;file:///${EMTF_ROOT}/lib/linux/x86_64_centos7/libemtfcell.so;"
 
 export SUBSYSTEM_CELL_LIB_PATH
