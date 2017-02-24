@@ -76,8 +76,7 @@ UserCFlags =
 UserCCFlags = 
 UserDynamicLinkFlags =
 UserStaticLinkFlags =
-UserExecutableLinkFlags = -Xlinker -rpath -Xlinker /nfshome0/emtfts/cactus_1701/cactusprojects/emtf//pciExprLinuxBusAdapter/lib/linux/x86_64_slc6/ \
-                          -Xlinker -rpath -Xlinker /nfshome0/emtfts/cactus_1701/cactusprojects/emtf/daq/hal/generic/lib/linux/x86_64_slc6
+UserExecutableLinkFlags =
 # These libraries can be platform specific and
 # potentially need conditional processing
 
