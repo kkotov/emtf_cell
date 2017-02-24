@@ -55,7 +55,7 @@ UserSourcePath = \
 
 LibraryDirs=
 
-DependentLibraries=
+DependentLibraries= GenericHAL
 
 UserCFlags =
 UserCCFlags = -g -DLINUX
