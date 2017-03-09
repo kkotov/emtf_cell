@@ -35,7 +35,8 @@ Sources=\
 	Mtf7LinksAlignmentReferences.cpp \
 	Mtf7ConfigCommands.cpp \
 	Mtf7WriteVerifyLuts.cpp \
-	TransitionCommands.cpp
+	TransitionCommands.cpp \
+	AlignmentFifoDelayCommands.cpp
 
 IncludeDirs = \
 	$(XDAQ_ROOT)/include \
