@@ -2,6 +2,7 @@
 #include "emtf/ts/cell/Mtf7Processor.hpp"
 #include "emtf/ts/cell/Mtf7ConfigCommands.hpp"
 #include "xdata/Boolean.h"
+#include "emtf/ts/cell/Mtf7Common.hpp"
 
 using namespace std;
 using namespace swatch;
@@ -46,6 +47,9 @@ swatch::core::Command::State AlignmentFifoDelay::code(const swatch::core::XParam
 
 bool AlignmentFifoDelay::setFixedAlignmentFifoDelays(int endcap, int sector)
 {
+    // TODO: that name needs to be tested
+    const string fileName = config::alignmentFifoDelayFile(endcap, sector);
+
     return true;
 }
 

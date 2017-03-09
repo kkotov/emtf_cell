@@ -1,5 +1,6 @@
 #include "emtf/ts/cell/Mtf7Processor.hpp"
 #include "emtf/ts/cell/Mtf7Common.hpp"
+#include <boost/format.hpp>
 
 using namespace std;
 using namespace swatch;
@@ -107,6 +108,13 @@ namespace config {
     const uint16_t brokenLinksErrorSystem()
     {
         return 10;
+    }
+
+    const string alignmentFifoDelayFile(int endcap, int sector)
+    {
+        boost::format fileNameTemplate("af_delays_endcap_%d_sector_%d.txt");
+
+        return (fileNameTemplate % endcap % sector).str();
     }
 } // namespace config
 
