@@ -2,6 +2,8 @@
 #define __ALIGNMENT_FIFO_DELAY_COMMANDS_HPP__
 
 #include "swatch/core/Command.hpp"
+#include <vector>
+#include <string>
 
 namespace emtf {
 
@@ -13,7 +15,12 @@ public:
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
-    bool setFixedAlignmentFifoDelays(int endcap, int sector);
+    void fillRegisterNames();
+    bool loadFixedAlignmentFifoDelays(int endcap, int sector);
+    bool writeFixedAlignmentFifoDelays();
+
+    std::vector<std::string> registerNames;
+    std::vector<uint64_t>    registerValues;
 };
 
 } // namespace

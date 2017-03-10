@@ -29,6 +29,7 @@ namespace config {
     const uint16_t brokenLinksWarningSystem();
     const uint16_t brokenLinksErrorSystem();
     const std::string alignmentFifoDelayFile(int endcap, int sector);
+    const uint32_t cscLinksCount();
 } // namespace config
 
 

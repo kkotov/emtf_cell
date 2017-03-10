@@ -112,9 +112,14 @@ namespace config {
 
     const string alignmentFifoDelayFile(int endcap, int sector)
     {
-        boost::format fileNameTemplate("af_delays_endcap_%d_sector_%d.txt");
+        boost::format fileNameTemplate("/home/emtfts/emtf_cell_config/af_delays/af_delays_endcap_%d_sector_%d.txt");
 
         return (fileNameTemplate % endcap % sector).str();
+    }
+
+    const uint32_t cscLinksCount()
+    {
+        return 49;
     }
 } // namespace config
 
