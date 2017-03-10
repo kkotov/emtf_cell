@@ -15,6 +15,7 @@
 #include "emtf/ts/cell/Mtf7SpyFifo.hpp"
 #include "emtf/ts/cell/Mtf7ConfigCommands.hpp"
 #include "emtf/ts/cell/Mtf7WriteVerifyLuts.hpp"
+#include "emtf/ts/cell/AlignmentFifoDelays.hpp"
 #include "emtf/ts/cell/TransitionCommands.hpp"
 #include <fstream>
 #include "boost/date_time/posix_time/posix_time.hpp"
@@ -138,6 +139,7 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     Command & cWritePtLut = registerCommand<WritePtLut>("Write the Pt LUT to the board");
     Command & cVerifyWritePtLut = registerCommand<VerifyWritePtLut>("Verify and Write the Pt LUT on the board");
     Command & cVerifyPtLutVersion = registerCommand<VerifyPtLutVersion>("Verify the Pt LUT version");
+    Command & cAlignmentFifoDelays = registerCommand<AlignmentFifoDelays>("Enable automatic AF delays");
 
     CommandSequence &coldStartSeq = registerSequence("Cold reset sequence", cReboot).
                                                                        then(cResetCoreLink).
@@ -157,7 +159,8 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
                                                                       then(cVerifyPcLuts).
                                                                       then(cVerifyPtLutVersion).
                                                                       then(cVerifyWritePtLut).
-                                                                      then(cOnStart);
+                                                                      then(cOnStart).
+                                                                      then(cAlignmentFifoDelays);
 
     // processor run control state machine
     RunControlFSM &pFSM = getRunControlFSM();

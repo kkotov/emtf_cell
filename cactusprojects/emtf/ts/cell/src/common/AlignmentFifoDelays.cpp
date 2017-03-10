@@ -1,9 +1,10 @@
 #include "emtf/ts/cell/Mtf7Processor.hpp"
 #include "emtf/ts/cell/Mtf7ConfigCommands.hpp"
-#include "xdata/Boolean.h"
 #include "emtf/ts/cell/Mtf7Common.hpp"
+#include "emtf/ts/cell/AlignmentFifoDelays.hpp"
+#include "xdata/Boolean.h"
 #include <fstream>
-#include <boost/lexical_cast.hpp>
+#include <string>
 
 using namespace std;
 using namespace swatch;
@@ -12,27 +13,23 @@ using namespace core;
 
 namespace emtf {
 
-AlignmentFifoDelay::AlignmentFifoDelay(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0))
+AlignmentFifoDelays::AlignmentFifoDelays(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+    swatch::core::Command(aId, aActionable, xdata::Integer(0)),
+    processor(getActionable<Mtf7Processor>())
 {
-    registerParameter("enable_auto_delays", xdata::Boolean(true));
-
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    registerParameter("enable_auto_af_delays", xdata::Boolean(true));
 
     fillRegisterNames();
-    loadFixedAlignmentFifoDelays(processor.endcap(), processor.sector());
+    loadFixedAlignmentFifoDelays();
 
     // throw in case of error
 }
 
-swatch::core::Command::State AlignmentFifoDelay::code(const swatch::core::XParameterSet& params)
+swatch::core::Command::State AlignmentFifoDelays::code(const swatch::core::XParameterSet& params)
 {
-    setStatusMsg("Enable the automatic alignment of the fifo delays");
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    setStatusMsg("Enable automatic AF delays");
 
-    // TODO: test if the auto_delays is set correctly
-    const xdata::Boolean auto_delays(params.get<xdata::Boolean>("enable_auto_af_delays").value_);
-    cout << "THE VALUE OF AUTO_DELAYS IS: " << auto_delays << endl;
+    const uint64_t auto_delays(params.get<xdata::Boolean>("enable_auto_af_delays").value_);
 
     processor.write64("af_en", auto_delays); // enable or disable the auto af delays
 
@@ -40,7 +37,8 @@ swatch::core::Command::State AlignmentFifoDelay::code(const swatch::core::XParam
 
     if(!auto_delays) // in case of auto delays disabled set fixed values for alignment filo delays
     {
-        bool res = writeFixedAlignmentFifoDelays();
+        bool res = writeFixedAlignmentFifoDelays(); // write the values
+        res &= verifyFixedAlignmentFifoDelays(); // verify the values
 
         if(!res)
         {
@@ -53,7 +51,7 @@ swatch::core::Command::State AlignmentFifoDelay::code(const swatch::core::XParam
     return commandStatus;
 }
 
-void AlignmentFifoDelay::fillRegisterNames()
+void AlignmentFifoDelays::fillRegisterNames()
 {
     registerNames.push_back("af_delay_me1a_02");
     registerNames.push_back("af_delay_me1a_03");
@@ -106,11 +104,12 @@ void AlignmentFifoDelay::fillRegisterNames()
     registerNames.push_back("af_delay_me4n_09");
 }
 
-bool AlignmentFifoDelay::loadFixedAlignmentFifoDelays(int endcap, int sector)
+bool AlignmentFifoDelays::loadFixedAlignmentFifoDelays()
 {
     bool result = true;
 
-    const string fileName = config::alignmentFifoDelayFile(endcap, sector);
+    const string fileName = config::alignmentFifoDelayFile(processor.endcap(), processor.sector());
+
     fstream file(fileName, ios::in);
     if(file.is_open())
     {
@@ -118,12 +117,35 @@ bool AlignmentFifoDelay::loadFixedAlignmentFifoDelays(int endcap, int sector)
 
         while(getline(file, line))
         {
-            const uint64_t value = boost::lexical_cast<uint64_t>(line);
+            if(!line.empty()) // discard the empty lines
+            {
+                const uint64_t value = stoull(line, nullptr, 16);
 
-            registerValues.push_back(value);
+                registerValues.push_back(value);
+            }
         }
 
         file.close();
+    }
+    else
+    {
+        // TODO: log error or something
+        result = false;
+    }
+
+    return result;
+}
+
+bool AlignmentFifoDelays::writeFixedAlignmentFifoDelays()
+{
+    bool result = true;
+
+    if((registerNames.size() == config::cscLinksCount()) && (registerNames.size() == registerValues.size()))
+    {
+        for(unsigned i=0; i<registerNames.size(); ++i)
+        {
+            processor.write64(registerNames[i], registerValues[i]);
+        }
     }
     else
     {
@@ -133,7 +155,7 @@ bool AlignmentFifoDelay::loadFixedAlignmentFifoDelays(int endcap, int sector)
     return result;
 }
 
-bool AlignmentFifoDelay::writeFixedAlignmentFifoDelays()
+bool AlignmentFifoDelays::verifyFixedAlignmentFifoDelays()
 {
     bool result = true;
 
@@ -141,7 +163,14 @@ bool AlignmentFifoDelay::writeFixedAlignmentFifoDelays()
     {
         for(unsigned i=0; i<registerNames.size(); ++i)
         {
-            // write to the board
+            uint64_t value;
+            processor.read64(registerNames[i], value);
+
+            if(value != registerValues[i])
+            {
+                result = false;
+                break;
+            }
         }
     }
     else
