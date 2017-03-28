@@ -20,6 +20,8 @@ public:
 private:
     const std::string id;
     const uint64_t afDelayReference;
+    const int64_t afDeltaMin;
+    const int64_t afDeltaMax;
 
     HAL::PCIExprDevice & driver_;
 

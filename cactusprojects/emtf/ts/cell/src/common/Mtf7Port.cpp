@@ -90,6 +90,8 @@ Mtf7InputPort::Mtf7InputPort(const string& aID, const uint32_t portId, const str
     InputPort(aID),
     id(aID),
     afDelayReference(InputLinksAlignmentReferences::getReferenceValue(processorName, portId)),
+    afDeltaMin(-8),
+    afDeltaMax(20),
     driver_(driver),
     link_id_mismatch(registerMetric<string>("linkIdMismatch", swatch::core::NotEqualCondition<string>("none"), swatch::core::NotEqualCondition<string>("none"))),
     linkLogger(Logger::getInstance(config::log4cplusLinkLogger())),
@@ -167,8 +169,11 @@ bool Mtf7InputPort::readMetricIsAligned()
 
     bool res = true;
 
+    const int64_t delta = (afDelay - afDelayReference);
+
     if(   (0x40 <= afDelay)                       // afDelay must be smaller than 0x40
-       || (8 < labs(afDelay - afDelayReference))) // afDelay should not deviate more than +/- 2 with respect to the initial value
+       || (delta < afDeltaMin)
+       || (delta > afDeltaMax))
     {
         res = false;
     }
