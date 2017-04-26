@@ -1,14 +1,14 @@
 <infra id="emtf">
     <context id="emtfProcessors">
-        <param cmd="Set BC0 and Data Delay" id="BC0_offset" type="uint">24</param>
+        <param cmd="Set BC0 and Data Delay" id="BC0_offset" type="uint">36</param>
         <param cmd="Set BC0 and Data Delay" id="DAQ_delay" type="int">272</param>
-        <param cmd="Set BC0 and Data Delay" id="GMT_comma_delay" type="uint">34</param>
+        <param cmd="Set BC0 and Data Delay" id="GMT_comma_delay" type="uint">31</param>
 
         <param cmd="Set DAQ Config Registers" id="BX_offset" type="uint">3540</param>
         <param cmd="Set DAQ Config Registers" id="Valor_window" type="uint">6</param>
-        <param cmd="Set DAQ Config Registers" id="Valor_delay" type="uint">51</param>
+        <param cmd="Set DAQ Config Registers" id="Valor_delay" type="uint">48</param>
         <param cmd="Set DAQ Config Registers" id="L1a_window" type="uint">6</param>
-        <param cmd="Set DAQ Config Registers" id="L1a_delay" type="uint">56</param>
+        <param cmd="Set DAQ Config Registers" id="L1a_delay" type="uint">53</param>
         <param cmd="Set DAQ Config Registers" id="Stress" type="bool">False</param>
         <param cmd="Set DAQ Config Registers" id="Amc13_easy_en" type="bool">false</param>
 
