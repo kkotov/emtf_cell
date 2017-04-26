@@ -25,6 +25,7 @@ Mtf7DAQConfigRegisters::Mtf7DAQConfigRegisters(const std::string& aId, Actionabl
     registerParameter("L1a_delay", xdata::UnsignedInteger(57u));
     registerParameter("Stress", xdata::Boolean(false));
     registerParameter("Amc13_easy_en", xdata::Boolean(false));
+    registerParameter("daq_rpc_late_by", xdata::UnsignedInteger(6u));
 }
 
 Command::State Mtf7DAQConfigRegisters::code(const XParameterSet& params)
@@ -38,6 +39,7 @@ Command::State Mtf7DAQConfigRegisters::code(const XParameterSet& params)
     const uint64_t l1aDelay(params.get<xdata::UnsignedInteger>("L1a_delay").value_);
     const uint64_t stress(params.get<xdata::Boolean>("Stress").value_);
     const uint64_t amc13EasyEn(params.get<xdata::Boolean>("Amc13_easy_en").value_);
+    const uint64_t daqRpcLateBy(params.get<xdata::UnsignedInteger>("daq_rpc_late_by").value_);
 
     Mtf7Processor &processor = getActionable<Mtf7Processor>();
 
@@ -66,6 +68,9 @@ Command::State Mtf7DAQConfigRegisters::code(const XParameterSet& params)
 
     processor.write64("daq_amc13_easy_en", amc13EasyEn);
     verify::CheckWrittenValue(processor, "daq_amc13_easy_en", amc13EasyEn, commandStatus);
+
+    processor.write64("daq_rpc_late_by", daqRpcLateBy);
+    verify::CheckWrittenValue(processor, "daq_rpc_late_by", daqRpcLateBy, commandStatus);
 
     return commandStatus;
 }
