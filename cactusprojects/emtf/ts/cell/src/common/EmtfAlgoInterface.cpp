@@ -1,4 +1,4 @@
-#include "emtf/ts/cell/Mtf7AlgoInterface.hpp"
+#include "emtf/ts/cell/EmtfAlgoInterface.hpp"
 
 namespace emtf {
 

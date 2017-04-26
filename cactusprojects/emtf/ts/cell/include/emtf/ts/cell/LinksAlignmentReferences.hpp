@@ -1,7 +1,7 @@
 #ifndef __INPUT_LINKS_ALIGNMENT_REFERENCES__
 #define __INPUT_LINKS_ALIGNMENT_REFERENCES__
 
-#include "emtf/ts/cell/Mtf7Port.hpp"
+#include "emtf/ts/cell/EmtfPort.hpp"
 #include <map>
 
 #define LINK_COUNT 49

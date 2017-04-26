@@ -1,5 +1,5 @@
-#ifndef __MTF7_SPY_CONFIG_REGISTERS_HPP__
-#define __MTF7_SPY_CONFIG_REGISTERS_HPP__
+#ifndef __EMTF_SPY_CONFIG_REGISTERS_HPP__
+#define __EMTF_SPY_CONFIG_REGISTERS_HPP__
 
 #include "swatch/core/Command.hpp"
 
@@ -34,5 +34,5 @@ public:
 
 } // namespace
 
-#endif /* __MTF7_SPY_CONFIG_REGISTERS_HPP__ */
+#endif /* __EMTF_SPY_CONFIG_REGISTERS_HPP__ */
 

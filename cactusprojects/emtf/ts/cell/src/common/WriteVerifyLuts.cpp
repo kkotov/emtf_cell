@@ -1,8 +1,8 @@
 #include "xdata/Integer.h"
 #include "xdata/String.h"
-#include "emtf/ts/cell/Mtf7Processor.hpp"
-#include "emtf/ts/cell/Mtf7WriteVerifyLuts.hpp"
-#include "emtf/ts/cell/Mtf7Common.hpp"
+#include "emtf/ts/cell/EmtfProcessor.hpp"
+#include "emtf/ts/cell/WriteVerifyLuts.hpp"
+#include "emtf/ts/cell/Common.hpp"
 #include <algorithm>
 #include <iostream>
 #include <fstream>

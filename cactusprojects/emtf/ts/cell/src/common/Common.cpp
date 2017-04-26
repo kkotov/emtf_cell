@@ -1,5 +1,5 @@
-#include "emtf/ts/cell/Mtf7Processor.hpp"
-#include "emtf/ts/cell/Mtf7Common.hpp"
+#include "emtf/ts/cell/EmtfProcessor.hpp"
+#include "emtf/ts/cell/Common.hpp"
 #include <boost/format.hpp>
 
 using namespace std;

@@ -1,5 +1,5 @@
-#ifndef __MTF7_READOUTINTERFACE_HPP__
-#define __MTF7_READOUTINTERFACE_HPP__
+#ifndef __EMTF_READOUTINTERFACE_HPP__
+#define __EMTF_READOUTINTERFACE_HPP__
 
 #include "swatch/processor/ReadoutInterface.hpp"
 #include "swatch/core/TTSUtils.hpp"
@@ -24,5 +24,5 @@ private:
 
 } // namespace
 
-#endif /* __MTF7_READOUTINTERFACE_HPP__ */
+#endif /* __EMTF_READOUTINTERFACE_HPP__ */
 

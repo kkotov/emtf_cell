@@ -1,5 +1,5 @@
-#ifndef __MTF7_PORT_HPP__
-#define __MTF7_PORT_HPP__
+#ifndef __EMTF_PORT_HPP__
+#define __EMTF_PORT_HPP__
 
 #include "swatch/processor/Port.hpp"
 #include "emtf/pciExprLinuxBusAdapter/PCIExprDevice.hh"
@@ -64,5 +64,5 @@ private:
 
 } // namespace
 
-#endif /* __MTF7_PORT_HPP__ */
+#endif /* __EMTF_PORT_HPP__ */
 

@@ -1,5 +1,5 @@
-#ifndef __MTF7_ALGOINTERFACE_HPP__
-#define __MTF7_ALGOINTERFACE_HPP__
+#ifndef __EMTF_ALGOINTERFACE_HPP__
+#define __EMTF_ALGOINTERFACE_HPP__
 
 #include "swatch/processor/AlgoInterface.hpp"
 #include "emtf/pciExprLinuxBusAdapter/PCIExprDevice.hh"
@@ -19,5 +19,5 @@ private:
 
 } // namespace
 
-#endif /* __MTF7_ALGOINTERFACE_HPP__ */
+#endif /* __EMTF_ALGOINTERFACE_HPP__ */
 

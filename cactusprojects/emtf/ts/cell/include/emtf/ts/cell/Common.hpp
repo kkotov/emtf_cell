@@ -1,8 +1,8 @@
-#ifndef __MTF7_COMMON_HPP__
-#define __MTF7_COMMON_HPP__
+#ifndef __EMTF_COMMON_HPP__
+#define __EMTF_COMMON_HPP__
 
 #include "swatch/core/Command.hpp"
-#include "emtf/ts/cell/Mtf7Processor.hpp"
+#include "emtf/ts/cell/EmtfProcessor.hpp"
 #include <string>
 
 
@@ -35,5 +35,5 @@ namespace config {
 
 } // namespace emtf
 
-#endif /* __MTF7_COMMON_HPP__ */
+#endif /* __EMTF_COMMON_HPP__ */
 

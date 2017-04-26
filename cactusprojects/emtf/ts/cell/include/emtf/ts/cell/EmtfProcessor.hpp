@@ -1,5 +1,5 @@
-#ifndef __MTF7_PROCESSOR_HPP__
-#define __MTF7_PROCESSOR_HPP__
+#ifndef __EMTF_PROCESSOR_HPP__
+#define __EMTF_PROCESSOR_HPP__
 
 #include "swatch/processor/Processor.hpp"
 #include "hal/PCIAddressTableASCIIReader.hh"
@@ -140,5 +140,5 @@ private:
 
 } // namespace
 
-#endif /* __MTF7_PROCESSOR_HPP__ */
+#endif /* __EMTF_PROCESSOR_HPP__ */
 

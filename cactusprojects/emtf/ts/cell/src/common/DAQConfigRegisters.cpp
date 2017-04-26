@@ -1,12 +1,12 @@
 #include "xdata/Integer.h"
-#include "emtf/ts/cell/Mtf7Processor.hpp"
-#include "emtf/ts/cell/Mtf7Common.hpp"
+#include "emtf/ts/cell/EmtfProcessor.hpp"
+#include "emtf/ts/cell/Common.hpp"
 #include "xdata/UnsignedInteger32.h"
 #include "xdata/UnsignedInteger.h"
 #include "xdata/Boolean.h"
 #include <iomanip>
 #include <cstdlib>
-#include "emtf/ts/cell/Mtf7DAQConfigRegisters.hpp"
+#include "emtf/ts/cell/DAQConfigRegisters.hpp"
 
 using namespace std;
 using namespace swatch;

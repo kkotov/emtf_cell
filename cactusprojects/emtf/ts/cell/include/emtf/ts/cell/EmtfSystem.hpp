@@ -1,5 +1,5 @@
-#ifndef __MTF7_SYSTEM_HPP__
-#define __MTF7_SYSTEM_HPP__
+#ifndef __EMTF_SYSTEM_HPP__
+#define __EMTF_SYSTEM_HPP__
 
 #include "swatch/system/System.hpp"
 #include <vector>
@@ -14,5 +14,5 @@ public:
 
 } // namespace
 
-#endif /* __MTF7_SYSTEM_HPP__ */
+#endif /* __EMTF_SYSTEM_HPP__ */
 

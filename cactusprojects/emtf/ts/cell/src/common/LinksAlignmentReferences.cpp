@@ -1,4 +1,4 @@
-#include "emtf/ts/cell/Mtf7LinksAlignmentReferences.hpp"
+#include "emtf/ts/cell/LinksAlignmentReferences.hpp"
 
 using namespace std;
 

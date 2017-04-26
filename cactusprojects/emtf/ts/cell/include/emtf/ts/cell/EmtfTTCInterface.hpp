@@ -1,5 +1,5 @@
-#ifndef _MTF7_TTC_INTERFACE_HPP_
-#define _MTF7_TTC_INTERFACE_HPP_
+#ifndef _EMTF_TTC_INTERFACE_HPP_
+#define _EMTF_TTC_INTERFACE_HPP_
 
 #include "swatch/processor/TTCInterface.hpp"
 #include "emtf/pciExprLinuxBusAdapter/PCIExprDevice.hh"
@@ -33,5 +33,5 @@ private:
 
 } // namespace
 
-#endif // _MTF7_TTC_INTERFACE_HPP_
+#endif // _EMTF_TTC_INTERFACE_HPP_
 

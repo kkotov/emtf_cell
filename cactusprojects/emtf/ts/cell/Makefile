@@ -20,21 +20,20 @@ export PACKAGE_RELEASE=0
 Sources=\
 	version.cc \
 	Cell.cc \
-    Mtf7System.cpp \
-	Mtf7Processor.cpp \
-	Mtf7TTCInterface.cpp \
-	Mtf7ReadoutInterface.cpp \
-	Mtf7Port.cpp \
-	Mtf7AlgoInterface.cpp \
-    Mtf7Common.cpp \
-	Mtf7Resets.cpp \
-	Mtf7Reboot.cpp \
-	Mtf7Loopback.cpp \
-	Mtf7DAQConfigRegisters.cpp \
-	Mtf7SpyFifo.cpp \
-	Mtf7LinksAlignmentReferences.cpp \
-	Mtf7ConfigCommands.cpp \
-	Mtf7WriteVerifyLuts.cpp \
+    EmtfSystem.cpp \
+	EmtfProcessor.cpp \
+	EmtfTTCInterface.cpp \
+	EmtfReadoutInterface.cpp \
+	EmtfPort.cpp \
+	EmtfAlgoInterface.cpp \
+    Common.cpp \
+	Resets.cpp \
+	Reboot.cpp \
+	DAQConfigRegisters.cpp \
+	SpyFifo.cpp \
+	LinksAlignmentReferences.cpp \
+	ConfigCommands.cpp \
+	WriteVerifyLuts.cpp \
 	TransitionCommands.cpp \
 	AlignmentFifoDelays.cpp
 

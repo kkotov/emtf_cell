@@ -1,4 +1,4 @@
-#include "emtf/ts/cell/Mtf7ReadoutInterface.hpp"
+#include "emtf/ts/cell/EmtfReadoutInterface.hpp"
 
 using namespace swatch::core;
 

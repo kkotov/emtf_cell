@@ -1,8 +1,8 @@
-#include "emtf/ts/cell/Mtf7Port.hpp"
+#include "emtf/ts/cell/EmtfPort.hpp"
 #include <stdlib.h>
-#include "emtf/ts/cell/Mtf7LinksAlignmentReferences.hpp"
+#include "emtf/ts/cell/LinksAlignmentReferences.hpp"
 #include "swatch/core/MetricConditions.hpp"
-#include "emtf/ts/cell/Mtf7Common.hpp"
+#include "emtf/ts/cell/Common.hpp"
 #include <map>
 #include <string>
 #include <vector>

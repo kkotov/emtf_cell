@@ -1,9 +1,9 @@
 #include "swatch/processor/PortCollection.hpp"
-#include "emtf/ts/cell/Mtf7Processor.hpp"
-#include "emtf/ts/cell/Mtf7Port.hpp"
+#include "emtf/ts/cell/EmtfProcessor.hpp"
+#include "emtf/ts/cell/EmtfPort.hpp"
 #include "emtf/ts/cell/TransitionCommands.hpp"
 #include <vector>
-#include "emtf/ts/cell/Mtf7Common.hpp"
+#include "emtf/ts/cell/Common.hpp"
 #include <boost/thread/barrier.hpp>
 #include <log4cplus/logger.h>
 #include <log4cplus/loggingmacros.h>

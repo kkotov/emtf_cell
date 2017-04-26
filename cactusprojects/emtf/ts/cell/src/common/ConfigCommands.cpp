@@ -1,8 +1,8 @@
 #include "xdata/String.h"
 #include "xdata/Integer.h"
-#include "emtf/ts/cell/Mtf7Processor.hpp"
-#include "emtf/ts/cell/Mtf7Common.hpp"
-#include "emtf/ts/cell/Mtf7ConfigCommands.hpp"
+#include "emtf/ts/cell/EmtfProcessor.hpp"
+#include "emtf/ts/cell/Common.hpp"
+#include "emtf/ts/cell/ConfigCommands.hpp"
 
 using namespace std;
 using namespace swatch;
