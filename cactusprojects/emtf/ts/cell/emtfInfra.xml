@@ -11,6 +11,7 @@
         <param cmd="Set DAQ Config Registers" id="L1a_delay" type="uint">53</param>
         <param cmd="Set DAQ Config Registers" id="Stress" type="bool">False</param>
         <param cmd="Set DAQ Config Registers" id="Amc13_easy_en" type="bool">false</param>
+        <param cmd="Set DAQ Config Registers" id="daq_rpc_late_by" type="uint">6</param>
 
         <param cmd="Enable the single hit algorithm" id="single_hits_enabled" type="bool">false</param>
 
