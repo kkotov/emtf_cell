@@ -62,7 +62,10 @@ class CSVLineHandler():
                 if isinstance(self.fields[key], int):
                     extracted_line += line[self.fields[key]].ljust(self.csv_fields_size[key])
                 else:
-                    if (key == 'bar') and (line[self.fields['register']].find('prim_conv_') == 0):
+                    if (key == 'bar') and \
+                                          ((line[self.fields['register']].find('prim_conv_') == 0) or
+                                           (line[self.fields['register']] == 'ptlut_mem') or
+                                           (line[self.fields['register']] == 'ptlut_addr')):
                         # TODO: This 'if' is a hack and it needs to be fixed!
                         # The reason for the hack is that we don't know exactly how to determine the value of bar.
                         extracted_line += '1'
