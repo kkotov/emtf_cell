@@ -56,9 +56,9 @@ static const uint16_t* countObjectsInError(const std::vector<swatch::core::Monit
 }
 
 
-SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
+SWATCH_REGISTER_CLASS(emtf::EmtfProcessor);
 
-Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
+EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
     Processor(aStub),
     extPllLockStatus(registerMetric<bool>("extPllLockStatus", NotEqualCondition<bool>(true), NotEqualCondition<bool>(true))),
     bc0PeriodCounter(registerMetric<int>("bc0PeriodCounter", NotEqualCondition<int>(3563), NotEqualCondition<int>(3563))),
@@ -83,20 +83,20 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     driver = new HAL::PCIExprDevice(*addressTable, busAdapter, mtf7_index);
 
     // Build subcomponents
-    registerInterface(new Mtf7TTCInterface(*driver));
-    registerInterface(new Mtf7ReadoutInterface(*driver));
-    registerInterface(new Mtf7AlgoInterface(*driver));
+    registerInterface(new EmtfTTCInterface(*driver));
+    registerInterface(new EmtfReadoutInterface(*driver));
+    registerInterface(new EmtfAlgoInterface(*driver));
     registerInterface(new InputPortCollection());
     registerInterface(new OutputPortCollection());
 
     for(vector<ProcessorPortStub>::const_iterator it = stub.rxPorts.begin(); it != stub.rxPorts.end(); it++)
     {
-        getInputPorts().addPort(new Mtf7InputPort(it->id, it->number, aStub.id, *driver));
+        getInputPorts().addPort(new EmtfInputPort(it->id, it->number, aStub.id, *driver));
     }
 
     for(vector<ProcessorPortStub>::const_iterator it = stub.txPorts.begin(); it != stub.txPorts.end(); it++)
     {
-        getOutputPorts().addPort(new Mtf7OutputPort(it->id, it->number, *driver));
+        getOutputPorts().addPort(new EmtfOutputPort(it->id, it->number, *driver));
     }
 
 
@@ -120,10 +120,10 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     Command & cResetCoreLink = registerCommand<ResetCoreLink>("Core link reset");
     Command & cDaqModuleRst = registerCommand<DAQModuleReset>("DAQ Module Reset");
     Command & cGthModuleReset = registerCommand<ResetGthTransceivers>("GTH Module Reset");
-    Command & cSetDaqCfgRegs = registerCommand<Mtf7DAQConfigRegisters>("Set DAQ Config Registers");
-    Command & cSetBC0AndDataDelay = registerCommand<Mtf7SetDelaysAndTriggerSource>("Set BC0 and Data Delay");
-    Command & cSetSingleHits = registerCommand<Mtf7SetSingleHits>("Enable the single hit algorithm");
-    Command & cDaqReportWoTrack = registerCommand<Mtf7DaqReportWoTrack>("Enable the firmware report in DAQ stream");
+    Command & cSetDaqCfgRegs = registerCommand<DAQConfigRegisters>("Set DAQ Config Registers");
+    Command & cSetBC0AndDataDelay = registerCommand<SetDelaysAndTriggerSource>("Set BC0 and Data Delay");
+    Command & cSetSingleHits = registerCommand<SetSingleHits>("Enable the single hit algorithm");
+    Command & cDaqReportWoTrack = registerCommand<DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
     Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
     Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
@@ -170,14 +170,14 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(processorMessage));
 }
 
-Mtf7Processor::~Mtf7Processor()
+EmtfProcessor::~EmtfProcessor()
 {
     delete driver;
     delete addressTable;
     delete addressTableReader;
 }
 
-uint64_t Mtf7Processor::readFirmwareVersion()
+uint64_t EmtfProcessor::readFirmwareVersion()
 {
     uint32_t controlFirmwareVersion = 0u;
     readControlFirmwareVersion(&controlFirmwareVersion);
@@ -190,7 +190,7 @@ uint64_t Mtf7Processor::readFirmwareVersion()
     return firmwareVersion;
 }
 
-bool Mtf7Processor::readPLLstatus(void)
+bool EmtfProcessor::readPLLstatus(void)
 {
     uint32_t ext_pll_lock = 0u;
     read("ext_pll_lock", ext_pll_lock);
@@ -198,7 +198,7 @@ bool Mtf7Processor::readPLLstatus(void)
     return ext_pll_lock;
 }
 
-int Mtf7Processor::readBC0counter(void)
+int EmtfProcessor::readBC0counter(void)
 {
     uint32_t bc0_period_cnt = 0u;
     read("bc0_period_cnt", bc0_period_cnt);
@@ -206,7 +206,7 @@ int Mtf7Processor::readBC0counter(void)
     return bc0_period_cnt;
 }
 
-uint32_t Mtf7Processor::readTrackRate(uint16_t track)
+uint32_t EmtfProcessor::readTrackRate(uint16_t track)
 {
     uint64_t trackCounter = 0u;
 
@@ -221,7 +221,7 @@ uint32_t Mtf7Processor::readTrackRate(uint16_t track)
     return trackCounter;
 }
 
-uint32_t Mtf7Processor::lctRate(string lctName)
+uint32_t EmtfProcessor::lctRate(string lctName)
 {
     uint64_t inputLctRate = 0u;
 
@@ -230,7 +230,7 @@ uint32_t Mtf7Processor::lctRate(string lctName)
     return inputLctRate;
 }
 
-void Mtf7Processor::generateLctPairs()
+void EmtfProcessor::generateLctPairs()
 {
     vector<string> stationNames = {"me1a", "me1b", "me2", "me3", "me4"};
 
@@ -282,7 +282,7 @@ void Mtf7Processor::generateLctPairs()
     }
 }
 
-string Mtf7Processor::readControlFirmwareVersion(uint32_t *firmwareVersion)
+string EmtfProcessor::readControlFirmwareVersion(uint32_t *firmwareVersion)
 {
     uint32_t ctlFpgaFwSec = 0u;
     read("ctl_fpga_fw_sec", ctlFpgaFwSec);
@@ -323,7 +323,7 @@ string Mtf7Processor::readControlFirmwareVersion(uint32_t *firmwareVersion)
     return controlFirmwareVersion;
 }
 
-string Mtf7Processor::readCoreFirmwareVersion(uint32_t *firmwareVersion)
+string EmtfProcessor::readCoreFirmwareVersion(uint32_t *firmwareVersion)
 {
     uint64_t coreFpgaFwSec = 0u;
     read64("core_fpga_fw_sec", coreFpgaFwSec);
@@ -363,7 +363,7 @@ string Mtf7Processor::readCoreFirmwareVersion(uint32_t *firmwareVersion)
     return coreFirmwareVersion;
 }
 
-void Mtf7Processor::retrieveMetricValues()
+void EmtfProcessor::retrieveMetricValues()
 {
     setMetricValue<uint64_t>(mMetricFirmwareVersion, readFirmwareVersion());
     setMetricValue<string>  (controlFirmwareVersion, readControlFirmwareVersion());

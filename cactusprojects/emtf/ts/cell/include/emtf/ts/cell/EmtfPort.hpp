@@ -8,11 +8,11 @@
 
 namespace emtf {
 
-class Mtf7InputPort : public swatch::processor::InputPort
+class EmtfInputPort : public swatch::processor::InputPort
 {
 public:
-    Mtf7InputPort(const std::string& aID, const uint32_t portId, const std::string processorName, HAL::PCIExprDevice& driver);
-    ~Mtf7InputPort();
+    EmtfInputPort(const std::string& aID, const uint32_t portId, const std::string processorName, HAL::PCIExprDevice& driver);
+    ~EmtfInputPort();
 
     void retrieveMetricValues();
     void logLinkStatus(bool forceLog=false);
@@ -48,11 +48,11 @@ private:
 };
 
 
-class Mtf7OutputPort : public swatch::processor::OutputPort
+class EmtfOutputPort : public swatch::processor::OutputPort
 {
 public:
-    Mtf7OutputPort(const std::string& aID, const uint32_t portId, HAL::PCIExprDevice& driver);
-    ~Mtf7OutputPort();
+    EmtfOutputPort(const std::string& aID, const uint32_t portId, HAL::PCIExprDevice& driver);
+    ~EmtfOutputPort();
 
     void retrieveMetricValues();
 

@@ -86,7 +86,7 @@ public:
 } linkIdHash;
 
 
-Mtf7InputPort::Mtf7InputPort(const string& aID, const uint32_t portId, const string processorName, HAL::PCIExprDevice& driver) :
+EmtfInputPort::EmtfInputPort(const string& aID, const uint32_t portId, const string processorName, HAL::PCIExprDevice& driver) :
     InputPort(aID),
     id(aID),
     afDelayReference(InputLinksAlignmentReferences::getReferenceValue(processorName, portId)),
@@ -117,11 +117,11 @@ Mtf7InputPort::Mtf7InputPort(const string& aID, const uint32_t portId, const str
     }
 }
 
-Mtf7InputPort::~Mtf7InputPort()
+EmtfInputPort::~EmtfInputPort()
 {
 }
 
-void Mtf7InputPort::retrieveMetricValues()
+void EmtfInputPort::retrieveMetricValues()
 {
     setMetricValue<bool>(mMetricIsLocked, readMetricIsLocked());
     setMetricValue<bool>(mMetricIsAligned, readMetricIsAligned());
@@ -131,7 +131,7 @@ void Mtf7InputPort::retrieveMetricValues()
     logLinkStatus();
 }
 
-string Mtf7InputPort::readLinkID(void){
+string EmtfInputPort::readLinkID(void){
     stringstream mismatches;
 
     uint64_t result = 0;
@@ -148,7 +148,7 @@ string Mtf7InputPort::readLinkID(void){
 }
 
 
-bool Mtf7InputPort::readMetricIsLocked()
+bool EmtfInputPort::readMetricIsLocked()
 {
     const string regName("bc0_err_" + id);
 
@@ -159,7 +159,7 @@ bool Mtf7InputPort::readMetricIsLocked()
     return (0 == bc0Err);
 }
 
-bool Mtf7InputPort::readMetricIsAligned()
+bool EmtfInputPort::readMetricIsAligned()
 {
     const string regName("af_delay_" + id);
 
@@ -181,14 +181,14 @@ bool Mtf7InputPort::readMetricIsAligned()
     return res;
 }
 
-uint32_t Mtf7InputPort::readMetricCRCErrors()
+uint32_t EmtfInputPort::readMetricCRCErrors()
 {
     // TODO: implement the function when the firmware support for this metric is added
 
     return 0;
 }
 
-void Mtf7InputPort::logLinkStatus(bool forceLog)
+void EmtfInputPort::logLinkStatus(bool forceLog)
 {
     const bool lockedOk = readMetricIsLocked();
     const bool alignedOk = readMetricIsAligned();
@@ -219,22 +219,22 @@ void Mtf7InputPort::logLinkStatus(bool forceLog)
 }
 
 
-Mtf7OutputPort::Mtf7OutputPort(const string& aID, const uint32_t portId, HAL::PCIExprDevice& driver) :
+EmtfOutputPort::EmtfOutputPort(const string& aID, const uint32_t portId, HAL::PCIExprDevice& driver) :
     OutputPort(aID),
     driver_(driver)
 {
 }
 
-Mtf7OutputPort::~Mtf7OutputPort()
+EmtfOutputPort::~EmtfOutputPort()
 {
 }
 
-void Mtf7OutputPort::retrieveMetricValues()
+void EmtfOutputPort::retrieveMetricValues()
 {
     setMetricValue<bool>(mMetricIsOperating, readMetricIsOperating());
 }
 
-bool Mtf7OutputPort::readMetricIsOperating()
+bool EmtfOutputPort::readMetricIsOperating()
 {
     // TODO: implement the function when the firmware support for this metric is added
 

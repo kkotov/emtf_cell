@@ -1,5 +1,5 @@
-#ifndef __Mtf7_REBOOT_HPP__
-#define __Mtf7_REBOOT_HPP__
+#ifndef __REBOOT_HPP__
+#define __REBOOT_HPP__
 
 #include <vector>
 #include "swatch/core/Command.hpp"
@@ -23,5 +23,5 @@ public:
 
 } // namespace
 
-#endif /* __Mtf7_RESETS_HPP__ */
+#endif /* __REBOOT_HPP__ */
 

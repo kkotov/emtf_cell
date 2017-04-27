@@ -1,32 +1,32 @@
-#ifndef __EMTF_SPY_CONFIG_REGISTERS_HPP__
-#define __EMTF_SPY_CONFIG_REGISTERS_HPP__
+#ifndef __SPY_CONFIG_REGISTERS_HPP__
+#define __SPY_CONFIG_REGISTERS_HPP__
 
 #include "swatch/core/Command.hpp"
 
 namespace emtf {
 
-class Mtf7SetDelaysAndTriggerSource : public swatch::core::Command
+class SetDelaysAndTriggerSource : public swatch::core::Command
 {
 public:
-    Mtf7SetDelaysAndTriggerSource(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    SetDelaysAndTriggerSource(const std::string& aId, swatch::core::ActionableObject& aActionable);
 
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 };
 
 
-class Mtf7SetSingleHits : public swatch::core::Command
+class SetSingleHits : public swatch::core::Command
 {
 public:
-    Mtf7SetSingleHits(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    SetSingleHits(const std::string& aId, swatch::core::ActionableObject& aActionable);
 
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 };
 
 
-class Mtf7DaqReportWoTrack : public swatch::core::Command
+class DaqReportWoTrack : public swatch::core::Command
 {
 public:
-    Mtf7DaqReportWoTrack(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    DaqReportWoTrack(const std::string& aId, swatch::core::ActionableObject& aActionable);
 
     virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
 };
@@ -34,5 +34,5 @@ public:
 
 } // namespace
 
-#endif /* __EMTF_SPY_CONFIG_REGISTERS_HPP__ */
+#endif /* __SPY_CONFIG_REGISTERS_HPP__ */
 

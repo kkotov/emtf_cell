@@ -6,10 +6,10 @@
 
 namespace emtf {
 
-class Mtf7System : public swatch::system::System {
+class EmtfSystem : public swatch::system::System {
 public:
-    Mtf7System(const swatch::core::AbstractStub& aStub);
-    ~Mtf7System();
+    EmtfSystem(const swatch::core::AbstractStub& aStub);
+    ~EmtfSystem();
 };
 
 } // namespace

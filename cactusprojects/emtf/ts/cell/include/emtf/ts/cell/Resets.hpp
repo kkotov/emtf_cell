@@ -1,5 +1,5 @@
-#ifndef __Mtf7_RESETS_HPP__
-#define __Mtf7_RESETS_HPP__
+#ifndef __RESETS_HPP__
+#define __RESETS_HPP__
 
 #include <vector>
 #include "swatch/core/Command.hpp"
@@ -79,5 +79,5 @@ public:
 
 } // namespace
 
-#endif /* __Mtf7_RESETS_HPP__ */
+#endif /* __RESETS_HPP__ */
 

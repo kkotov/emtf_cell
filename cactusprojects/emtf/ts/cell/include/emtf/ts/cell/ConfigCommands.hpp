@@ -1,5 +1,5 @@
-#ifndef __Mtf7_CONFIG_COMMANDS_HPP__
-#define __Mtf7_CONFIG_COMMANDS_HPP__
+#ifndef __CONFIG_COMMANDS_HPP__
+#define __CONFIG_COMMANDS_HPP__
 
 #include "swatch/core/Command.hpp"
 
@@ -15,5 +15,5 @@ public:
 
 } // namespace
 
-#endif /* __Mtf7_CONFIG_COMMANDS_HPP__ */
+#endif /* __CONFIG_COMMANDS_HPP__ */
 

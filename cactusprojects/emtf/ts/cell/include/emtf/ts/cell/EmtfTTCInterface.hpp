@@ -6,10 +6,10 @@
 
 namespace emtf {
 
-class Mtf7TTCInterface : public swatch::processor::TTCInterface {
+class EmtfTTCInterface : public swatch::processor::TTCInterface {
 public:
-    Mtf7TTCInterface(HAL::PCIExprDevice& driver);
-    ~Mtf7TTCInterface();
+    EmtfTTCInterface(HAL::PCIExprDevice& driver);
+    ~EmtfTTCInterface();
 
     void retrieveMetricValues();
 

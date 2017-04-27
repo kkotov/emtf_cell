@@ -6,10 +6,10 @@
 
 namespace emtf {
 
-class Mtf7AlgoInterface : public swatch::processor::AlgoInterface {
+class EmtfAlgoInterface : public swatch::processor::AlgoInterface {
 public:
-    Mtf7AlgoInterface(HAL::PCIExprDevice& driver);
-    ~Mtf7AlgoInterface();
+    EmtfAlgoInterface(HAL::PCIExprDevice& driver);
+    ~EmtfAlgoInterface();
 
     void retrieveMetricValues();
 

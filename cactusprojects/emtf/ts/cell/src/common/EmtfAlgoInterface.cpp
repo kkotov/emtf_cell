@@ -2,15 +2,15 @@
 
 namespace emtf {
 
-Mtf7AlgoInterface::Mtf7AlgoInterface(HAL::PCIExprDevice& driver) : driver_(driver)
+EmtfAlgoInterface::EmtfAlgoInterface(HAL::PCIExprDevice& driver) : driver_(driver)
 {
 }
 
-Mtf7AlgoInterface::~Mtf7AlgoInterface()
+EmtfAlgoInterface::~EmtfAlgoInterface()
 {
 }
 
-void Mtf7AlgoInterface::retrieveMetricValues()
+void EmtfAlgoInterface::retrieveMetricValues()
 {
   // Read bunch, orbit & event counters from hardware
   // Note, of course, the following three lines could be very different for different subystems, depending on how they read these values from their hardware, and the API of their driver classes.

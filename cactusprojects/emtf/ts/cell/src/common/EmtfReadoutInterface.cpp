@@ -4,12 +4,12 @@ using namespace swatch::core;
 
 namespace emtf {
 
-Mtf7ReadoutInterface::Mtf7ReadoutInterface(HAL::PCIExprDevice& driver) :
+EmtfReadoutInterface::EmtfReadoutInterface(HAL::PCIExprDevice& driver) :
     board(driver)
 {
 }
 
-void Mtf7ReadoutInterface::retrieveMetricValues()
+void EmtfReadoutInterface::retrieveMetricValues()
 {
     // Read bunch, orbit & event counters from hardware
     // Note, of course, the following three lines could be very different for different subystems, depending on how they read these values from their hardware, and the API of their driver classes.
@@ -29,7 +29,7 @@ void Mtf7ReadoutInterface::retrieveMetricValues()
     setMetricValue<uint32_t>(mMetricEventCounter, readMetricEventCounter());
 }
 
-tts::State Mtf7ReadoutInterface::readMetricTTS()
+tts::State EmtfReadoutInterface::readMetricTTS()
 {
     uint64_t daqTtsState = 0;
     board.read64("daq_tts_state", &daqTtsState);
@@ -47,7 +47,7 @@ tts::State Mtf7ReadoutInterface::readMetricTTS()
     return tts::kUnknown;
 }
 
-bool Mtf7ReadoutInterface::readMetricAMCCoreReady()
+bool EmtfReadoutInterface::readMetricAMCCoreReady()
 {
     uint64_t daqTtsState = 0;
     board.read64("daq_tts_state", &daqTtsState);
@@ -55,7 +55,7 @@ bool Mtf7ReadoutInterface::readMetricAMCCoreReady()
     return (tts::kReady == daqTtsState);
 }
 
-uint32_t Mtf7ReadoutInterface::readMetricEventCounter()
+uint32_t EmtfReadoutInterface::readMetricEventCounter()
 {
     // TODO: implement the function when the firmware support for this metric is added
 

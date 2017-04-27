@@ -20,7 +20,7 @@ DAQModuleReset::DAQModuleReset(const std::string& aId, swatch::core::ActionableO
 swatch::core::Command::State DAQModuleReset::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Reset the DAQ module.");
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     Command::State commandStatus = ActionSnapshot::kDone;
 
@@ -65,7 +65,7 @@ swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
     setStatusMsg("Reset the core link of the mtf7 board.");
     setProgress(0.);
 
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     processor.write("core_link_rst",0x0);
     usleep( sleepInterval );
@@ -91,7 +91,7 @@ ResetGthTransceivers::ResetGthTransceivers(const string& aId, ActionableObject& 
 Command::State ResetGthTransceivers::code(const XParameterSet& params)
 {
     setStatusMsg("Reset the GTH module.");
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     uint64_t gth_reset = 1u;
     processor.write64("gth_rst", gth_reset);
@@ -140,7 +140,7 @@ ResetPtLut::ResetPtLut(const std::string& aId, swatch::core::ActionableObject& a
 Command::State ResetPtLut::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("This command resets the PT LUT module clock manager.");
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
     Command::State commandStatus = ActionSnapshot::kDone;
 
     uint64_t value;
@@ -164,7 +164,7 @@ ResetRXBuffers::ResetRXBuffers(const std::string& aId, swatch::core::ActionableO
 Command::State ResetRXBuffers::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("This command resets the RX buffers in all GTHs.");
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     uint64_t value;
 
@@ -218,7 +218,7 @@ SyncClockReset::SyncClockReset(const std::string& aId, swatch::core::ActionableO
 Command::State SyncClockReset::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("This command performs Sync clock Reset.");
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     Command::State commandStatus = ActionSnapshot::kDone;
 

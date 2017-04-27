@@ -15,7 +15,7 @@ using namespace core;
 
 namespace emtf {
 
-Mtf7DAQConfigRegisters::Mtf7DAQConfigRegisters(const std::string& aId, ActionableObject& aActionable) :
+DAQConfigRegisters::DAQConfigRegisters(const std::string& aId, ActionableObject& aActionable) :
     swatch::core::Command(aId, aActionable, xdata::UnsignedInteger(0u))
 {
     registerParameter("BX_offset", xdata::UnsignedInteger(3540u));
@@ -28,7 +28,7 @@ Mtf7DAQConfigRegisters::Mtf7DAQConfigRegisters(const std::string& aId, Actionabl
     registerParameter("daq_rpc_late_by", xdata::UnsignedInteger(6u));
 }
 
-Command::State Mtf7DAQConfigRegisters::code(const XParameterSet& params)
+Command::State DAQConfigRegisters::code(const XParameterSet& params)
 {
     setStatusMsg("DAQ Set Config Registers started.");
 
@@ -41,7 +41,7 @@ Command::State Mtf7DAQConfigRegisters::code(const XParameterSet& params)
     const uint64_t amc13EasyEn(params.get<xdata::Boolean>("Amc13_easy_en").value_);
     const uint64_t daqRpcLateBy(params.get<xdata::UnsignedInteger>("daq_rpc_late_by").value_);
 
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     Command::State commandStatus = ActionSnapshot::kDone;
     processor.write64("daq_l1a_del", l1aDelay);

@@ -23,10 +23,10 @@ private:
     std::vector<std::string> registerNames;
     std::vector<uint64_t>    registerValues;
 
-    Mtf7Processor &processor;
+    EmtfProcessor &processor;
 };
 
 } // namespace
 
-#endif /* __ALIGNMENT_FIFO_DELAYHPP__ */
+#endif /* __ALIGNMENT_FIFO_DELAYS_HPP__ */
 

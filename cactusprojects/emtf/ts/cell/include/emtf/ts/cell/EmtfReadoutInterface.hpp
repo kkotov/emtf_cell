@@ -7,10 +7,10 @@
 
 namespace emtf {
 
-class Mtf7ReadoutInterface : public swatch::processor::ReadoutInterface {
+class EmtfReadoutInterface : public swatch::processor::ReadoutInterface {
 public:
-    Mtf7ReadoutInterface(HAL::PCIExprDevice& driver);
-    ~Mtf7ReadoutInterface(){};
+    EmtfReadoutInterface(HAL::PCIExprDevice& driver);
+    ~EmtfReadoutInterface(){};
 
     void retrieveMetricValues();
 
