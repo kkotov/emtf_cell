@@ -10,9 +10,9 @@ namespace emtf {
 
 
 namespace verify {
-    uint32_t CheckWrittenValue(EmtfProcessor &processor, std::string reg, const uint32_t value, swatch::core::Command::State &currentStatus);
-    uint64_t CheckWrittenValue(EmtfProcessor &processor, std::string reg, const uint64_t value, swatch::core::Command::State &currentStatus);
-    bool CheckWrittenValue(EmtfProcessor &processor, std::string reg, uint32_t length, const char *buffer, swatch::core::Command::State &currentStatus);
+    uint32_t CheckWrittenValue(Mtf7Processor &processor, std::string reg, const uint32_t value, swatch::core::Command::State &currentStatus);
+    uint64_t CheckWrittenValue(Mtf7Processor &processor, std::string reg, const uint64_t value, swatch::core::Command::State &currentStatus);
+    bool CheckWrittenValue(Mtf7Processor &processor, std::string reg, uint32_t length, const char *buffer, swatch::core::Command::State &currentStatus);
 } // namespace verify
 
 

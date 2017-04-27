@@ -23,7 +23,7 @@ private:
     std::vector<std::string> registerNames;
     std::vector<uint64_t>    registerValues;
 
-    EmtfProcessor &processor;
+    Mtf7Processor &processor;
 };
 
 } // namespace

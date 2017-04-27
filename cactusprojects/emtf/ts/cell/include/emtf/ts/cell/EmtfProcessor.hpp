@@ -16,11 +16,11 @@
 
 namespace emtf {
 
-class EmtfProcessor : public swatch::processor::Processor
+class Mtf7Processor : public swatch::processor::Processor
 {
 public:
-    EmtfProcessor(const swatch::core::AbstractStub& aStub);
-    ~EmtfProcessor();
+    Mtf7Processor(const swatch::core::AbstractStub& aStub);
+    ~Mtf7Processor();
 
     void retrieveMetricValues();
 

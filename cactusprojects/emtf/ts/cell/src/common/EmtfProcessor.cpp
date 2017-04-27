@@ -56,9 +56,9 @@ static const uint16_t* countObjectsInError(const std::vector<swatch::core::Monit
 }
 
 
-SWATCH_REGISTER_CLASS(emtf::EmtfProcessor);
+SWATCH_REGISTER_CLASS(emtf::Mtf7Processor);
 
-EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
+Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
     Processor(aStub),
     extPllLockStatus(registerMetric<bool>("extPllLockStatus", NotEqualCondition<bool>(true), NotEqualCondition<bool>(true))),
     bc0PeriodCounter(registerMetric<int>("bc0PeriodCounter", NotEqualCondition<int>(3563), NotEqualCondition<int>(3563))),
@@ -170,14 +170,14 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
     LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(processorMessage));
 }
 
-EmtfProcessor::~EmtfProcessor()
+Mtf7Processor::~Mtf7Processor()
 {
     delete driver;
     delete addressTable;
     delete addressTableReader;
 }
 
-uint64_t EmtfProcessor::readFirmwareVersion()
+uint64_t Mtf7Processor::readFirmwareVersion()
 {
     uint32_t controlFirmwareVersion = 0u;
     readControlFirmwareVersion(&controlFirmwareVersion);
@@ -190,7 +190,7 @@ uint64_t EmtfProcessor::readFirmwareVersion()
     return firmwareVersion;
 }
 
-bool EmtfProcessor::readPLLstatus(void)
+bool Mtf7Processor::readPLLstatus(void)
 {
     uint32_t ext_pll_lock = 0u;
     read("ext_pll_lock", ext_pll_lock);
@@ -198,7 +198,7 @@ bool EmtfProcessor::readPLLstatus(void)
     return ext_pll_lock;
 }
 
-int EmtfProcessor::readBC0counter(void)
+int Mtf7Processor::readBC0counter(void)
 {
     uint32_t bc0_period_cnt = 0u;
     read("bc0_period_cnt", bc0_period_cnt);
@@ -206,7 +206,7 @@ int EmtfProcessor::readBC0counter(void)
     return bc0_period_cnt;
 }
 
-uint32_t EmtfProcessor::readTrackRate(uint16_t track)
+uint32_t Mtf7Processor::readTrackRate(uint16_t track)
 {
     uint64_t trackCounter = 0u;
 
@@ -221,7 +221,7 @@ uint32_t EmtfProcessor::readTrackRate(uint16_t track)
     return trackCounter;
 }
 
-uint32_t EmtfProcessor::lctRate(string lctName)
+uint32_t Mtf7Processor::lctRate(string lctName)
 {
     uint64_t inputLctRate = 0u;
 
@@ -230,7 +230,7 @@ uint32_t EmtfProcessor::lctRate(string lctName)
     return inputLctRate;
 }
 
-void EmtfProcessor::generateLctPairs()
+void Mtf7Processor::generateLctPairs()
 {
     vector<string> stationNames = {"me1a", "me1b", "me2", "me3", "me4"};
 
@@ -282,7 +282,7 @@ void EmtfProcessor::generateLctPairs()
     }
 }
 
-string EmtfProcessor::readControlFirmwareVersion(uint32_t *firmwareVersion)
+string Mtf7Processor::readControlFirmwareVersion(uint32_t *firmwareVersion)
 {
     uint32_t ctlFpgaFwSec = 0u;
     read("ctl_fpga_fw_sec", ctlFpgaFwSec);
@@ -323,7 +323,7 @@ string EmtfProcessor::readControlFirmwareVersion(uint32_t *firmwareVersion)
     return controlFirmwareVersion;
 }
 
-string EmtfProcessor::readCoreFirmwareVersion(uint32_t *firmwareVersion)
+string Mtf7Processor::readCoreFirmwareVersion(uint32_t *firmwareVersion)
 {
     uint64_t coreFpgaFwSec = 0u;
     read64("core_fpga_fw_sec", coreFpgaFwSec);
@@ -363,7 +363,7 @@ string EmtfProcessor::readCoreFirmwareVersion(uint32_t *firmwareVersion)
     return coreFirmwareVersion;
 }
 
-void EmtfProcessor::retrieveMetricValues()
+void Mtf7Processor::retrieveMetricValues()
 {
     setMetricValue<uint64_t>(mMetricFirmwareVersion, readFirmwareVersion());
     setMetricValue<string>  (controlFirmwareVersion, readControlFirmwareVersion());

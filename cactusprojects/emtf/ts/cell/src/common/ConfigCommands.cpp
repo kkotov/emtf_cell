@@ -21,7 +21,7 @@ CheckFWVersion::CheckFWVersion(const std::string& aId, swatch::core::ActionableO
 swatch::core::Command::State CheckFWVersion::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Compare the firmware version of the board with the one from the DB.");
-    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+    Mtf7Processor &processor = getActionable<Mtf7Processor>();
 
     const xdata::String controlFwVersion(params.get<xdata::String>("control_firmware_version").value_);
     const xdata::String coreFwVersion(params.get<xdata::String>("core_firmware_version").value_);

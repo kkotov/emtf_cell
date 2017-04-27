@@ -107,7 +107,7 @@ bool PcLuts::loadData(string regName, string fileName, map<string, vector<unsign
 
 WritePcLuts::WritePcLuts(const string& aId, ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
-    processor(getActionable<EmtfProcessor>()),
+    processor(getActionable<Mtf7Processor>()),
     pcLuts(NULL)
 {
     pcLuts = new PcLuts(processor.endcap(), processor.sector());
@@ -130,7 +130,7 @@ Command::State WritePcLuts::code(const XParameterSet& params)
     return commandStatus;
 }
 
-void WritePcLuts::write(EmtfProcessor &processor, map<string, vector<unsigned long long>> &pairs)
+void WritePcLuts::write(Mtf7Processor &processor, map<string, vector<unsigned long long>> &pairs)
 {
     for(auto it=pairs.begin(); it!=pairs.end(); ++it)
     {
@@ -143,7 +143,7 @@ void WritePcLuts::write(EmtfProcessor &processor, map<string, vector<unsigned lo
 
 VerifyPcLuts::VerifyPcLuts(const string& aId, ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
-    processor(getActionable<EmtfProcessor>()),
+    processor(getActionable<Mtf7Processor>()),
     pcLuts(NULL)
 {
     pcLuts = new PcLuts(processor.endcap(), processor.sector());
@@ -166,7 +166,7 @@ Command::State VerifyPcLuts::code(const XParameterSet& params)
     return commandStatus;
 }
 
-void VerifyPcLuts::verify(EmtfProcessor &processor, map<string, vector<unsigned long long>> &pairs, Command::State &status)
+void VerifyPcLuts::verify(Mtf7Processor &processor, map<string, vector<unsigned long long>> &pairs, Command::State &status)
 {
     for(auto it=pairs.begin(); it!=pairs.end(); ++it)
     {
@@ -241,12 +241,12 @@ static void print(const char *prefix, uint64_t val, const char *suffix="")
 }
 
 
-static bool verifyPtLut(emtf::EmtfProcessor &processor);
-static void writePtLut (emtf::EmtfProcessor &processor);
+static bool verifyPtLut(emtf::Mtf7Processor &processor);
+static void writePtLut (emtf::Mtf7Processor &processor);
 
 emtf::VerifyWritePtLut::VerifyWritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
-    processor(getActionable<EmtfProcessor>()){}
+    processor(getActionable<Mtf7Processor>()){}
 
 swatch::core::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XParameterSet& params)
 {
@@ -270,7 +270,7 @@ swatch::core::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XP
 
 emtf::VerifyPtLut::VerifyPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
-    processor(getActionable<EmtfProcessor>()){}
+    processor(getActionable<Mtf7Processor>()){}
 
 swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParameterSet& params)
 {
@@ -285,7 +285,7 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
 
 emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
-    processor(getActionable<EmtfProcessor>()){}
+    processor(getActionable<Mtf7Processor>()){}
 
 swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParameterSet& params)
 {
@@ -463,12 +463,12 @@ void emtf::PtLut::readLUT(void) throw ( std::bad_alloc, std::ios_base::failure, 
 #define ODT_ON  0x40008
 #define ODT_OFF 0x40000
 
-static void initPtLut(emtf::EmtfProcessor &processor);
-static void write_mrs(emtf::EmtfProcessor &processor, uint32_t cs, uint32_t code);
-static void setWritePtLutDelays(emtf::EmtfProcessor &processor);
-static void setReadPtLutDelays(emtf::EmtfProcessor &processor);
+static void initPtLut(emtf::Mtf7Processor &processor);
+static void write_mrs(emtf::Mtf7Processor &processor, uint32_t cs, uint32_t code);
+static void setWritePtLutDelays(emtf::Mtf7Processor &processor);
+static void setReadPtLutDelays(emtf::Mtf7Processor &processor);
 
-static void writePtLut(emtf::EmtfProcessor &processor)
+static void writePtLut(emtf::Mtf7Processor &processor)
 {
 
     const uint32_t *data_buf = emtf::PtLut::getData();
@@ -511,7 +511,7 @@ static void writePtLut(emtf::EmtfProcessor &processor)
     write_mrs(processor, 0xffffffff, ODT_OFF); // turn ODT off
 }
 
-static bool verifyPtLut(emtf::EmtfProcessor &processor)
+static bool verifyPtLut(emtf::Mtf7Processor &processor)
 {
     // reserve buffers for tests
     // each 32-bit word contains one 18-bit word for RLDRAM
@@ -598,7 +598,7 @@ static bool verifyPtLut(emtf::EmtfProcessor &processor)
 #define MR1 0x400e0
 #define MR2 0x80000 // normal operation
 
-static void initPtLut(emtf::EmtfProcessor &processor)
+static void initPtLut(emtf::Mtf7Processor &processor)
 {
     uint64_t wr_lat  = 4;
     uint64_t rd_lat  = 15;// for version with RX FIFO
@@ -657,7 +657,7 @@ static void initPtLut(emtf::EmtfProcessor &processor)
     processor.write64("ptlut_core_rq_mask",0x7); // ptlut requests enable mask
 }
 
-static void write_mrs(emtf::EmtfProcessor &processor, uint32_t cs, uint32_t code)
+static void write_mrs(emtf::Mtf7Processor &processor, uint32_t cs, uint32_t code)
 {
     // chip select mask into data buffer
     // bits 17:0 to bits 17:0
@@ -676,7 +676,7 @@ static void write_mrs(emtf::EmtfProcessor &processor, uint32_t cs, uint32_t code
     processor.write64("ptlut_mrs_cmd", 0x0);
 }
 
-static void setWritePtLutDelays(emtf::EmtfProcessor &processor)
+static void setWritePtLutDelays(emtf::Mtf7Processor &processor)
 {
     const unsigned short wdel00[72] =
         { 10, 9, 8,10, 8, 9, 8, 8,10, 9, 9, 9,10, 9, 9, 9, 9,10,
@@ -793,7 +793,7 @@ static void setWritePtLutDelays(emtf::EmtfProcessor &processor)
     processor.write64("ptlut_dbdel_ld", 0x0);
 }
 
-static void setReadPtLutDelays(emtf::EmtfProcessor &processor)
+static void setReadPtLutDelays(emtf::Mtf7Processor &processor)
 {
     const unsigned short rdel00[72] =
       { 12,13,14,13,14,12,12,13,13,13,14,14,14,14,13,12,14,14,

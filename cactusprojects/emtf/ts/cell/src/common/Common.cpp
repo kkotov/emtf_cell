@@ -11,7 +11,7 @@ namespace emtf {
 
 
 namespace verify {
-    uint32_t CheckWrittenValue(EmtfProcessor &processor, string reg, const uint32_t value, Command::State &currentStatus)
+    uint32_t CheckWrittenValue(Mtf7Processor &processor, string reg, const uint32_t value, Command::State &currentStatus)
     {
         uint32_t valueRead;
         processor.read(reg, valueRead);
@@ -24,7 +24,7 @@ namespace verify {
         return valueRead;
     }
 
-    uint64_t CheckWrittenValue(EmtfProcessor &processor, string reg, const uint64_t value, Command::State &currentStatus)
+    uint64_t CheckWrittenValue(Mtf7Processor &processor, string reg, const uint64_t value, Command::State &currentStatus)
     {
         uint64_t valueRead;
         processor.read64(reg, valueRead);
@@ -37,7 +37,7 @@ namespace verify {
         return valueRead;
     }
 
-    bool CheckWrittenValue(EmtfProcessor &processor, string reg, uint32_t length, const char *buffer, Command::State &currentStatus)
+    bool CheckWrittenValue(Mtf7Processor &processor, string reg, uint32_t length, const char *buffer, Command::State &currentStatus)
     {
         char bufferRead[length];
         processor.readBlock(reg, length, bufferRead);

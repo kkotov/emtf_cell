@@ -21,7 +21,7 @@ namespace emtf {
 using namespace std;
 
 
-SWATCH_REGISTER_CLASS(emtf::EmtfSystem);
+SWATCH_REGISTER_CLASS(emtf::Mtf7System);
 
 
 static const uint16_t * countBrokenLinks(const vector<MetricSnapshot>& aSnapshots)
@@ -37,7 +37,7 @@ static const uint16_t * countBrokenLinks(const vector<MetricSnapshot>& aSnapshot
 }
 
 
-EmtfSystem::EmtfSystem(const swatch::core::AbstractStub& aStub) :
+Mtf7System::Mtf7System(const swatch::core::AbstractStub& aStub) :
     swatch::system::System(aStub)
 {
     // system run control state machine
@@ -89,7 +89,7 @@ EmtfSystem::EmtfSystem(const swatch::core::AbstractStub& aStub) :
     log4cplus::PropertyConfigurator::doConfigure(emtfLog4cplusPropertyFile);
 }
 
-EmtfSystem::~EmtfSystem()
+Mtf7System::~Mtf7System()
 {
 }
 

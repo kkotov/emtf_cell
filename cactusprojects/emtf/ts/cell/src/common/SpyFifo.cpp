@@ -27,7 +27,7 @@ SetDelaysAndTriggerSource::SetDelaysAndTriggerSource(const std::string& aId, Act
 Command::State SetDelaysAndTriggerSource::code(const XParameterSet& params)
 {
     setStatusMsg("Sets the delays and the trigger source");
-    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+    Mtf7Processor &processor = getActionable<Mtf7Processor>();
 
     const uint64_t bc0Offset(params.get<xdata::UnsignedInteger>("BC0_offset").value_);
     const uint64_t daqDelay(params.get<xdata::Integer>("DAQ_delay").value_);
@@ -61,7 +61,7 @@ SetSingleHits::SetSingleHits(const std::string& aId, swatch::core::ActionableObj
 Command::State SetSingleHits::code(const XParameterSet& params)
 {
     setStatusMsg("Enable the single hit algorithm.");
-    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+    Mtf7Processor &processor = getActionable<Mtf7Processor>();
 
     const uint64_t singleHits(params.get<xdata::Boolean>("single_hits_enabled").value_);
 
@@ -83,7 +83,7 @@ DaqReportWoTrack::DaqReportWoTrack(const std::string& aId, swatch::core::Actiona
 Command::State DaqReportWoTrack::code(const XParameterSet& params)
 {
     setStatusMsg("Enable the firmware report in DAQ stream for the events that don't have valid tracks in them.");
-    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+    Mtf7Processor &processor = getActionable<Mtf7Processor>();
 
     const uint64_t daqReportWoTrack(params.get<xdata::Boolean>("daq_report_wo_track_enabled").value_);
 

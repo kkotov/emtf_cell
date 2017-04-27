@@ -15,7 +15,7 @@ namespace emtf {
 
 AlignmentFifoDelays::AlignmentFifoDelays(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     swatch::core::Command(aId, aActionable, xdata::Integer(0)),
-    processor(getActionable<EmtfProcessor>())
+    processor(getActionable<Mtf7Processor>())
 {
     registerParameter("enable_auto_af_delays", xdata::Boolean(true));
 
