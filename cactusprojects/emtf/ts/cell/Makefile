@@ -13,8 +13,8 @@ Project=cactusprojects
 Package=emtf/ts/cell
 
 export PACKAGE_VER_MAJOR=0
-export PACKAGE_VER_MINOR=7
-export PACKAGE_VER_PATCH=3
+export PACKAGE_VER_MINOR=8
+export PACKAGE_VER_PATCH=0
 export PACKAGE_RELEASE=0
 
 Sources=\
