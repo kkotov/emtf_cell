@@ -25,6 +25,7 @@ Sources=\
 	EmtfTTCInterface.cpp \
 	EmtfReadoutInterface.cpp \
 	EmtfPort.cpp \
+	EmtfCppfPort.cpp \
 	EmtfAlgoInterface.cpp \
     Common.cpp \
 	Resets.cpp \
