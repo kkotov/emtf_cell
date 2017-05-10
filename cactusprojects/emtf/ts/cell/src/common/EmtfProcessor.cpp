@@ -2,6 +2,7 @@
 #include "swatch/core/Factory.hpp"
 #include "emtf/ts/cell/EmtfTTCInterface.hpp"
 #include "emtf/ts/cell/EmtfReadoutInterface.hpp"
+#include "emtf/ts/cell/EmtfPortFactory.hpp"
 #include "emtf/ts/cell/EmtfPort.hpp"
 #include "emtf/ts/cell/EmtfAlgoInterface.hpp"
 #include "swatch/processor/PortCollection.hpp"
@@ -91,7 +92,16 @@ Mtf7Processor::Mtf7Processor(const AbstractStub& aStub) :
 
     for(vector<ProcessorPortStub>::const_iterator it = stub.rxPorts.begin(); it != stub.rxPorts.end(); it++)
     {
-        getInputPorts().addPort(new EmtfInputPort(it->id, it->number, aStub.id, *driver));
+        swatch::processor::InputPort *p = EmtfInputPortFactory::createPort(it->id, it->number, *this);
+
+        if(NULL != p)
+        {
+            getInputPorts().addPort(p);
+        }
+        else
+        {
+            getInputPorts().addPort(new EmtfInputPort(it->id, it->number, aStub.id, *driver));
+        }
     }
 
     for(vector<ProcessorPortStub>::const_iterator it = stub.txPorts.begin(); it != stub.txPorts.end(); it++)

@@ -28,6 +28,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+6">
@@ -47,6 +48,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+3">
@@ -66,6 +68,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+4">
@@ -85,6 +88,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+2">
@@ -104,6 +108,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+5">
@@ -123,6 +128,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-1">
@@ -142,6 +148,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-6">
@@ -161,6 +168,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-3">
@@ -180,6 +188,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-4">
@@ -199,6 +208,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-2">
@@ -218,6 +228,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-5">
@@ -237,6 +248,7 @@
       <rx-port pid="[43:45]" name="me2n_[3:10:6]"/>
       <rx-port pid="[45:47]" name="me3n_[3:10:6]"/>
       <rx-port pid="[47:49]" name="me4n_[3:10:6]"/>
+      <rx-port pid="[49:56]" name="cppf_[1:8]"/>
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
   </processors>
