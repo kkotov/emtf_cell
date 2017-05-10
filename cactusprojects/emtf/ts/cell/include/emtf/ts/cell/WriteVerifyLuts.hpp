@@ -55,9 +55,9 @@ private:
     WritePcLuts(const WritePcLuts &);
     WritePcLuts operator=(const WritePcLuts &);
 
-    void write(Mtf7Processor &processor, std::map<std::string, std::vector<unsigned long long>> &pairs);
+    void write(EmtfProcessor &processor, std::map<std::string, std::vector<unsigned long long>> &pairs);
 
-    Mtf7Processor &processor;
+    EmtfProcessor &processor;
 
     PcLuts *pcLuts;
 };
@@ -79,9 +79,9 @@ private:
     VerifyPcLuts(const VerifyPcLuts &);
     VerifyPcLuts operator=(const VerifyPcLuts &);
 
-    void verify(Mtf7Processor &processor, std::map<std::string, std::vector<unsigned long long>> &pairs, Command::State &status);
+    void verify(EmtfProcessor &processor, std::map<std::string, std::vector<unsigned long long>> &pairs, Command::State &status);
 
-    Mtf7Processor &processor;
+    EmtfProcessor &processor;
 
     PcLuts *pcLuts;
 };
@@ -132,7 +132,7 @@ private:
     VerifyWritePtLut(const VerifyWritePtLut &);
     VerifyWritePtLut operator=(const VerifyWritePtLut &);
 
-    Mtf7Processor &processor;
+    EmtfProcessor &processor;
 };
 
 class VerifyPtLut : public swatch::core::Command
@@ -148,7 +148,7 @@ private:
     VerifyPtLut(const VerifyWritePtLut &);
     VerifyPtLut operator=(const VerifyWritePtLut &);
 
-    Mtf7Processor &processor;
+    EmtfProcessor &processor;
 };
 
 class WritePtLut : public swatch::core::Command
@@ -164,7 +164,7 @@ private:
     WritePtLut(const VerifyWritePtLut &);
     WritePtLut operator=(const VerifyWritePtLut &);
 
-    Mtf7Processor &processor;
+    EmtfProcessor &processor;
 };
 
 class VerifyPtLutVersion : public swatch::core::Command

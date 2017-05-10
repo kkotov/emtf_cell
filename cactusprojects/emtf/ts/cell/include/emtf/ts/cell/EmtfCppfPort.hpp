@@ -8,7 +8,7 @@ namespace emtf {
 class EmtfInputCppfPort : public EmtfInputPortTemplate
 {
 public:
-    EmtfInputCppfPort(const std::string& aID, const uint32_t portId, Mtf7Processor &parent);
+    EmtfInputCppfPort(const std::string& aID, const uint32_t portId, EmtfProcessor &parent);
     virtual ~EmtfInputCppfPort();
 
     virtual void retrieveMetricValues();

@@ -12,7 +12,7 @@
   </crates>
   <processors>
     <processor id="EMTF+1">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>0</uri>
@@ -32,7 +32,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+6">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>1</uri>
@@ -52,7 +52,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+3">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>2</uri>
@@ -72,7 +72,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+4">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>3</uri>
@@ -92,7 +92,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+2">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>4</uri>
@@ -112,7 +112,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF+5">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>5</uri>
@@ -132,7 +132,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-1">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>6</uri>
@@ -152,7 +152,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-6">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>7</uri>
@@ -172,7 +172,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-3">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>8</uri>
@@ -192,7 +192,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-4">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>9</uri>
@@ -212,7 +212,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-2">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>10</uri>
@@ -232,7 +232,7 @@
       <tx-port pid="00" name="Output_to_uGMT"/>
     </processor>
     <processor id="EMTF-5">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>11</uri>

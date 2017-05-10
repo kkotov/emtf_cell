@@ -8,7 +8,7 @@
   </crates>
   <processors>
     <processor id="EMTF+1">
-      <creator>emtf::Mtf7Processor</creator>
+      <creator>emtf::EmtfProcessor</creator>
       <hw-type>MTF7</hw-type>
       <role>emtfProcessors</role>
       <uri>1</uri>

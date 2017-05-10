@@ -41,7 +41,7 @@ Command::State DAQConfigRegisters::code(const XParameterSet& params)
     const uint64_t amc13EasyEn(params.get<xdata::Boolean>("Amc13_easy_en").value_);
     const uint64_t daqRpcLateBy(params.get<xdata::UnsignedInteger>("daq_rpc_late_by").value_);
 
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     Command::State commandStatus = ActionSnapshot::kDone;
     processor.write64("daq_l1a_del", l1aDelay);

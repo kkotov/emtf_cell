@@ -11,7 +11,7 @@ namespace emtf {
 class EmtfInputPortTemplate : public swatch::processor::InputPort
 {
 public:
-    EmtfInputPortTemplate(const std::string& aID, const uint32_t portId, Mtf7Processor &parent) :
+    EmtfInputPortTemplate(const std::string& aID, const uint32_t portId, EmtfProcessor &parent) :
         InputPort(aID),
         id(aID),
         mLinkIdMismatch(registerMetric<std::string>("linkIdMismatch", swatch::core::NotEqualCondition<std::string>("none"), swatch::core::NotEqualCondition<std::string>("none"))),
@@ -28,7 +28,7 @@ protected:
 
     swatch::core::Metric<std::string> & mLinkIdMismatch;
 
-    Mtf7Processor &parentProcessor;
+    EmtfProcessor &parentProcessor;
 
     uint32_t endcap()
     {

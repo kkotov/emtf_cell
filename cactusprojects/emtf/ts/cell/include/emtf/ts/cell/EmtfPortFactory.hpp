@@ -10,7 +10,7 @@ namespace emtf {
 class EmtfInputPortFactory
 {
 public:
-    static swatch::processor::InputPort * createPort(const std::string& aID, const uint32_t portId, emtf::Mtf7Processor &parent) throw(std::runtime_error)
+    static swatch::processor::InputPort * createPort(const std::string& aID, const uint32_t portId, emtf::EmtfProcessor &parent) throw(std::runtime_error)
     {
         if(0 == aID.find("me"))
         {

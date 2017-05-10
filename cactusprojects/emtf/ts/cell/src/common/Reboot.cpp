@@ -32,7 +32,7 @@ Command::State Reboot::code(const swatch::core::XParameterSet& params)
     setStatusMsg("Rebooting/Reconfiguring main FPGA");
     setProgress(1.);
 
-    Mtf7Processor &processor = getActionable<Mtf7Processor>();
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     Command::State commandStatus = ActionSnapshot::kDone;
 

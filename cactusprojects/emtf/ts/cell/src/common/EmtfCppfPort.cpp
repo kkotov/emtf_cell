@@ -27,7 +27,7 @@ namespace InputCppfPort {
 };
 
 
-EmtfInputCppfPort::EmtfInputCppfPort(const string& aID, const uint32_t portId, Mtf7Processor &parent) :
+EmtfInputCppfPort::EmtfInputCppfPort(const string& aID, const uint32_t portId, EmtfProcessor &parent) :
     EmtfInputPortTemplate(aID, portId, parent)
 {
     // cout << "My id is: " << id << ", the endcap is: " << endcap() << ", the sektor is: " << sector() << endl;
