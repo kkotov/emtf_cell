@@ -3,13 +3,14 @@
 
 #include "swatch/processor/Port.hpp"
 #include "emtf/ts/cell/EmtfCppfPort.hpp"
+#include <stdexcept>
 
 namespace emtf {
 
 class EmtfInputPortFactory
 {
 public:
-    static swatch::processor::InputPort * createPort(const std::string& aID, const uint32_t portId, emtf::Mtf7Processor &parent)
+    static swatch::processor::InputPort * createPort(const std::string& aID, const uint32_t portId, emtf::Mtf7Processor &parent) throw(std::runtime_error)
     {
         if(0 == aID.find("me"))
         {
@@ -19,11 +20,8 @@ public:
         {
             return new EmtfInputCppfPort(aID, portId, parent);
         }
-        else
-        {
-            // throw
-            return NULL;
-        }
+
+        throw std::runtime_error("Invalid link name: " + aID);
     }
 };
 
