@@ -1,12 +1,8 @@
-#include "emtf/ts/cell/EmtfCscPort.hpp"
-#include <stdlib.h>
-#include "emtf/ts/cell/LinksAlignmentReferences.hpp"
-#include "swatch/core/MetricConditions.hpp"
+#include "emtf/ts/cell/EmtfCppfPort.hpp"
 #include "emtf/ts/cell/Common.hpp"
-#include <map>
+#include "emtf/ts/cell/LinksAlignmentReferences.hpp"
 #include <string>
-#include <vector>
-#include <stdexcept>
+#include <map>
 #include <boost/lexical_cast.hpp>
 
 namespace emtf {
@@ -14,89 +10,120 @@ namespace emtf {
 using namespace std;
 using namespace log4cplus;
 
-//class LinkID_t
-//{
-//private:
-//    map<string, vector<unsigned short> > hash;
-//
-//public:
-//    const vector<unsigned short>& operator[](const string& id) const throw(runtime_error) {
-//        map<string, vector<unsigned short> >::const_iterator it = hash.find(id);
-//
-//        if(it != hash.end()) {
-//            return it->second;
-//        }
-//
-//        throw runtime_error( "Invalid link name " + id );
-//    }
-//
-//    // address from table, Sector +1, Sector +2, Sector +3, Sector +4, Sector +5, Sector +6, Sector -1, Sector -2, Sector -3, Sector -4, Sector -5, Sector -6
-//    LinkID_t(void) {
-//        hash[ "me1a_02" ] = {0x021,0x041,0x061,0x081,0x0a1,0x0c1,0x201,0x221,0x241,0x261,0x281,0x2a1};
-//        hash[ "me1a_03" ] = {0x022,0x042,0x062,0x082,0x0a2,0x0c2,0x202,0x222,0x242,0x262,0x282,0x2a2};
-//        hash[ "me1a_04" ] = {0x023,0x043,0x063,0x083,0x0a3,0x0c3,0x203,0x223,0x243,0x263,0x283,0x2a3};
-//        hash[ "me1a_05" ] = {0x024,0x044,0x064,0x084,0x0a4,0x0c4,0x204,0x224,0x244,0x264,0x284,0x2a4};
-//        hash[ "me1a_06" ] = {0x025,0x045,0x065,0x085,0x0a5,0x0c5,0x205,0x225,0x245,0x265,0x285,0x2a5};
-//        hash[ "me1a_07" ] = {0x026,0x046,0x066,0x086,0x0a6,0x0c6,0x206,0x226,0x246,0x266,0x286,0x2a6};
-//        hash[ "me1a_08" ] = {0x027,0x047,0x067,0x087,0x0a7,0x0c7,0x207,0x227,0x247,0x267,0x287,0x2a7};
-//        hash[ "me1a_09" ] = {0x028,0x048,0x068,0x088,0x0a8,0x0c8,0x208,0x228,0x248,0x268,0x288,0x2a8};
-//        hash[ "me1b_02" ] = {0x031,0x051,0x071,0x091,0x0b1,0x011,0x211,0x231,0x251,0x271,0x291,0x1f1};
-//        hash[ "me1b_03" ] = {0x032,0x052,0x072,0x092,0x0b2,0x012,0x212,0x232,0x252,0x272,0x292,0x1f2};
-//        hash[ "me1b_04" ] = {0x033,0x053,0x073,0x093,0x0b3,0x013,0x213,0x233,0x253,0x273,0x293,0x1f3};
-//        hash[ "me1b_05" ] = {0x034,0x054,0x074,0x094,0x0b4,0x014,0x214,0x234,0x254,0x274,0x294,0x1f4};
-//        hash[ "me1b_06" ] = {0x035,0x055,0x075,0x095,0x0b5,0x015,0x215,0x235,0x255,0x275,0x295,0x1f5};
-//        hash[ "me1b_07" ] = {0x036,0x056,0x076,0x096,0x0b6,0x016,0x216,0x236,0x256,0x276,0x296,0x1f6};
-//        hash[ "me1b_08" ] = {0x037,0x057,0x077,0x097,0x0b7,0x017,0x217,0x237,0x257,0x277,0x297,0x1f7};
-//        hash[ "me1b_09" ] = {0x038,0x058,0x078,0x098,0x0b8,0x018,0x218,0x238,0x258,0x278,0x298,0x1f8};
-//        hash[ "me2_02"  ] = {0x0d1,0x0e1,0x0f1,0x101,0x111,0x121,0x2b1,0x2c1,0x2d1,0x2e1,0x2f1,0x301};
-//        hash[ "me2_03"  ] = {0x0d2,0x0e2,0x0f2,0x102,0x112,0x122,0x2b2,0x2c2,0x2d2,0x2e2,0x2f2,0x302};
-//        hash[ "me2_04"  ] = {0x0d3,0x0e3,0x0f3,0x103,0x113,0x123,0x2b3,0x2c3,0x2d3,0x2e3,0x2f3,0x303};
-//        hash[ "me2_05"  ] = {0x0d4,0x0e4,0x0f4,0x104,0x114,0x124,0x2b4,0x2c4,0x2d4,0x2e4,0x2f4,0x304};
-//        hash[ "me2_06"  ] = {0x0d5,0x0e5,0x0f5,0x105,0x115,0x125,0x2b5,0x2c5,0x2d5,0x2e5,0x2f5,0x305};
-//        hash[ "me2_07"  ] = {0x0d6,0x0e6,0x0f6,0x106,0x116,0x126,0x2b6,0x2c6,0x2d6,0x2e6,0x2f6,0x306};
-//        hash[ "me2_08"  ] = {0x0d7,0x0e7,0x0f7,0x107,0x117,0x127,0x2b7,0x2c7,0x2d7,0x2e7,0x2f7,0x307};
-//        hash[ "me2_09"  ] = {0x0d8,0x0e8,0x0f8,0x108,0x118,0x128,0x2b8,0x2c8,0x2d8,0x2e8,0x2f8,0x308};
-//        hash[ "me3_02"  ] = {0x131,0x141,0x151,0x161,0x171,0x181,0x311,0x321,0x331,0x341,0x351,0x361};
-//        hash[ "me3_03"  ] = {0x132,0x142,0x152,0x162,0x172,0x182,0x312,0x322,0x332,0x342,0x352,0x362};
-//        hash[ "me3_04"  ] = {0x133,0x143,0x153,0x163,0x173,0x183,0x313,0x323,0x333,0x343,0x353,0x363};
-//        hash[ "me3_05"  ] = {0x134,0x144,0x154,0x164,0x174,0x184,0x314,0x324,0x334,0x344,0x354,0x364};
-//        hash[ "me3_06"  ] = {0x135,0x145,0x155,0x165,0x175,0x185,0x315,0x325,0x335,0x345,0x355,0x365};
-//        hash[ "me3_07"  ] = {0x136,0x146,0x156,0x166,0x176,0x186,0x316,0x326,0x336,0x346,0x356,0x366};
-//        hash[ "me3_08"  ] = {0x137,0x147,0x157,0x167,0x177,0x187,0x317,0x327,0x337,0x347,0x357,0x367};
-//        hash[ "me3_09"  ] = {0x138,0x148,0x158,0x168,0x178,0x188,0x318,0x328,0x338,0x348,0x358,0x368};
-//        hash[ "me4_02"  ] = {0x191,0x1a1,0x1b1,0x1c1,0x1d1,0x1e1,0x371,0x381,0x391,0x3a1,0x3b1,0x3c1};
-//        hash[ "me4_03"  ] = {0x192,0x1a2,0x1b2,0x1c2,0x1d2,0x1e2,0x372,0x382,0x392,0x3a2,0x3b2,0x3c2};
-//        hash[ "me4_04"  ] = {0x193,0x1a3,0x1b3,0x1c3,0x1d3,0x1e3,0x373,0x383,0x393,0x3a3,0x3b3,0x3c3};
-//        hash[ "me4_05"  ] = {0x194,0x1a4,0x1b4,0x1c4,0x1d4,0x1e4,0x374,0x384,0x394,0x3a4,0x3b4,0x3c4};
-//        hash[ "me4_06"  ] = {0x195,0x1a5,0x1b5,0x1c5,0x1d5,0x1e5,0x375,0x385,0x395,0x3a5,0x3b5,0x3c5};
-//        hash[ "me4_07"  ] = {0x196,0x1a6,0x1b6,0x1c6,0x1d6,0x1e6,0x376,0x386,0x396,0x3a6,0x3b6,0x3c6};
-//        hash[ "me4_08"  ] = {0x197,0x1a7,0x1b7,0x1c7,0x1d7,0x1e7,0x377,0x387,0x397,0x3a7,0x3b7,0x3c7};
-//        hash[ "me4_09"  ] = {0x198,0x1a8,0x1b8,0x1c8,0x1d8,0x1e8,0x378,0x388,0x398,0x3a8,0x3b8,0x3c8};
-//        hash[ "me1n_03" ] = {0x012,0x032,0x052,0x072,0x092,0x0b2,0x1f2,0x212,0x232,0x252,0x272,0x292};
-//        hash[ "me1n_06" ] = {0x015,0x035,0x055,0x075,0x095,0x0b5,0x1f5,0x215,0x235,0x255,0x275,0x295};
-//        hash[ "me1n_09" ] = {0x018,0x038,0x058,0x078,0x098,0x0b8,0x1f8,0x218,0x238,0x258,0x278,0x298};
-//        hash[ "me2n_03" ] = {0x122,0x0d2,0x0e2,0x0f2,0x102,0x112,0x302,0x2b2,0x2c2,0x2d2,0x2e2,0x2f2};
-//        hash[ "me2n_09" ] = {0x128,0x0d8,0x0e8,0x0f8,0x108,0x118,0x308,0x2b8,0x2c8,0x2d8,0x2e8,0x2f8};
-//        hash[ "me3n_03" ] = {0x182,0x132,0x142,0x152,0x162,0x172,0x362,0x312,0x322,0x332,0x342,0x352};
-//        hash[ "me3n_09" ] = {0x188,0x138,0x148,0x158,0x168,0x178,0x368,0x318,0x328,0x338,0x348,0x358};
-//        hash[ "me4n_03" ] = {0x1e2,0x192,0x1a2,0x1b2,0x1c2,0x1d2,0x3c2,0x372,0x382,0x392,0x3a2,0x3b2};
-//        hash[ "me4n_09" ] = {0x1e8,0x198,0x1a8,0x1b8,0x1c8,0x1d8,0x3c8,0x378,0x388,0x398,0x3a8,0x3b8};
-//    }
-//} linkIdHash;
+
+namespace InputCscPort {
+    static const map<string, uint64_t> ids = {
+        // the format of the key is ENDCAP_SECTOR_ID where ENDCAP is [1 or 2], SECTOR is [1, 2, 3, 4, 5 or 6] and ID is [cppf_1, cppf_2, cppf_3, cppf_4, cppf_5, cppf_6, cppf_7]
+
+        // endcap 1, sector 1
+        {"1_1_me1a_02", 0x021}, {"1_1_me1a_03", 0x022}, {"1_1_me1a_04", 0x023}, {"1_1_me1a_05", 0x024}, {"1_1_me1a_06", 0x025}, {"1_1_me1a_07", 0x026}, {"1_1_me1a_08", 0x027}, {"1_1_me1a_09", 0x028},
+        {"1_1_me1b_02", 0x031}, {"1_1_me1b_03", 0x032}, {"1_1_me1b_04", 0x033}, {"1_1_me1b_05", 0x034}, {"1_1_me1b_06", 0x035}, {"1_1_me1b_07", 0x036}, {"1_1_me1b_08", 0x037}, {"1_1_me1b_09", 0x038},
+        {"1_1_me2_02",  0x0d1}, {"1_1_me2_03",  0x0d2}, {"1_1_me2_04",  0x0d3}, {"1_1_me2_05",  0x0d4}, {"1_1_me2_06",  0x0d5}, {"1_1_me2_07",  0x0d6}, {"1_1_me2_08",  0x0d7}, {"1_1_me2_09",  0x0d8},
+        {"1_1_me3_02",  0x131}, {"1_1_me3_03",  0x132}, {"1_1_me3_04",  0x133}, {"1_1_me3_05",  0x134}, {"1_1_me3_06",  0x135}, {"1_1_me3_07",  0x136}, {"1_1_me3_08",  0x137}, {"1_1_me3_09",  0x138},
+        {"1_1_me4_02",  0x191}, {"1_1_me4_03",  0x192}, {"1_1_me4_04",  0x193}, {"1_1_me4_05",  0x194}, {"1_1_me4_06",  0x195}, {"1_1_me4_07",  0x196}, {"1_1_me4_08",  0x197}, {"1_1_me4_09",  0x198},
+        {"1_1_me1n_03", 0x012}, {"1_1_me1n_06", 0x015}, {"1_1_me1n_09", 0x018}, {"1_1_me2n_03", 0x122}, {"1_1_me2n_09", 0x128}, {"1_1_me3n_03", 0x182}, {"1_1_me3n_09", 0x188}, {"1_1_me4n_03", 0x1e2}, {"1_1_me4n_09", 0x1e8},
+
+        // endcap 1, sector 2
+        {"1_2_me1a_02", 0x041}, {"1_2_me1a_03", 0x042}, {"1_2_me1a_04", 0x043}, {"1_2_me1a_05", 0x044}, {"1_2_me1a_06", 0x045}, {"1_2_me1a_07", 0x046}, {"1_2_me1a_08", 0x047}, {"1_2_me1a_09", 0x048},
+        {"1_2_me1b_02", 0x051}, {"1_2_me1b_03", 0x052}, {"1_2_me1b_04", 0x053}, {"1_2_me1b_05", 0x054}, {"1_2_me1b_06", 0x055}, {"1_2_me1b_07", 0x056}, {"1_2_me1b_08", 0x057}, {"1_2_me1b_09", 0x058},
+        {"1_2_me2_02",  0x0e1}, {"1_2_me2_03",  0x0e2}, {"1_2_me2_04",  0x0e3}, {"1_2_me2_05",  0x0e4}, {"1_2_me2_06",  0x0e5}, {"1_2_me2_07",  0x0e6}, {"1_2_me2_08",  0x0e7}, {"1_2_me2_09",  0x0e8},
+        {"1_2_me3_02",  0x141}, {"1_2_me3_03",  0x142}, {"1_2_me3_04",  0x143}, {"1_2_me3_05",  0x144}, {"1_2_me3_06",  0x145}, {"1_2_me3_07",  0x146}, {"1_2_me3_08",  0x147}, {"1_2_me3_09",  0x148},
+        {"1_2_me4_02",  0x1a1}, {"1_2_me4_03",  0x1a2}, {"1_2_me4_04",  0x1a3}, {"1_2_me4_05",  0x1a4}, {"1_2_me4_06",  0x1a5}, {"1_2_me4_07",  0x1a6}, {"1_2_me4_08",  0x1a7}, {"1_2_me4_09",  0x1a8},
+        {"1_2_me1n_03", 0x032}, {"1_2_me1n_06", 0x035}, {"1_2_me1n_09", 0x038}, {"1_2_me2n_03", 0x0d2}, {"1_2_me2n_09", 0x0d8}, {"1_2_me3n_03", 0x132}, {"1_2_me3n_09", 0x138}, {"1_2_me4n_03", 0x192}, {"1_2_me4n_09", 0x198},
+
+        // endcap 1, sector 3
+        {"1_3_me1a_02", 0x061}, {"1_3_me1a_03", 0x062}, {"1_3_me1a_04", 0x063}, {"1_3_me1a_05", 0x064}, {"1_3_me1a_06", 0x065}, {"1_3_me1a_07", 0x066}, {"1_3_me1a_08", 0x067}, {"1_3_me1a_09", 0x068},
+        {"1_3_me1b_02", 0x071}, {"1_3_me1b_03", 0x072}, {"1_3_me1b_04", 0x073}, {"1_3_me1b_05", 0x074}, {"1_3_me1b_06", 0x075}, {"1_3_me1b_07", 0x076}, {"1_3_me1b_08", 0x077}, {"1_3_me1b_09", 0x078},
+        {"1_3_me2_02",  0x0f1}, {"1_3_me2_03",  0x0f2}, {"1_3_me2_04",  0x0f3}, {"1_3_me2_05",  0x0f4}, {"1_3_me2_06",  0x0f5}, {"1_3_me2_07",  0x0f6}, {"1_3_me2_08",  0x0f7}, {"1_3_me2_09",  0x0f8},
+        {"1_3_me3_02",  0x151}, {"1_3_me3_03",  0x152}, {"1_3_me3_04",  0x153}, {"1_3_me3_05",  0x154}, {"1_3_me3_06",  0x155}, {"1_3_me3_07",  0x156}, {"1_3_me3_08",  0x157}, {"1_3_me3_09",  0x158},
+        {"1_3_me4_02",  0x1b1}, {"1_3_me4_03",  0x1b2}, {"1_3_me4_04",  0x1b3}, {"1_3_me4_05",  0x1b4}, {"1_3_me4_06",  0x1b5}, {"1_3_me4_07",  0x1b6}, {"1_3_me4_08",  0x1b7}, {"1_3_me4_09",  0x1b8},
+        {"1_3_me1n_03", 0x052}, {"1_3_me1n_06", 0x055}, {"1_3_me1n_09", 0x058}, {"1_3_me2n_03", 0x0e2}, {"1_3_me2n_09", 0x0e8}, {"1_3_me3n_03", 0x142}, {"1_3_me3n_09", 0x148}, {"1_3_me4n_03", 0x1a2}, {"1_3_me4n_09", 0x1a8},
+
+        // endcap 1, sector 4
+        {"1_4_me1a_02", 0x081}, {"1_4_me1a_03", 0x082}, {"1_4_me1a_04", 0x083}, {"1_4_me1a_05", 0x084}, {"1_4_me1a_06", 0x085}, {"1_4_me1a_07", 0x086}, {"1_4_me1a_08", 0x087}, {"1_4_me1a_09", 0x088},
+        {"1_4_me1b_02", 0x091}, {"1_4_me1b_03", 0x092}, {"1_4_me1b_04", 0x093}, {"1_4_me1b_05", 0x094}, {"1_4_me1b_06", 0x095}, {"1_4_me1b_07", 0x096}, {"1_4_me1b_08", 0x097}, {"1_4_me1b_09", 0x098},
+        {"1_4_me2_02",  0x101}, {"1_4_me2_03",  0x102}, {"1_4_me2_04",  0x103}, {"1_4_me2_05",  0x104}, {"1_4_me2_06",  0x105}, {"1_4_me2_07",  0x106}, {"1_4_me2_08",  0x107}, {"1_4_me2_09",  0x108},
+        {"1_4_me3_02",  0x161}, {"1_4_me3_03",  0x162}, {"1_4_me3_04",  0x163}, {"1_4_me3_05",  0x164}, {"1_4_me3_06",  0x165}, {"1_4_me3_07",  0x166}, {"1_4_me3_08",  0x167}, {"1_4_me3_09",  0x168},
+        {"1_4_me4_02",  0x1c1}, {"1_4_me4_03",  0x1c2}, {"1_4_me4_04",  0x1c3}, {"1_4_me4_05",  0x1c4}, {"1_4_me4_06",  0x1c5}, {"1_4_me4_07",  0x1c6}, {"1_4_me4_08",  0x1c7}, {"1_4_me4_09",  0x1c8},
+        {"1_4_me1n_03", 0x072}, {"1_4_me1n_06", 0x075}, {"1_4_me1n_09", 0x078}, {"1_4_me2n_03", 0x0f2}, {"1_4_me2n_09", 0x0f8}, {"1_4_me3n_03", 0x152}, {"1_4_me3n_09", 0x158}, {"1_4_me4n_03", 0x1b2}, {"1_4_me4n_09", 0x1b8},
+
+        // endcap 1, sector 5
+        {"1_5_me1a_02", 0x0a1}, {"1_5_me1a_03", 0x0a2}, {"1_5_me1a_04", 0x0a3}, {"1_5_me1a_05", 0x0a4}, {"1_5_me1a_06", 0x0a5}, {"1_5_me1a_07", 0x0a6}, {"1_5_me1a_08", 0x0a7}, {"1_5_me1a_09", 0x0a8},
+        {"1_5_me1b_02", 0x0b1}, {"1_5_me1b_03", 0x0b2}, {"1_5_me1b_04", 0x0b3}, {"1_5_me1b_05", 0x0b4}, {"1_5_me1b_06", 0x0b5}, {"1_5_me1b_07", 0x0b6}, {"1_5_me1b_08", 0x0b7}, {"1_5_me1b_09", 0x0b8},
+        {"1_5_me2_02",  0x111}, {"1_5_me2_03",  0x112}, {"1_5_me2_04",  0x113}, {"1_5_me2_05",  0x114}, {"1_5_me2_06",  0x115}, {"1_5_me2_07",  0x116}, {"1_5_me2_08",  0x117}, {"1_5_me2_09",  0x118},
+        {"1_5_me3_02",  0x171}, {"1_5_me3_03",  0x172}, {"1_5_me3_04",  0x173}, {"1_5_me3_05",  0x174}, {"1_5_me3_06",  0x175}, {"1_5_me3_07",  0x176}, {"1_5_me3_08",  0x177}, {"1_5_me3_09",  0x178},
+        {"1_5_me4_02",  0x1d1}, {"1_5_me4_03",  0x1d2}, {"1_5_me4_04",  0x1d3}, {"1_5_me4_05",  0x1d4}, {"1_5_me4_06",  0x1d5}, {"1_5_me4_07",  0x1d6}, {"1_5_me4_08",  0x1d7}, {"1_5_me4_09",  0x1d8},
+        {"1_5_me1n_03", 0x092}, {"1_5_me1n_06", 0x095}, {"1_5_me1n_09", 0x098}, {"1_5_me2n_03", 0x102}, {"1_5_me2n_09", 0x108}, {"1_5_me3n_03", 0x162}, {"1_5_me3n_09", 0x168}, {"1_5_me4n_03", 0x1c2}, {"1_5_me4n_09", 0x1c8},
+
+        // endcap 1, sector 6
+        {"1_6_me1a_02", 0x0c1}, {"1_6_me1a_03", 0x0c2}, {"1_6_me1a_04", 0x0c3}, {"1_6_me1a_05", 0x0c4}, {"1_6_me1a_06", 0x0c5}, {"1_6_me1a_07", 0x0c6}, {"1_6_me1a_08", 0x0c7}, {"1_6_me1a_09", 0x0c8},
+        {"1_6_me1b_02", 0x011}, {"1_6_me1b_03", 0x012}, {"1_6_me1b_04", 0x013}, {"1_6_me1b_05", 0x014}, {"1_6_me1b_06", 0x015}, {"1_6_me1b_07", 0x016}, {"1_6_me1b_08", 0x017}, {"1_6_me1b_09", 0x018},
+        {"1_6_me2_02",  0x121}, {"1_6_me2_03",  0x122}, {"1_6_me2_04",  0x123}, {"1_6_me2_05",  0x124}, {"1_6_me2_06",  0x125}, {"1_6_me2_07",  0x126}, {"1_6_me2_08",  0x127}, {"1_6_me2_09",  0x128},
+        {"1_6_me3_02",  0x181}, {"1_6_me3_03",  0x182}, {"1_6_me3_04",  0x183}, {"1_6_me3_05",  0x184}, {"1_6_me3_06",  0x185}, {"1_6_me3_07",  0x186}, {"1_6_me3_08",  0x187}, {"1_6_me3_09",  0x188},
+        {"1_6_me4_02",  0x1e1}, {"1_6_me4_03",  0x1e2}, {"1_6_me4_04",  0x1e3}, {"1_6_me4_05",  0x1e4}, {"1_6_me4_06",  0x1e5}, {"1_6_me4_07",  0x1e6}, {"1_6_me4_08",  0x1e7}, {"1_6_me4_09",  0x1e8},
+        {"1_6_me1n_03", 0x0b2}, {"1_6_me1n_06", 0x0b5}, {"1_6_me1n_09", 0x0b8}, {"1_6_me2n_03", 0x112}, {"1_6_me2n_09", 0x118}, {"1_6_me3n_03", 0x172}, {"1_6_me3n_09", 0x178}, {"1_6_me4n_03", 0x1d2}, {"1_6_me4n_09", 0x1d8},
+
+        // endcap 2, sector 1
+        {"2_1_me1a_02", 0x201}, {"2_1_me1a_03", 0x202}, {"2_1_me1a_04", 0x203}, {"2_1_me1a_05", 0x204}, {"2_1_me1a_06", 0x205}, {"2_1_me1a_07", 0x206}, {"2_1_me1a_08", 0x207}, {"2_1_me1a_09", 0x208},
+        {"2_1_me1b_02", 0x211}, {"2_1_me1b_03", 0x212}, {"2_1_me1b_04", 0x213}, {"2_1_me1b_05", 0x214}, {"2_1_me1b_06", 0x215}, {"2_1_me1b_07", 0x216}, {"2_1_me1b_08", 0x217}, {"2_1_me1b_09", 0x218},
+        {"2_1_me2_02",  0x2b1}, {"2_1_me2_03",  0x2b2}, {"2_1_me2_04",  0x2b3}, {"2_1_me2_05",  0x2b4}, {"2_1_me2_06",  0x2b5}, {"2_1_me2_07",  0x2b6}, {"2_1_me2_08",  0x2b7}, {"2_1_me2_09",  0x2b8},
+        {"2_1_me3_02",  0x311}, {"2_1_me3_03",  0x312}, {"2_1_me3_04",  0x313}, {"2_1_me3_05",  0x314}, {"2_1_me3_06",  0x315}, {"2_1_me3_07",  0x316}, {"2_1_me3_08",  0x317}, {"2_1_me3_09",  0x318},
+        {"2_1_me4_02",  0x371}, {"2_1_me4_03",  0x372}, {"2_1_me4_04",  0x373}, {"2_1_me4_05",  0x374}, {"2_1_me4_06",  0x375}, {"2_1_me4_07",  0x376}, {"2_1_me4_08",  0x377}, {"2_1_me4_09",  0x378},
+        {"2_1_me1n_03", 0x1f2}, {"2_1_me1n_06", 0x1f5}, {"2_1_me1n_09", 0x1f8}, {"2_1_me2n_03", 0x302}, {"2_1_me2n_09", 0x308}, {"2_1_me3n_03", 0x362}, {"2_1_me3n_09", 0x368}, {"2_1_me4n_03", 0x3c2}, {"2_1_me4n_09", 0x3c8},
+
+        // endcap 2, sector 2
+        {"2_2_me1a_02", 0x221}, {"2_2_me1a_03", 0x222}, {"2_2_me1a_04", 0x223}, {"2_2_me1a_05", 0x224}, {"2_2_me1a_06", 0x225}, {"2_2_me1a_07", 0x226}, {"2_2_me1a_08", 0x227}, {"2_2_me1a_09", 0x228},
+        {"2_2_me1b_02", 0x231}, {"2_2_me1b_03", 0x232}, {"2_2_me1b_04", 0x233}, {"2_2_me1b_05", 0x234}, {"2_2_me1b_06", 0x235}, {"2_2_me1b_07", 0x236}, {"2_2_me1b_08", 0x237}, {"2_2_me1b_09", 0x238},
+        {"2_2_me2_02",  0x2c1}, {"2_2_me2_03",  0x2c2}, {"2_2_me2_04",  0x2c3}, {"2_2_me2_05",  0x2c4}, {"2_2_me2_06",  0x2c5}, {"2_2_me2_07",  0x2c6}, {"2_2_me2_08",  0x2c7}, {"2_2_me2_09",  0x2c8},
+        {"2_2_me3_02",  0x321}, {"2_2_me3_03",  0x322}, {"2_2_me3_04",  0x323}, {"2_2_me3_05",  0x324}, {"2_2_me3_06",  0x325}, {"2_2_me3_07",  0x326}, {"2_2_me3_08",  0x327}, {"2_2_me3_09",  0x328},
+        {"2_2_me4_02",  0x381}, {"2_2_me4_03",  0x382}, {"2_2_me4_04",  0x383}, {"2_2_me4_05",  0x384}, {"2_2_me4_06",  0x385}, {"2_2_me4_07",  0x386}, {"2_2_me4_08",  0x387}, {"2_2_me4_09",  0x388},
+        {"2_2_me1n_03", 0x212}, {"2_2_me1n_06", 0x215}, {"2_2_me1n_09", 0x218}, {"2_2_me2n_03", 0x2b2}, {"2_2_me2n_09", 0x2b8}, {"2_2_me3n_03", 0x312}, {"2_2_me3n_09", 0x318}, {"2_2_me4n_03", 0x372}, {"2_2_me4n_09", 0x378},
+
+        // endcap 2, sector 3
+        {"2_3_me1a_02", 0x241}, {"2_3_me1a_03", 0x242}, {"2_3_me1a_04", 0x243}, {"2_3_me1a_05", 0x244}, {"2_3_me1a_06", 0x245}, {"2_3_me1a_07", 0x246}, {"2_3_me1a_08", 0x247}, {"2_3_me1a_09", 0x248},
+        {"2_3_me1b_02", 0x251}, {"2_3_me1b_03", 0x252}, {"2_3_me1b_04", 0x253}, {"2_3_me1b_05", 0x254}, {"2_3_me1b_06", 0x255}, {"2_3_me1b_07", 0x256}, {"2_3_me1b_08", 0x257}, {"2_3_me1b_09", 0x258},
+        {"2_3_me2_02",  0x2d1}, {"2_3_me2_03",  0x2d2}, {"2_3_me2_04",  0x2d3}, {"2_3_me2_05",  0x2d4}, {"2_3_me2_06",  0x2d5}, {"2_3_me2_07",  0x2d6}, {"2_3_me2_08",  0x2d7}, {"2_3_me2_09",  0x2d8},
+        {"2_3_me3_02",  0x331}, {"2_3_me3_03",  0x332}, {"2_3_me3_04",  0x333}, {"2_3_me3_05",  0x334}, {"2_3_me3_06",  0x335}, {"2_3_me3_07",  0x336}, {"2_3_me3_08",  0x337}, {"2_3_me3_09",  0x338},
+        {"2_3_me4_02",  0x391}, {"2_3_me4_03",  0x392}, {"2_3_me4_04",  0x393}, {"2_3_me4_05",  0x394}, {"2_3_me4_06",  0x395}, {"2_3_me4_07",  0x396}, {"2_3_me4_08",  0x397}, {"2_3_me4_09",  0x398},
+        {"2_3_me1n_03", 0x232}, {"2_3_me1n_06", 0x235}, {"2_3_me1n_09", 0x238}, {"2_3_me2n_03", 0x2c2}, {"2_3_me2n_09", 0x2c8}, {"2_3_me3n_03", 0x322}, {"2_3_me3n_09", 0x328}, {"2_3_me4n_03", 0x382}, {"2_3_me4n_09", 0x388},
+
+        // endcap 2, sector 4
+        {"2_4_me1a_02", 0x261}, {"2_4_me1a_03", 0x262}, {"2_4_me1a_04", 0x263}, {"2_4_me1a_05", 0x264}, {"2_4_me1a_06", 0x265}, {"2_4_me1a_07", 0x266}, {"2_4_me1a_08", 0x267}, {"2_4_me1a_09", 0x268},
+        {"2_4_me1b_02", 0x271}, {"2_4_me1b_03", 0x272}, {"2_4_me1b_04", 0x273}, {"2_4_me1b_05", 0x274}, {"2_4_me1b_06", 0x275}, {"2_4_me1b_07", 0x276}, {"2_4_me1b_08", 0x277}, {"2_4_me1b_09", 0x278},
+        {"2_4_me2_02",  0x2e1}, {"2_4_me2_03",  0x2e2}, {"2_4_me2_04",  0x2e3}, {"2_4_me2_05",  0x2e4}, {"2_4_me2_06",  0x2e5}, {"2_4_me2_07",  0x2e6}, {"2_4_me2_08",  0x2e7}, {"2_4_me2_09",  0x2e8},
+        {"2_4_me3_02",  0x341}, {"2_4_me3_03",  0x342}, {"2_4_me3_04",  0x343}, {"2_4_me3_05",  0x344}, {"2_4_me3_06",  0x345}, {"2_4_me3_07",  0x346}, {"2_4_me3_08",  0x347}, {"2_4_me3_09",  0x348},
+        {"2_4_me4_02",  0x3a1}, {"2_4_me4_03",  0x3a2}, {"2_4_me4_04",  0x3a3}, {"2_4_me4_05",  0x3a4}, {"2_4_me4_06",  0x3a5}, {"2_4_me4_07",  0x3a6}, {"2_4_me4_08",  0x3a7}, {"2_4_me4_09",  0x3a8},
+        {"2_4_me1n_03", 0x252}, {"2_4_me1n_06", 0x255}, {"2_4_me1n_09", 0x258}, {"2_4_me2n_03", 0x2d2}, {"2_4_me2n_09", 0x2d8}, {"2_4_me3n_03", 0x332}, {"2_4_me3n_09", 0x338}, {"2_4_me4n_03", 0x392}, {"2_4_me4n_09", 0x398},
+
+        // endcap 2, sector 5
+        {"2_5_me1a_02", 0x281}, {"2_5_me1a_03", 0x282}, {"2_5_me1a_04", 0x283}, {"2_5_me1a_05", 0x284}, {"2_5_me1a_06", 0x285}, {"2_5_me1a_07", 0x286}, {"2_5_me1a_08", 0x287}, {"2_5_me1a_09", 0x288},
+        {"2_5_me1b_02", 0x291}, {"2_5_me1b_03", 0x292}, {"2_5_me1b_04", 0x293}, {"2_5_me1b_05", 0x294}, {"2_5_me1b_06", 0x295}, {"2_5_me1b_07", 0x296}, {"2_5_me1b_08", 0x297}, {"2_5_me1b_09", 0x298},
+        {"2_5_me2_02",  0x2f1}, {"2_5_me2_03",  0x2f2}, {"2_5_me2_04",  0x2f3}, {"2_5_me2_05",  0x2f4}, {"2_5_me2_06",  0x2f5}, {"2_5_me2_07",  0x2f6}, {"2_5_me2_08",  0x2f7}, {"2_5_me2_09",  0x2f8},
+        {"2_5_me3_02",  0x351}, {"2_5_me3_03",  0x352}, {"2_5_me3_04",  0x353}, {"2_5_me3_05",  0x354}, {"2_5_me3_06",  0x355}, {"2_5_me3_07",  0x356}, {"2_5_me3_08",  0x357}, {"2_5_me3_09",  0x358},
+        {"2_5_me4_02",  0x3b1}, {"2_5_me4_03",  0x3b2}, {"2_5_me4_04",  0x3b3}, {"2_5_me4_05",  0x3b4}, {"2_5_me4_06",  0x3b5}, {"2_5_me4_07",  0x3b6}, {"2_5_me4_08",  0x3b7}, {"2_5_me4_09",  0x3b8},
+        {"2_5_me1n_03", 0x272}, {"2_5_me1n_06", 0x275}, {"2_5_me1n_09", 0x278}, {"2_5_me2n_03", 0x2e2}, {"2_5_me2n_09", 0x2e8}, {"2_5_me3n_03", 0x342}, {"2_5_me3n_09", 0x348}, {"2_5_me4n_03", 0x3a2}, {"2_5_me4n_09", 0x3a8},
+
+        // endcap 2, sector 6
+        {"2_6_me1a_02", 0x2a1}, {"2_6_me1a_03", 0x2a2}, {"2_6_me1a_04", 0x2a3}, {"2_6_me1a_05", 0x2a4}, {"2_6_me1a_06", 0x2a5}, {"2_6_me1a_07", 0x2a6}, {"2_6_me1a_08", 0x2a7}, {"2_6_me1a_09", 0x2a8},
+        {"2_6_me1b_02", 0x1f1}, {"2_6_me1b_03", 0x1f2}, {"2_6_me1b_04", 0x1f3}, {"2_6_me1b_05", 0x1f4}, {"2_6_me1b_06", 0x1f5}, {"2_6_me1b_07", 0x1f6}, {"2_6_me1b_08", 0x1f7}, {"2_6_me1b_09", 0x1f8},
+        {"2_6_me2_02",  0x301}, {"2_6_me2_03",  0x302}, {"2_6_me2_04",  0x303}, {"2_6_me2_05",  0x304}, {"2_6_me2_06",  0x305}, {"2_6_me2_07",  0x306}, {"2_6_me2_08",  0x307}, {"2_6_me2_09",  0x308},
+        {"2_6_me3_02",  0x361}, {"2_6_me3_03",  0x362}, {"2_6_me3_04",  0x363}, {"2_6_me3_05",  0x364}, {"2_6_me3_06",  0x365}, {"2_6_me3_07",  0x366}, {"2_6_me3_08",  0x367}, {"2_6_me3_09",  0x368},
+        {"2_6_me4_02",  0x3c1}, {"2_6_me4_03",  0x3c2}, {"2_6_me4_04",  0x3c3}, {"2_6_me4_05",  0x3c4}, {"2_6_me4_06",  0x3c5}, {"2_6_me4_07",  0x3c6}, {"2_6_me4_08",  0x3c7}, {"2_6_me4_09",  0x3c8},
+        {"2_6_me1n_03", 0x292}, {"2_6_me1n_06", 0x295}, {"2_6_me1n_09", 0x298}, {"2_6_me2n_03", 0x2f2}, {"2_6_me2n_09", 0x2f8}, {"2_6_me3n_03", 0x352}, {"2_6_me3n_09", 0x358}, {"2_6_me4n_03", 0x3b2}, {"2_6_me4n_09", 0x3b8}
+    };
+};
+
 
 EmtfCscInputPort::EmtfCscInputPort(const string& aID, const uint32_t portId, EmtfProcessor &parent) :
-    EmtfInputPortTemplate(aID, portId, parent)
-    // id(aID),
-    // afDelayReference(InputLinksAlignmentReferences::getReferenceValue(processorName, portId)),
-    // afDeltaMin(-8),
-    // afDeltaMax(20),
-    // driver_(driver),
-    // link_id_mismatch(registerMetric<string>("linkIdMismatch", swatch::core::NotEqualCondition<string>("none"), swatch::core::NotEqualCondition<string>("none"))),
-    // linkLogger(Logger::getInstance(config::log4cplusLinkLogger())),
-    // lockedOld(false),
-    // alignedOld(false),
-    // crcOld(false),
-    // idOld(false)
+    EmtfInputPortTemplate(aID, portId, parent),
+    afDelayReference(InputLinksAlignmentReferences::getReferenceValue(parent.getStub().id, portId)),
+    afDeltaMin(-8),
+    afDeltaMax(20),
+    linkLogger(Logger::getInstance(config::log4cplusLinkLogger())),
+    lockedOld(false),
+    alignedOld(false),
+    crcOld(false),
+    idOld(false)
 {
 }
 
@@ -106,107 +133,101 @@ EmtfCscInputPort::~EmtfCscInputPort()
 
 void EmtfCscInputPort::retrieveMetricValues()
 {
-    //setMetricValue<bool>(mMetricIsLocked, readMetricIsLocked());
-    //setMetricValue<bool>(mMetricIsAligned, readMetricIsAligned());
-    //setMetricValue<uint32_t>(mMetricCRCErrors, readMetricCRCErrors());
+    setMetricValue<bool>(mMetricIsLocked, readMetricIsLocked());
+    setMetricValue<bool>(mMetricIsAligned, readMetricIsAligned());
+    setMetricValue<uint32_t>(mMetricCRCErrors, readMetricCRCErrors());
 
-    //setMetricValue<string>(link_id_mismatch, readLinkID());
+    setMetricValue<string>(mLinkIdMismatch, compareLinkIds());
 
-    //logLinkStatus();
+    logLinkStatus();
 }
 
 uint64_t EmtfCscInputPort::readLinkRealId()
 {
-//    stringstream mismatches;
-//
-//    uint64_t result = 0;
-//    driver_.read64( string("link_id_")+id, &result );
-//
-//    uint32_t deviceIndex = sector + endcap * 6;
-//
-//    if( result != linkIdHash[ id ][ deviceIndex ] ) // endcap(); sector();
-//        mismatches << "read/expect: "<< hex << "0x" << result << "/0x" << linkIdHash[ id ][ deviceIndex ] << dec ;
-//
-//    if( mismatches.str().length()==0 ) return string("none");
-//
-//    return mismatches.str();
+    string regName = "link_id_" + id;
 
-    return 0;
+    uint64_t result = 0;
+
+    parentProcessor.read64(regName, result);
+
+    return result;
 }
 
 uint64_t EmtfCscInputPort::readLinkExpectedId()
 {
+    stringstream myId;
+    myId << endcap() << "_" << sector() << "_" << id;
+
+    return InputCscPort::ids.at(myId.str());
+}
+
+bool EmtfCscInputPort::readMetricIsLocked()
+{
+    const string regName("bc0_err_" + id);
+
+    uint64_t bc0Err;
+
+    parentProcessor.read64(regName, bc0Err);
+
+    return (0 == bc0Err);
+}
+
+bool EmtfCscInputPort::readMetricIsAligned()
+{
+    const string regName("af_delay_" + id);
+
+    uint64_t afDelay;
+
+    parentProcessor.read64(regName, afDelay);
+
+    bool res = true;
+
+    const int64_t delta = (afDelay - afDelayReference);
+
+    if(   (0x40 <= afDelay)                       // afDelay must be smaller than 0x40
+       || (delta < afDeltaMin)
+       || (delta > afDeltaMax))
+    {
+        res = false;
+    }
+
+    return res;
+}
+
+uint32_t EmtfCscInputPort::readMetricCRCErrors()
+{
+    // TODO: implement the function when the firmware support for this metric is added
+
     return 0;
 }
 
-//bool EmtfCscInputPort::readMetricIsLocked()
-//{
-//    const string regName("bc0_err_" + id);
-//
-//    uint64_t bc0Err;
-//
-//    driver_.read64(regName, &bc0Err);
-//
-//    return (0 == bc0Err);
-//}
-
-//bool EmtfCscInputPort::readMetricIsAligned()
-//{
-//    const string regName("af_delay_" + id);
-//
-//    uint64_t afDelay;
-//
-//    driver_.read64(regName, &afDelay);
-//
-//    bool res = true;
-//
-//    const int64_t delta = (afDelay - afDelayReference);
-//
-//    if(   (0x40 <= afDelay)                       // afDelay must be smaller than 0x40
-//       || (delta < afDeltaMin)
-//       || (delta > afDeltaMax))
-//    {
-//        res = false;
-//    }
-//
-//    return res;
-//}
-
-//uint32_t EmtfCscInputPort::readMetricCRCErrors()
-//{
-//    // TODO: implement the function when the firmware support for this metric is added
-//
-//    return 0;
-//}
-
 void EmtfCscInputPort::logLinkStatus(bool forceLog)
 {
-//    const bool lockedOk = readMetricIsLocked();
-//    const bool alignedOk = readMetricIsAligned();
-//    const bool crcOk = (0 == readMetricCRCErrors());
-//    const bool idOk = ("none" == readLinkID());
-//
-//    if(    forceLog
-//        || (lockedOk  != lockedOld)
-//        || (alignedOk != alignedOld)
-//        || (crcOk     != crcOld)
-//        || (idOk      != idOld) )
-//    {
-//        lockedOld = lockedOk;
-//        alignedOld = alignedOk;
-//        crcOld = crcOk;
-//        idOld = idOk;
-//
-//        // add 1 to the endcap and the sector because in the software they start from 0 and that might be misleading
-//        string msg = "endcap " + boost::lexical_cast<string>(endcap+1) + ", " + \
-//                     "sector " + boost::lexical_cast<string>(sector+1) + ", " + \
-//                     id + " - " + \
-//                     "locked: " + boolToString(lockedOk) + ", " + \
-//                     "aligned: " + boolToString(alignedOk) + ", " + \
-//                     "crc: " + boolToString(crcOk) + ", " + \
-//                     "id: " + boolToString(idOk);
-//        LOG4CPLUS_TRACE(linkLogger, LOG4CPLUS_TEXT(msg));
-//    }
+    const bool lockedOk = readMetricIsLocked();
+    const bool alignedOk = readMetricIsAligned();
+    const bool crcOk = (0 == readMetricCRCErrors());
+    const bool idOk = (readLinkRealId() == readLinkExpectedId());
+
+    if(    forceLog
+        || (lockedOk  != lockedOld)
+        || (alignedOk != alignedOld)
+        || (crcOk     != crcOld)
+        || (idOk      != idOld) )
+    {
+        lockedOld = lockedOk;
+        alignedOld = alignedOk;
+        crcOld = crcOk;
+        idOld = idOk;
+
+        string msg = "endcap " + boost::lexical_cast<string>(endcap()) + ", " + \
+                     "sector " + boost::lexical_cast<string>(sector()) + ", " + \
+                     id + " - " + \
+                     "locked: " + boolToString(lockedOk) + ", " + \
+                     "aligned: " + boolToString(alignedOk) + ", " + \
+                     "crc: " + boolToString(crcOk) + ", " + \
+                     "id: " + boolToString(idOk);
+        LOG4CPLUS_TRACE(linkLogger, LOG4CPLUS_TEXT(msg));
+    }
 }
 
 } // namespace
