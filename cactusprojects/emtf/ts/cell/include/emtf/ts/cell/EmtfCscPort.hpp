@@ -23,6 +23,8 @@ public:
     const int64_t afDeltaMin;
     const int64_t afDeltaMax;
 
+    const uint64_t linkExpectedId;
+
     bool readMetricIsLocked();
     bool readMetricIsAligned();
     uint32_t readMetricCRCErrors();
