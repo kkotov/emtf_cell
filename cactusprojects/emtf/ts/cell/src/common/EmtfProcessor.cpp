@@ -4,11 +4,8 @@
 #include "emtf/ts/cell/EmtfReadoutInterface.hpp"
 #include "emtf/ts/cell/EmtfPortFactory.hpp"
 #include "emtf/ts/cell/EmtfOutputPort.hpp"
-
-#include "emtf/ts/cell/EmtfCscPort.hpp" // TODO: remote  this include
-
-#include "emtf/ts/cell/EmtfAlgoInterface.hpp"
 #include "swatch/processor/PortCollection.hpp"
+#include "emtf/ts/cell/EmtfAlgoInterface.hpp"
 #include "swatch/core/CommandSequence.hpp"
 #include "swatch/core/StateMachine.hpp"
 #include "emtf/ts/cell/Common.hpp"
@@ -95,16 +92,7 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
 
     for(vector<ProcessorPortStub>::const_iterator it = stub.rxPorts.begin(); it != stub.rxPorts.end(); it++)
     {
-        swatch::processor::InputPort *p = EmtfInputPortFactory::createPort(it->id, it->number, *this);
-
-        if(NULL != p)
-        {
-            getInputPorts().addPort(p);
-        }
-        else
-        {
-            getInputPorts().addPort(new EmtfCscInputPort(it->id, it->number, aStub.id, *driver));
-        }
+        getInputPorts().addPort(EmtfInputPortFactory::createPort(it->id, it->number, *this));
     }
 
     for(vector<ProcessorPortStub>::const_iterator it = stub.txPorts.begin(); it != stub.txPorts.end(); it++)

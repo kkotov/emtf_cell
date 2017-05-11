@@ -2,6 +2,7 @@
 #define __EMTF_PORT_FACTORY_HPP__
 
 #include "swatch/processor/Port.hpp"
+#include "emtf/ts/cell/EmtfCscPort.hpp"
 #include "emtf/ts/cell/EmtfCppfPort.hpp"
 #include <stdexcept>
 
@@ -14,9 +15,10 @@ public:
     {
         if(0 == aID.find("me"))
         {
-            return NULL;
+            return new EmtfCscInputPort(aID, portId, parent);
         }
-        else if(0 == aID.find("cppf_"))
+
+        if(0 == aID.find("cppf_"))
         {
             return new EmtfCppfInputPort(aID, portId, parent);
         }
