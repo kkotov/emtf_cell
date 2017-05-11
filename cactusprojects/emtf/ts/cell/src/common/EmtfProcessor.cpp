@@ -3,7 +3,10 @@
 #include "emtf/ts/cell/EmtfTTCInterface.hpp"
 #include "emtf/ts/cell/EmtfReadoutInterface.hpp"
 #include "emtf/ts/cell/EmtfPortFactory.hpp"
-#include "emtf/ts/cell/EmtfPort.hpp"
+#include "emtf/ts/cell/EmtfOutputPort.hpp"
+
+#include "emtf/ts/cell/EmtfCscPort.hpp" // TODO: remote  this include
+
 #include "emtf/ts/cell/EmtfAlgoInterface.hpp"
 #include "swatch/processor/PortCollection.hpp"
 #include "swatch/core/CommandSequence.hpp"
@@ -100,7 +103,7 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
         }
         else
         {
-            getInputPorts().addPort(new EmtfInputPort(it->id, it->number, aStub.id, *driver));
+            getInputPorts().addPort(new EmtfCscInputPort(it->id, it->number, aStub.id, *driver));
         }
     }
 

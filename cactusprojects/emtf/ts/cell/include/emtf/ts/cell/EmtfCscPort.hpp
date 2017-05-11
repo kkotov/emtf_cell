@@ -1,5 +1,5 @@
-#ifndef __EMTF_PORT_HPP__
-#define __EMTF_PORT_HPP__
+#ifndef __EMTF_CSC_PORT_HPP__
+#define __EMTF_CSC_PORT_HPP__
 
 #include "swatch/processor/Port.hpp"
 #include "emtf/pciExprLinuxBusAdapter/PCIExprDevice.hh"
@@ -8,11 +8,11 @@
 
 namespace emtf {
 
-class EmtfInputPort : public swatch::processor::InputPort
+class EmtfCscInputPort : public swatch::processor::InputPort
 {
 public:
-    EmtfInputPort(const std::string& aID, const uint32_t portId, const std::string processorName, HAL::PCIExprDevice& driver);
-    ~EmtfInputPort();
+    EmtfCscInputPort(const std::string& aID, const uint32_t portId, const std::string processorName, HAL::PCIExprDevice& driver);
+    ~EmtfCscInputPort();
 
     void retrieveMetricValues();
     void logLinkStatus(bool forceLog=false);
@@ -47,22 +47,7 @@ private:
     }
 };
 
-
-class EmtfOutputPort : public swatch::processor::OutputPort
-{
-public:
-    EmtfOutputPort(const std::string& aID, const uint32_t portId, HAL::PCIExprDevice& driver);
-    ~EmtfOutputPort();
-
-    void retrieveMetricValues();
-
-private:
-    HAL::PCIExprDevice& driver_;
-
-    bool readMetricIsOperating();
-};
-
 } // namespace
 
-#endif /* __EMTF_PORT_HPP__ */
+#endif /* __EMTF_CSC_PORT_HPP__ */
 

@@ -1,6 +1,6 @@
 #include "swatch/processor/PortCollection.hpp"
 #include "emtf/ts/cell/EmtfProcessor.hpp"
-#include "emtf/ts/cell/EmtfPort.hpp"
+#include "emtf/ts/cell/EmtfCscPort.hpp"
 #include "emtf/ts/cell/TransitionCommands.hpp"
 #include <vector>
 #include "emtf/ts/cell/Common.hpp"
@@ -38,7 +38,7 @@ Command::State OnStart::code(const swatch::core::XParameterSet& params)
 
     for(auto it=processor.getInputPorts().getPorts().begin(); it!=processor.getInputPorts().getPorts().end(); ++it)
     {
-        dynamic_cast<EmtfInputPort *>(*it)->logLinkStatus(true);
+        dynamic_cast<EmtfCscInputPort *>(*it)->logLinkStatus(true);
     }
 
     setProgress(1.);

@@ -1,4 +1,4 @@
-#include "emtf/ts/cell/EmtfPort.hpp"
+#include "emtf/ts/cell/EmtfCscPort.hpp"
 #include <stdlib.h>
 #include "emtf/ts/cell/LinksAlignmentReferences.hpp"
 #include "swatch/core/MetricConditions.hpp"
@@ -86,7 +86,7 @@ public:
 } linkIdHash;
 
 
-EmtfInputPort::EmtfInputPort(const string& aID, const uint32_t portId, const string processorName, HAL::PCIExprDevice& driver) :
+EmtfCscInputPort::EmtfCscInputPort(const string& aID, const uint32_t portId, const string processorName, HAL::PCIExprDevice& driver) :
     InputPort(aID),
     id(aID),
     afDelayReference(InputLinksAlignmentReferences::getReferenceValue(processorName, portId)),
@@ -117,11 +117,11 @@ EmtfInputPort::EmtfInputPort(const string& aID, const uint32_t portId, const str
     }
 }
 
-EmtfInputPort::~EmtfInputPort()
+EmtfCscInputPort::~EmtfCscInputPort()
 {
 }
 
-void EmtfInputPort::retrieveMetricValues()
+void EmtfCscInputPort::retrieveMetricValues()
 {
     setMetricValue<bool>(mMetricIsLocked, readMetricIsLocked());
     setMetricValue<bool>(mMetricIsAligned, readMetricIsAligned());
@@ -131,7 +131,7 @@ void EmtfInputPort::retrieveMetricValues()
     logLinkStatus();
 }
 
-string EmtfInputPort::readLinkID(void){
+string EmtfCscInputPort::readLinkID(void){
     stringstream mismatches;
 
     uint64_t result = 0;
@@ -148,7 +148,7 @@ string EmtfInputPort::readLinkID(void){
 }
 
 
-bool EmtfInputPort::readMetricIsLocked()
+bool EmtfCscInputPort::readMetricIsLocked()
 {
     const string regName("bc0_err_" + id);
 
@@ -159,7 +159,7 @@ bool EmtfInputPort::readMetricIsLocked()
     return (0 == bc0Err);
 }
 
-bool EmtfInputPort::readMetricIsAligned()
+bool EmtfCscInputPort::readMetricIsAligned()
 {
     const string regName("af_delay_" + id);
 
@@ -181,14 +181,14 @@ bool EmtfInputPort::readMetricIsAligned()
     return res;
 }
 
-uint32_t EmtfInputPort::readMetricCRCErrors()
+uint32_t EmtfCscInputPort::readMetricCRCErrors()
 {
     // TODO: implement the function when the firmware support for this metric is added
 
     return 0;
 }
 
-void EmtfInputPort::logLinkStatus(bool forceLog)
+void EmtfCscInputPort::logLinkStatus(bool forceLog)
 {
     const bool lockedOk = readMetricIsLocked();
     const bool alignedOk = readMetricIsAligned();
@@ -216,29 +216,6 @@ void EmtfInputPort::logLinkStatus(bool forceLog)
                      "id: " + boolToString(idOk);
         LOG4CPLUS_TRACE(linkLogger, LOG4CPLUS_TEXT(msg));
     }
-}
-
-
-EmtfOutputPort::EmtfOutputPort(const string& aID, const uint32_t portId, HAL::PCIExprDevice& driver) :
-    OutputPort(aID),
-    driver_(driver)
-{
-}
-
-EmtfOutputPort::~EmtfOutputPort()
-{
-}
-
-void EmtfOutputPort::retrieveMetricValues()
-{
-    setMetricValue<bool>(mMetricIsOperating, readMetricIsOperating());
-}
-
-bool EmtfOutputPort::readMetricIsOperating()
-{
-    // TODO: implement the function when the firmware support for this metric is added
-
-    return true;
 }
 
 } // namespace
