@@ -5,11 +5,11 @@
 
 namespace emtf {
 
-class EmtfInputCppfPort : public EmtfInputPortTemplate
+class EmtfCppfInputPort : public EmtfInputPortTemplate
 {
 public:
-    EmtfInputCppfPort(const std::string& aID, const uint32_t portId, EmtfProcessor &parent);
-    virtual ~EmtfInputCppfPort();
+    EmtfCppfInputPort(const std::string& aID, const uint32_t portId, EmtfProcessor &parent);
+    virtual ~EmtfCppfInputPort();
 
     virtual void retrieveMetricValues();
     virtual uint64_t readLinkRealId();

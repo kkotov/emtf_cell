@@ -27,7 +27,7 @@ namespace InputCppfPort {
 };
 
 
-EmtfInputCppfPort::EmtfInputCppfPort(const string& aID, const uint32_t portId, EmtfProcessor &parent) :
+EmtfCppfInputPort::EmtfCppfInputPort(const string& aID, const uint32_t portId, EmtfProcessor &parent) :
     EmtfInputPortTemplate(aID, portId, parent)
 {
     // cout << "My id is: " << id << ", the endcap is: " << endcap() << ", the sektor is: " << sector() << endl;
@@ -42,11 +42,11 @@ EmtfInputCppfPort::EmtfInputCppfPort(const string& aID, const uint32_t portId, E
     // assert(readLinkRealId() == readLinkExpectedId());
 }
 
-EmtfInputCppfPort::~EmtfInputCppfPort()
+EmtfCppfInputPort::~EmtfCppfInputPort()
 {
 }
 
-void EmtfInputCppfPort::retrieveMetricValues()
+void EmtfCppfInputPort::retrieveMetricValues()
 {
     // the values of these three metrics are set to true, because there is no hardware implementation for them yet
     setMetricValue<bool>(mMetricIsLocked, true);
@@ -56,7 +56,7 @@ void EmtfInputCppfPort::retrieveMetricValues()
     setMetricValue<string>(mLinkIdMismatch, compareLinkIds());
 }
 
-uint64_t EmtfInputCppfPort::readLinkRealId()
+uint64_t EmtfCppfInputPort::readLinkRealId()
 {
     string regName = "cppf_link_id_" + string(&id[5]);
 
@@ -67,7 +67,7 @@ uint64_t EmtfInputCppfPort::readLinkRealId()
     return result;
 }
 
-uint64_t EmtfInputCppfPort::readLinkExpectedId()
+uint64_t EmtfCppfInputPort::readLinkExpectedId()
 {
     stringstream myId;
     myId << endcap() << "_" << sector() << "_" << id;

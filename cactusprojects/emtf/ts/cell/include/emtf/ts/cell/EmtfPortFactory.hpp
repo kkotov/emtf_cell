@@ -18,7 +18,7 @@ public:
         }
         else if(0 == aID.find("cppf_"))
         {
-            return new EmtfInputCppfPort(aID, portId, parent);
+            return new EmtfCppfInputPort(aID, portId, parent);
         }
 
         throw std::runtime_error("Invalid link name: " + aID);
