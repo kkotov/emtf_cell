@@ -62,7 +62,7 @@ ResetCoreLink::ResetCoreLink(const string& aId, ActionableObject& aActionable) :
 
 swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
 {
-    setStatusMsg("Reset the core link of the mtf7 board.");
+    setStatusMsg("Reset the core link of the emtf board.");
     setProgress(0.);
 
     EmtfProcessor &processor = getActionable<EmtfProcessor>();

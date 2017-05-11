@@ -80,8 +80,8 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
     addressTableReader = new HAL::PCIAddressTableASCIIReader(stub.addressTable);
     addressTable = new HAL::PCIExprAddressTable("Address Table", *addressTableReader);
 
-    uint32_t mtf7_index = boost::lexical_cast<uint32_t, std::string>(stub.uri);
-    driver = new HAL::PCIExprDevice(*addressTable, busAdapter, mtf7_index);
+    uint32_t emtf_index = boost::lexical_cast<uint32_t, std::string>(stub.uri);
+    driver = new HAL::PCIExprDevice(*addressTable, busAdapter, emtf_index);
 
     // Build subcomponents
     registerInterface(new EmtfTTCInterface(*driver));

@@ -1,5 +1,5 @@
 <system id="emtf">
-  <creator>emtf::Mtf7System</creator>
+  <creator>emtf::EmtfSystem</creator>
   <crates>
     <crate id="S1D05g">
       <description>EMTF production system</description>
@@ -9,7 +9,7 @@
   <processors>
     <processor id="EMTF+1">
       <creator>emtf::EmtfProcessor</creator>
-      <hw-type>MTF7</hw-type>
+      <hw-type>EMTF</hw-type>
       <role>emtfProcessors</role>
       <uri>1</uri>
       <address-table>/nfshome0/kkotov/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
