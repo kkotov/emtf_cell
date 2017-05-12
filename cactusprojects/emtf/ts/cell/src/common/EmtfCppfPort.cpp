@@ -22,7 +22,7 @@ void EmtfCppfInputPort::retrieveMetricValues()
     // the values of these three metrics are set to true, because there is no hardware implementation for them yet
     setMetricValue<bool>(mMetricIsLocked, true);
     setMetricValue<bool>(mMetricIsAligned, true);
-    setMetricValue<uint32_t>(mMetricCRCErrors, true);
+    setMetricValue<uint32_t>(mMetricCRCErrors, 0);
 
     setMetricValue<string>(mLinkIdMismatch, compareLinkIds());
 }

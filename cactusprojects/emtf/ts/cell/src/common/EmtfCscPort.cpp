@@ -13,7 +13,6 @@ using namespace log4cplus;
 
 EmtfCscInputPort::EmtfCscInputPort(const string & aID, const uint32_t portId, EmtfProcessor &parent) :
     EmtfInputPortTemplate(aID, portId, parent),
-    afDelayReference(InputLinksAlignmentReferences::getReferenceValue(parent.getStub().id, portId)),
     afDeltaMin(-8),
     afDeltaMax(20),
     linkLogger(Logger::getInstance(config::log4cplusLinkLogger())),
@@ -76,7 +75,7 @@ bool EmtfCscInputPort::readMetricIsAligned()
 
     bool res = true;
 
-    const int64_t delta = (afDelay - afDelayReference);
+    const int64_t delta = (afDelay - InputLinksAlignmentReferences::getReferenceValue(endcap(), sector(), id));
 
     if(   (0x40 <= afDelay)                       // afDelay must be smaller than 0x40
        || (delta < afDeltaMin)

@@ -21,7 +21,6 @@ public:
     void logLinkStatus(bool forceLog=false);
 
 private:
-    const uint64_t afDelayReference;
     const int64_t afDeltaMin;
     const int64_t afDeltaMax;
 
