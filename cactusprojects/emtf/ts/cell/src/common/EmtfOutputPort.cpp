@@ -8,9 +8,9 @@ using namespace std;
 using namespace log4cplus;
 
 
-EmtfOutputPort::EmtfOutputPort(const string& aID, const uint32_t portId, HAL::PCIExprDevice& driver) :
+EmtfOutputPort::EmtfOutputPort(const string& aID, const uint32_t portId, EmtfProcessor &parent) :
     OutputPort(aID),
-    driver_(driver)
+    parentProcessor(parent)
 {
 }
 

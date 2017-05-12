@@ -16,7 +16,6 @@ EmtfCscInputPort::EmtfCscInputPort(const string & aID, const uint32_t portId, Em
     afDelayReference(InputLinksAlignmentReferences::getReferenceValue(parent.getStub().id, portId)),
     afDeltaMin(-8),
     afDeltaMax(20),
-    linkExpectedId(InputCscPortIds::getInstance().getId(parent.endcap(), parent.sector(), aID)),
     linkLogger(Logger::getInstance(config::log4cplusLinkLogger())),
     lockedOld(false),
     alignedOld(false),
@@ -53,7 +52,7 @@ uint64_t EmtfCscInputPort::readLinkRealId()
 
 uint64_t EmtfCscInputPort::readLinkExpectedId()
 {
-    return linkExpectedId;
+    return EmtfCscInputPortIds::getId(parentProcessor.endcap(), parentProcessor.sector(), id);
 }
 
 bool EmtfCscInputPort::readMetricIsLocked()

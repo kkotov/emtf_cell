@@ -1,5 +1,5 @@
-#ifndef __EMTF_CSC_PORT_IDS_HPP__
-#define __EMTF_CSC_PORT_IDS_HPP__
+#ifndef __EMTF_CPPF_PORT_IDS_HPP__
+#define __EMTF_CPPF_PORT_IDS_PP__
 
 #include <map>
 #include <string>
@@ -7,7 +7,7 @@
 
 namespace emtf {
 
-class EmtfCscInputPortIds
+class EmtfCppfInputPortIds
 {
 public:
     static uint64_t getId(const uint32_t endcap, const uint32_t sector, std::string id)
@@ -21,15 +21,15 @@ public:
 private:
     // the class in not a Singleton but because only the static 'getId' function is supposed to be used hide the
     // constructor, the copy-constructor, the assignment operator and the destructor
-    EmtfCscInputPortIds();
-    EmtfCscInputPortIds(const EmtfCscInputPortIds &init);
-    EmtfCscInputPortIds & operator=(const EmtfCscInputPortIds &init);
-    ~EmtfCscInputPortIds();
+    EmtfCppfInputPortIds();
+    EmtfCppfInputPortIds(const EmtfCppfInputPortIds &init);
+    EmtfCppfInputPortIds & operator=(const EmtfCppfInputPortIds &init);
+    ~EmtfCppfInputPortIds();
 
     static const std::map<std::string, uint64_t> ids;
 };
 
 } // namespace
 
-#endif /* __EMTF_CSC_PORT_IDS_HPP__ */
+#endif /* __EMTF_CPPF_PORT_IDS_PP__ */
 

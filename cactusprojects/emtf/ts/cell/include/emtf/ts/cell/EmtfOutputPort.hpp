@@ -2,20 +2,20 @@
 #define __EMTF_OUTPUT_PORT_HPP__
 
 #include "swatch/processor/Port.hpp"
-#include "emtf/pciExprLinuxBusAdapter/PCIExprDevice.hh"
+#include "emtf/ts/cell/EmtfProcessor.hpp"
 
 namespace emtf {
 
 class EmtfOutputPort : public swatch::processor::OutputPort
 {
 public:
-    EmtfOutputPort(const std::string& aID, const uint32_t portId, HAL::PCIExprDevice& driver);
+    EmtfOutputPort(const std::string& aID, const uint32_t portId, EmtfProcessor &parent);
     ~EmtfOutputPort();
 
     void retrieveMetricValues();
 
 private:
-    HAL::PCIExprDevice& driver_;
+    EmtfProcessor &parentProcessor;
 
     bool readMetricIsOperating();
 };

@@ -97,7 +97,7 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
 
     for(vector<ProcessorPortStub>::const_iterator it = stub.txPorts.begin(); it != stub.txPorts.end(); it++)
     {
-        getOutputPorts().addPort(new EmtfOutputPort(it->id, it->number, *driver));
+        getOutputPorts().addPort(new EmtfOutputPort(it->id, it->number, *this));
     }
 
 
