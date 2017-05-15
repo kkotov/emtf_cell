@@ -12,6 +12,7 @@ namespace emtf {
 
 using namespace swatch::core;
 using namespace swatch::processor;
+using namespace std;
 using namespace log4cplus;
 
 
@@ -29,8 +30,17 @@ Command::State OnStart::code(const swatch::core::XParameterSet& params)
 {
     if(runStartBarrier.wait())
     {
+        // TODO: the run number XXX XXX needs to be taken from SWATCH
+        const string runBeginMsg("###   Beginning of run XXX XXX   ###");
+
         log4cplus::Logger linkLogger(Logger::getInstance(config::log4cplusLinkLogger()));
-        LOG4CPLUS_TRACE(linkLogger, LOG4CPLUS_TEXT("###   Beginning of run XXX XXX   ###"));
+        LOG4CPLUS_TRACE(linkLogger, LOG4CPLUS_TEXT(runBeginMsg));
+
+        log4cplus::Logger rateLogger(Logger::getInstance(config::log4cplusRateLogger()));
+        LOG4CPLUS_TRACE(rateLogger, LOG4CPLUS_TEXT(runBeginMsg));
+
+        log4cplus::Logger lctLogger(Logger::getInstance(config::log4cplusLctLogger()));
+        LOG4CPLUS_TRACE(lctLogger, LOG4CPLUS_TEXT(runBeginMsg));
     }
 
     setStatusMsg("Executed at the transition from 'Aligned' to 'Running'");
