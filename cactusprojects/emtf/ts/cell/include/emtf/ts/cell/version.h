@@ -26,9 +26,9 @@ namespace emtf {
     const std::string package  = "emtftscell";
     const std::string versions = EMTFTSCELL_FULL_VERSION_LIST;
     const std::string description = "";
-    const std::string authors = "Dan Holmes and Dayong Wang";
-    const std::string summary = "TS cell for EM Track Finder";
-    const std::string link = "http://cms-emtf.cern.ch/";
+    const std::string authors = "Khristian Kotov and Atanas Batinkov";
+    const std::string summary = "SWATCH cell for EMTF";
+    const std::string link = "https://svnweb.cern.ch/trac/cactus/browser/trunk/cactusprojects/emtf";
     config::PackageInfo getPackageInfo();
     void checkPackageDependencies() throw (config::PackageInfo::VersionException);
     std::set<std::string, std::less<std::string> > getPackageDependencies();
