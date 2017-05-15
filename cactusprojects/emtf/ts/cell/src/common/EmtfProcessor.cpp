@@ -14,7 +14,8 @@
 #include "emtf/ts/cell/DAQConfigRegisters.hpp"
 #include "emtf/ts/cell/SpyFifo.hpp"
 #include "emtf/ts/cell/ConfigCommands.hpp"
-#include "emtf/ts/cell/WriteVerifyLuts.hpp"
+#include "emtf/ts/cell/WriteVerifyPCLuts.hpp"
+#include "emtf/ts/cell/WriteVerifyPtLut.hpp"
 #include "emtf/ts/cell/AlignmentFifoDelays.hpp"
 #include "emtf/ts/cell/TransitionCommands.hpp"
 #include <fstream>

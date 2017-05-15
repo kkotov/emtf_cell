@@ -37,7 +37,8 @@ Sources=\
 	SpyFifo.cpp \
 	LinksAlignmentReferences.cpp \
 	ConfigCommands.cpp \
-	WriteVerifyLuts.cpp \
+	WriteVerifyPCLuts.cpp \
+	WriteVerifyPtLut.cpp \
 	TransitionCommands.cpp \
 	AlignmentFifoDelays.cpp
 
