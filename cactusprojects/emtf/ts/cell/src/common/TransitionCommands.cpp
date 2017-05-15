@@ -38,7 +38,12 @@ Command::State OnStart::code(const swatch::core::XParameterSet& params)
 
     for(auto it=processor.getInputPorts().getPorts().begin(); it!=processor.getInputPorts().getPorts().end(); ++it)
     {
-        dynamic_cast<EmtfCscInputPort *>(*it)->logLinkStatus(true);
+        EmtfCscInputPort *port = dynamic_cast<EmtfCscInputPort *>(*it);
+
+        if(port) // process only the CSC input ports
+        {
+            port->logLinkStatus(true);
+        }
     }
 
     setProgress(1.);
