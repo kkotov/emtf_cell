@@ -1,5 +1,5 @@
 #ifndef __EMTF_CPPF_PORT_IDS_HPP__
-#define __EMTF_CPPF_PORT_IDS_PP__
+#define __EMTF_CPPF_PORT_IDS_HPP__
 
 #include <map>
 #include <string>
@@ -31,5 +31,5 @@ private:
 
 } // namespace
 
-#endif /* __EMTF_CPPF_PORT_IDS_PP__ */
+#endif /* __EMTF_CPPF_PORT_IDS_HPP__ */
 

@@ -18,6 +18,17 @@ public:
     virtual uint64_t readLinkRealId();
     virtual uint64_t readLinkExpectedId();
 
+    uint64_t readAlignValue()
+    {
+        const std::string regName("af_delay_" + id);
+
+        uint64_t afDelay;
+
+        parentProcessor.read64(regName, afDelay);
+
+        return afDelay;
+    }
+
     void logLinkStatus(bool forceLog=false);
 
 private:

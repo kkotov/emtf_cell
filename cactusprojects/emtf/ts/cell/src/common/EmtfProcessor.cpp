@@ -19,6 +19,7 @@
 #include "emtf/ts/cell/AlignmentFifoDelays.hpp"
 #include "emtf/ts/cell/TransitionCommands.hpp"
 #include <fstream>
+#include <string>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/date_time/posix_time/posix_time_types.hpp"
 #include <boost/format.hpp>
@@ -388,6 +389,30 @@ void EmtfProcessor::retrieveMetricValues()
 
         LOG4CPLUS_TRACE(lctLogger, LOG4CPLUS_TEXT(lctRateMsg));
     }
+
+
+
+    // DEBUG: this code is used only in the rare cases when the csc link alignment reference values need to be updated
+    ofstream alignmentReferenceLogFile(getStub().id, ios::app);
+
+    if(alignmentReferenceLogFile.is_open())
+    {
+        stringstream alignment;
+
+        for(auto it=getInputPorts().getPorts().begin(); it!=getInputPorts().getPorts().end(); ++it)
+        {
+            EmtfCscInputPort *port = dynamic_cast<EmtfCscInputPort *>(*it);
+
+            if(port) // process only the CSC input ports
+            {
+                alignment << port->readAlignValue() << "  ";
+            }
+        }
+
+        alignmentReferenceLogFile << alignment.str() << endl;
+    }
+
+    alignmentReferenceLogFile.close();
 }
 
 } // namespace
