@@ -393,7 +393,7 @@ void EmtfProcessor::retrieveMetricValues()
 
 
     // DEBUG: this code is used only in the rare cases when the csc link alignment reference values need to be updated
-    ofstream alignmentReferenceLogFile(getStub().id, ios::app);
+    ofstream alignmentReferenceLogFile("/home/emtfts/reference_values/" + getStub().id, ios::app);
 
     if(alignmentReferenceLogFile.is_open())
     {
