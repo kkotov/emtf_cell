@@ -6,14 +6,14 @@
 #include "emtf/ts/cell/Reboot.hpp"
 
 using namespace std;
-using namespace swatch;
-using namespace core;
+using namespace swatch::core;
+using namespace swatch::action;
 using namespace log4cplus;
 
 namespace emtf {
 
-Reboot::Reboot(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0)),
+Reboot::Reboot(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0)),
     sleepInterval(200000)
 {
 }
@@ -34,7 +34,7 @@ Command::State Reboot::code(const swatch::core::XParameterSet& params)
 
     EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     uint32_t val = 0;
     processor.read("flash_core_fw_start",val);

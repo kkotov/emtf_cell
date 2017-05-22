@@ -1,18 +1,18 @@
 #ifndef __ALIGNMENT_FIFO_DELAYS_HPP__
 #define __ALIGNMENT_FIFO_DELAYS_HPP__
 
-#include "swatch/core/Command.hpp"
+#include "swatch/action/Command.hpp"
 #include <vector>
 #include <string>
 
 namespace emtf {
 
-class AlignmentFifoDelays : public swatch::core::Command
+class AlignmentFifoDelays : public swatch::action::Command
 {
 public:
-    AlignmentFifoDelays(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    AlignmentFifoDelays(const std::string& aId, swatch::action::ActionableObject& aActionable);
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     void fillRegisterNames();

@@ -39,11 +39,11 @@ static void print(const char *prefix, uint64_t val, const char *suffix="")
 static bool verifyPtLut(emtf::EmtfProcessor &processor);
 static void writePtLut (emtf::EmtfProcessor &processor);
 
-emtf::VerifyWritePtLut::VerifyWritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::VerifyWritePtLut::VerifyWritePtLut(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<EmtfProcessor>()){}
 
-swatch::core::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Verifying the Pt LUT on the board.");
     setProgress(0.);
@@ -54,20 +54,20 @@ swatch::core::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XP
         writePtLut(processor);
         if( verifyPtLut(processor) ){ 
             print("Pt LUT verification failed second time");
-            return ActionSnapshot::kError;
+            return Functionoid::kError;
         }
     }
     print("Pt LUT verification succeed");
     setProgress(1.);
-    return ActionSnapshot::kDone;
+    return Functionoid::kDone;
 }
 
 
-emtf::VerifyPtLut::VerifyPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::VerifyPtLut::VerifyPtLut(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<EmtfProcessor>()){}
 
-swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State emtf::VerifyPtLut::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Verifying the Pt LUT on the board.");
     setProgress(0.);
@@ -75,14 +75,14 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
     bool error = verifyPtLut(processor);
     setProgress(1.);
 
-    return (error ? ActionSnapshot::kError : ActionSnapshot::kDone );
+    return (error ? Functionoid::kError : Functionoid::kDone );
 }
 
-emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<EmtfProcessor>()){}
 
-swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State emtf::WritePtLut::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Writing the Pt LUT to the board.");
     setProgress(0.);
@@ -90,22 +90,22 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
     writePtLut(processor);
     setProgress(1.);
 
-    return ActionSnapshot::kDone;
+    return Functionoid::kDone;
 }
 
 
-emtf::VerifyPtLutVersion::VerifyPtLutVersion(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::VerifyPtLutVersion::VerifyPtLutVersion(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0))
 {
     registerParameter("pt_lut_version", xdata::UnsignedInteger(1));
 }
 
-swatch::core::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Check the Pt LUT version.");
     setProgress(0.);
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     const uint32_t ptLutVersionDB = (params.get<xdata::UnsignedInteger>("pt_lut_version").value_);
 
@@ -126,7 +126,7 @@ swatch::core::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::
 
     if(ptLutVersionFile != ptLutVersionDB)
     {
-        commandStatus = ActionSnapshot::kError;
+        commandStatus = Functionoid::kError;
     }
     setProgress(1.);
 

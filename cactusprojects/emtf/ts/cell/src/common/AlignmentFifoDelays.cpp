@@ -13,8 +13,8 @@ using namespace core;
 
 namespace emtf {
 
-AlignmentFifoDelays::AlignmentFifoDelays(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0)),
+AlignmentFifoDelays::AlignmentFifoDelays(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<EmtfProcessor>())
 {
     registerParameter("enable_auto_af_delays", xdata::Boolean(true));
@@ -25,7 +25,7 @@ AlignmentFifoDelays::AlignmentFifoDelays(const std::string& aId, swatch::core::A
     // throw in case of error
 }
 
-swatch::core::Command::State AlignmentFifoDelays::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State AlignmentFifoDelays::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Enable automatic AF delays");
 
@@ -33,7 +33,7 @@ swatch::core::Command::State AlignmentFifoDelays::code(const swatch::core::XPara
 
     processor.write64("af_en", auto_delays); // enable or disable the auto af delays
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     if(!auto_delays) // in case of auto delays disabled set fixed values for alignment filo delays
     {
@@ -42,7 +42,7 @@ swatch::core::Command::State AlignmentFifoDelays::code(const swatch::core::XPara
 
         if(!res)
         {
-            commandStatus = ActionSnapshot::kError;
+            commandStatus = Functionoid::kError;
         }
     }
 

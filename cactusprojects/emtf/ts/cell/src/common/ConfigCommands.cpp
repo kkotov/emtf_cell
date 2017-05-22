@@ -11,14 +11,14 @@ using namespace core;
 
 namespace emtf {
 
-CheckFWVersion::CheckFWVersion(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0))
+CheckFWVersion::CheckFWVersion(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0))
 {
     registerParameter("control_firmware_version", xdata::String("yyyy-mm-dd hh:mm:ss"));
     registerParameter("core_firmware_version", xdata::String("YYYY-MM-DD HH:MM:SS"));
 }
 
-swatch::core::Command::State CheckFWVersion::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State CheckFWVersion::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Compare the firmware version of the board with the one from the DB.");
     EmtfProcessor &processor = getActionable<EmtfProcessor>();
@@ -29,12 +29,12 @@ swatch::core::Command::State CheckFWVersion::code(const swatch::core::XParameter
     const string controlFwVersionBoard = processor.readControlFirmwareVersion();
     const string coreFwVersionBoard = processor.readCoreFirmwareVersion();
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     if(   (controlFwVersion.toString() != controlFwVersionBoard)
        || (coreFwVersion.toString() != coreFwVersionBoard))
     {
-        commandStatus = ActionSnapshot::kError;
+        commandStatus = Functionoid::kError;
     }
 
     setProgress(1.);

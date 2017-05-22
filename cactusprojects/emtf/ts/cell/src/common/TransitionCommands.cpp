@@ -10,7 +10,7 @@
 
 namespace emtf {
 
-using namespace swatch::core;
+using namespace swatch::action;
 using namespace swatch::processor;
 using namespace std;
 using namespace log4cplus;
@@ -21,8 +21,8 @@ using namespace log4cplus;
 static boost::barrier runStartBarrier(12);
 
 
-OnStart::OnStart(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0))
+OnStart::OnStart(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0))
 {
 }
 
@@ -58,7 +58,7 @@ Command::State OnStart::code(const swatch::core::XParameterSet& params)
 
     setProgress(1.);
 
-    return ActionSnapshot::kDone;
+    return Functionoid::kDone;
 }
 
 }

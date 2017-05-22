@@ -1,16 +1,16 @@
 #ifndef __TRANSITION_COMMANDS_HPP__
 #define __TRANSITION_COMMANDS_HPP__
 
-#include "swatch/core/Command.hpp"
+#include "swatch/action/Command.hpp"
 
 namespace emtf {
 
-class OnStart : public swatch::core::Command
+class OnStart : public swatch::action::Command
 {
 public:
-    OnStart(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    OnStart(const std::string& aId, swatch::action::ActionableObject& aActionable);
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 };
 
 } // namespace emtf
