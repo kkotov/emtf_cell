@@ -1,7 +1,7 @@
 #ifndef __WRITE_VERIFY_PCLUTS__
 #define __WRITE_VERIFY_PCLUTS__
 
-#include "swatch/core/Command.hpp"
+#include "swatch/action/Command.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -39,16 +39,16 @@ private:
 };
 
 
-class WritePcLuts : public swatch::core::Command
+class WritePcLuts : public swatch::action::Command
 {
 public:
-    WritePcLuts(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    WritePcLuts(const std::string& aId, swatch::action::ActionableObject& aActionable);
     ~WritePcLuts()
     {
         delete pcLuts;
     }
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory
@@ -63,16 +63,16 @@ private:
 };
 
 
-class VerifyPcLuts : public swatch::core::Command
+class VerifyPcLuts : public swatch::action::Command
 {
 public:
-    VerifyPcLuts(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    VerifyPcLuts(const std::string& aId, swatch::action::ActionableObject& aActionable);
     ~VerifyPcLuts()
     {
         delete pcLuts;
     }
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory
@@ -87,13 +87,13 @@ private:
 };
 
 
-class VerifyPcLutsVersion : public swatch::core::Command
+class VerifyPcLutsVersion : public swatch::action::Command
 {
 public:
-    VerifyPcLutsVersion(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    VerifyPcLutsVersion(const std::string& aId, swatch::action::ActionableObject& aActionable);
     ~VerifyPcLutsVersion();
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 };
 
 } // namespace

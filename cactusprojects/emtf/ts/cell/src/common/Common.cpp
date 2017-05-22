@@ -3,8 +3,7 @@
 #include <boost/format.hpp>
 
 using namespace std;
-using namespace swatch;
-using namespace core;
+using namespace swatch::action;
 
 
 namespace emtf {
@@ -18,7 +17,7 @@ namespace verify {
 
         if(value != valueRead)
         {
-            currentStatus = ActionSnapshot::kError;
+            currentStatus = Functionoid::kError;
         }
 
         return valueRead;
@@ -31,7 +30,7 @@ namespace verify {
 
         if(value != valueRead)
         {
-            currentStatus = ActionSnapshot::kError;
+            currentStatus = Functionoid::kError;
         }
 
         return valueRead;
@@ -46,7 +45,7 @@ namespace verify {
 
         if(!success)
         {
-            currentStatus = ActionSnapshot::kError;
+            currentStatus = Functionoid::kError;
         }
 
         return success;

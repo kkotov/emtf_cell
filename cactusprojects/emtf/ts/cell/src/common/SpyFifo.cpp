@@ -9,15 +9,15 @@
 #include "emtf/ts/cell/SpyFifo.hpp"
 
 using namespace std;
-using namespace swatch;
-using namespace core;
+using namespace swatch::core;
+using namespace swatch::action;
 
 
 namespace emtf {
 
 
 SetDelaysAndTriggerSource::SetDelaysAndTriggerSource(const std::string& aId, ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::UnsignedInteger(0u))
+    swatch::action::Command(aId, aActionable, xdata::UnsignedInteger(0u))
 {
     registerParameter("BC0_offset", xdata::UnsignedInteger(24u));
     registerParameter("DAQ_delay", xdata::Integer(272u));
@@ -33,7 +33,7 @@ Command::State SetDelaysAndTriggerSource::code(const XParameterSet& params)
     const uint64_t daqDelay(params.get<xdata::Integer>("DAQ_delay").value_);
     const uint64_t gmtCommaDelay(params.get<xdata::UnsignedInteger>("GMT_comma_delay").value_);
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     processor.write64("spy_data_delay", daqDelay);
     verify::CheckWrittenValue(processor, "spy_data_delay", daqDelay, commandStatus);
@@ -52,8 +52,8 @@ Command::State SetDelaysAndTriggerSource::code(const XParameterSet& params)
 }
 
 
-SetSingleHits::SetSingleHits(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::UnsignedInteger(0u))
+SetSingleHits::SetSingleHits(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::UnsignedInteger(0u))
 {
     registerParameter("single_hits_enabled", xdata::Boolean(false));
 }
@@ -65,7 +65,7 @@ Command::State SetSingleHits::code(const XParameterSet& params)
 
     const uint64_t singleHits(params.get<xdata::Boolean>("single_hits_enabled").value_);
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     processor.write64("single_en", singleHits);
     verify::CheckWrittenValue(processor, "single_en", singleHits, commandStatus);
@@ -74,8 +74,8 @@ Command::State SetSingleHits::code(const XParameterSet& params)
 }
 
 
-DaqReportWoTrack::DaqReportWoTrack(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::UnsignedInteger(0u))
+DaqReportWoTrack::DaqReportWoTrack(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::UnsignedInteger(0u))
 {
     registerParameter("daq_report_wo_track_enabled", xdata::Boolean(true));
 }
@@ -87,7 +87,7 @@ Command::State DaqReportWoTrack::code(const XParameterSet& params)
 
     const uint64_t daqReportWoTrack(params.get<xdata::Boolean>("daq_report_wo_track_enabled").value_);
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     processor.write64("daq_report_wo_track", daqReportWoTrack);
     verify::CheckWrittenValue(processor, "daq_report_wo_track", daqReportWoTrack, commandStatus);

@@ -9,14 +9,14 @@
 #include "emtf/ts/cell/DAQConfigRegisters.hpp"
 
 using namespace std;
-using namespace swatch;
-using namespace core;
+using namespace swatch::core;
+using namespace swatch::action;
 
 
 namespace emtf {
 
 DAQConfigRegisters::DAQConfigRegisters(const std::string& aId, ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::UnsignedInteger(0u))
+    swatch::action::Command(aId, aActionable, xdata::UnsignedInteger(0u))
 {
     registerParameter("BX_offset", xdata::UnsignedInteger(3540u));
     registerParameter("Valor_window", xdata::UnsignedInteger(7u));
@@ -43,7 +43,7 @@ Command::State DAQConfigRegisters::code(const XParameterSet& params)
 
     EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
     processor.write64("daq_l1a_del", l1aDelay);
     verify::CheckWrittenValue(processor, "daq_l1a_del", l1aDelay, commandStatus);
 

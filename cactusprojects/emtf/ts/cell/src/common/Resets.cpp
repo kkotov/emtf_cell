@@ -5,24 +5,24 @@
 #include "emtf/ts/cell/Resets.hpp"
 
 using namespace std;
-using namespace swatch;
-using namespace core;
+using namespace swatch::core;
+using namespace swatch::action;
 
 
 namespace emtf {
 
 
-DAQModuleReset::DAQModuleReset(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0)),
+DAQModuleReset::DAQModuleReset(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0)),
     sleepInterval(10000)
 { }
 
-swatch::core::Command::State DAQModuleReset::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State DAQModuleReset::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Reset the DAQ module.");
     EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     /* TODO: this code performs gth reset and currently it is removed from here
     uint64_t gth_reset = 1u;
@@ -56,11 +56,11 @@ swatch::core::Command::State DAQModuleReset::code(const swatch::core::XParameter
 
 // TODO: implement this and use it at power reset
 ResetCoreLink::ResetCoreLink(const string& aId, ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0)),
+    swatch::action::Command(aId, aActionable, xdata::Integer(0)),
     sleepInterval(10000)
 { }
 
-swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
+swatch::action::Command::State ResetCoreLink::code(const XParameterSet& params)
 {
     setStatusMsg("Reset the core link of the emtf board.");
     setProgress(0.);
@@ -79,12 +79,12 @@ swatch::core::Command::State ResetCoreLink::code(const XParameterSet& params)
 
     setProgress(1.);
 
-    return ActionSnapshot::kDone;
+    return Functionoid::kDone;
 }
 
 
 ResetGthTransceivers::ResetGthTransceivers(const string& aId, ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0)),
+    swatch::action::Command(aId, aActionable, xdata::Integer(0)),
     sleepInterval(10000)
 { }
 
@@ -96,7 +96,7 @@ Command::State ResetGthTransceivers::code(const XParameterSet& params)
     uint64_t gth_reset = 1u;
     processor.write64("gth_rst", gth_reset);
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
     verify::CheckWrittenValue(processor, "gth_rst", gth_reset, commandStatus);
 
     usleep(sleepInterval);
@@ -113,8 +113,8 @@ Command::State ResetGthTransceivers::code(const XParameterSet& params)
 }
 
 
-ResetPtLut::ResetPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0)),
+ResetPtLut::ResetPtLut(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0)),
     sleepInterval(10000)
 {
     // Settings for Vivado-compiled fw
@@ -141,7 +141,7 @@ Command::State ResetPtLut::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("This command resets the PT LUT module clock manager.");
     EmtfProcessor &processor = getActionable<EmtfProcessor>();
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     uint64_t value;
 
@@ -157,8 +157,8 @@ Command::State ResetPtLut::code(const swatch::core::XParameterSet& params)
 }
 
 
-ResetRXBuffers::ResetRXBuffers(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0))
+ResetRXBuffers::ResetRXBuffers(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0))
 { }
 
 Command::State ResetRXBuffers::code(const swatch::core::XParameterSet& params)
@@ -171,7 +171,7 @@ Command::State ResetRXBuffers::code(const swatch::core::XParameterSet& params)
     value = (1 << 15); // set the reset bit
     processor.write64reg("corelogic_control", value);
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
     verify::CheckWrittenValue(processor, "corelogic_control", value, commandStatus);
 
     value = 0; // remove the reset bit
@@ -182,8 +182,8 @@ Command::State ResetRXBuffers::code(const swatch::core::XParameterSet& params)
 }
 
 
-SyncClockReset::SyncClockReset(const std::string& aId, swatch::core::ActionableObject& aActionable) :
-    swatch::core::Command(aId, aActionable, xdata::Integer(0)),
+SyncClockReset::SyncClockReset(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0)),
     sleepInterval(10000)
 {
     syncClkWord.push_back(0x80160140);
@@ -220,7 +220,7 @@ Command::State SyncClockReset::code(const swatch::core::XParameterSet& params)
     setStatusMsg("This command performs Sync clock Reset.");
     EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     for(vector<uint32_t>::const_iterator it = syncClkWord.begin(); it != syncClkWord.end(); ++it)
     {
