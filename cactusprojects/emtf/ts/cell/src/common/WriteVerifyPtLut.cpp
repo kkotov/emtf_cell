@@ -272,8 +272,10 @@ static void writePtLut(emtf::EmtfProcessor &processor)
     // Setting write and read delay registers
 
     initPtLut(processor);
-    setWritePtLutDelays(processor);
-    setReadPtLutDelays(processor);
+
+    // TODO: enable these writings once the problem with the PtLus upload it fixed
+    // setWritePtLutDelays(processor);
+    // setReadPtLutDelays(processor);
 
     // Writing blocks to the board
 
