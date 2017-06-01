@@ -7,8 +7,12 @@
 #include <iostream>
 #include <fstream>
 #include <map>
-#include "boost/lexical_cast.hpp"
+#include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
 #include <time.h>
+//#include <iomanip>
+#include "xdata/UnsignedInteger32.h"
+#include "xdata/Vector.h"
 
 using namespace std;
 using namespace swatch;
@@ -82,6 +86,11 @@ emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::core::ActionableObj
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<EmtfProcessor>()){}
 
+
+static void initPtLut(emtf::EmtfProcessor &processor);
+static void setWritePtLutDelays(emtf::EmtfProcessor &, unsigned int (&)[72]);
+static void setReadPtLutDelays (emtf::EmtfProcessor &, unsigned int (&)[72]);
+
 swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Writing the Pt LUT to the board.");
@@ -94,23 +103,35 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
         throw std::runtime_error( msg.str() );
     }
 
-    std::ostringstream wdelName, rdelName;
-    wdelName << "wdel" << std::setw(2) << std::setfill(0) ;
-    rdelName << "rdel" << std::setw(2) << std::setfill(0) ;
 
-    std::array<unsigned int,72> writeDelays = {}, readDelays = {};
+    std::stringstream wdelName, rdelName;
+    wdelName << "wdel" << boost::format("%|02|") % procIndex; 
+//    wdelName << "wdel" << std::setfill(0) << std::setw(2) << 1;
+//    rdelName << "rdel" << std::setfill(0) << std::setw(2) << 2;
+
+    // boost::format("%|02|")%value;
+
+    unsigned int writeDelays[72], readDelays[72];
 
     const xdata::Vector<xdata::UnsignedInteger> &xwdel = params.get<xdata::Vector<xdata::UnsignedInteger>>(wdelName.str().c_str());
     const xdata::Vector<xdata::UnsignedInteger> &xrdel = params.get<xdata::Vector<xdata::UnsignedInteger>>(rdelName.str().c_str());
 
-    std::transform( xwdel.begin(), xwdel.end(), std::back_inserter(writeDelays), [](auto &val){ return val.value_; } );
-    std::transform( rwdel.begin(), rwdel.end(), std::back_inserter(readDelays),  [](auto &val){ return val.value_; } );
+    int n = 0;
+    for(xdata::Vector<xdata::UnsignedInteger>::const_iterator it=xwdel.begin(); it!=xwdel.end() && n<72; it++,n++)
+        writeDelays[n] = it->value_;
+
+    n = 0;
+    for(xdata::Vector<xdata::UnsignedInteger>::const_iterator it=xrdel.begin(); it!=xrdel.end() && n<72; it++,n++)
+        readDelays[n] = it->value_;
+
+//    std::array<unsigned int,72> writeDelays = {}, readDelays = {};
+//    std::transform( xwdel.begin(), xwdel.end(), std::back_inserter(writeDelays), [](auto &val){ return val.value_; } );
+//    std::transform( rwdel.begin(), rwdel.end(), std::back_inserter(readDelays),  [](auto &val){ return val.value_; } );
     
     // Setting write and read delay registers
-
     initPtLut(processor);
-    setWritePtLutDelays(processor, writeDelays.data());
-    setReadPtLutDelays(processor, readDelays.data());
+    setWritePtLutDelays(processor, writeDelays);
+    setReadPtLutDelays(processor,  readDelays);
 
     writePtLut(processor);
     setProgress(1.);
@@ -283,10 +304,7 @@ void emtf::PtLut::readLUT(void) throw ( std::bad_alloc, std::ios_base::failure, 
 #define ODT_ON  0x40008
 #define ODT_OFF 0x40000
 
-static void initPtLut(emtf::EmtfProcessor &processor);
 static void write_mrs(emtf::EmtfProcessor &processor, uint32_t cs, uint32_t code);
-static void setWritePtLutDelays(emtf::EmtfProcessor &processor);
-static void setReadPtLutDelays(emtf::EmtfProcessor &processor);
 
 static void writePtLut(emtf::EmtfProcessor &processor)
 {
@@ -294,8 +312,8 @@ static void writePtLut(emtf::EmtfProcessor &processor)
     const uint32_t *data_buf = emtf::PtLut::getData();
     const uint32_t *addr_buf = emtf::PtLut::getAddress();
 
-///    // Setting write and read delay registers
-///
+    // Setting write and read delay registers
+
 ///    initPtLut(processor);
 ///    setWritePtLutDelays(processor);
 ///    setReadPtLutDelays(processor);
@@ -496,7 +514,7 @@ static void write_mrs(emtf::EmtfProcessor &processor, uint32_t cs, uint32_t code
     processor.write64("ptlut_mrs_cmd", 0x0);
 }
 
-static void setWritePtLutDelays(emtf::EmtfProcessor &processor, uint32_t (&wdel)[72])
+static void setWritePtLutDelays(emtf::EmtfProcessor &processor, unsigned int (&wdel)[72])
 {
     for(unsigned int i=0; i<72; i++)
     {
@@ -512,109 +530,8 @@ static void setWritePtLutDelays(emtf::EmtfProcessor &processor, uint32_t (&wdel)
     processor.write64("ptlut_dbdel_ld", 0x0);
 }
 
-static void setReadPtLutDelays(emtf::EmtfProcessor &processor)
+static void setReadPtLutDelays(emtf::EmtfProcessor &processor, unsigned int (&rdel)[72])
 {
-    const unsigned short rdel00[72] =
-      { 12,13,14,13,14,12,12,13,13,13,14,14,14,14,13,12,14,14,
-        11,11,10,11,11,11,11,11,11,12,11,11,12,11,11,12,12,12,
-        11,10,11,10,11,11,11,11,10,12,11,11,11,12,11,11,12,11,
-        11,11,11,12,11,11,12,11,11,13,12,12,12,12,11,12,11,11 };
-
-//    const unsigned short rdel01[72] = // one of the boards in b.904
-//      { 13,14,14,14,14,13,13,14,14,14,14,14,14,15,14,13,14,15,
-//        12,12,12,13,12,12,11,12,11,12,12,13,13,12,12,12,13,12,
-//        11,11,11,11,11,11,12,12,11,11,11,11,11,12,11,12,12,12,
-//        12,11,11,11,12,10,11,11,11,12,11,11,11,12,10,11,11,11 };
-
-    const unsigned short rdel01[72] =
-      { 13,14,14,14,14,13,13,14,13,14,16,15,15,16,15,13,15,14,
-        12,12,11,12,11,11,11,11,13,12,12,13,14,12,12,12,13,13,
-        11,11,11,10,11,10,11,12,11,12,12,11,11,12,11,13,13,11,
-        13,12,12,13,13,12,13,11,11,14,13,13,13,14,12,13,11,11 };
-
-    const unsigned short rdel02[72] =
-      { 14,15,15,15,16,15,14,15,15,16,16,16,17,17,15,15,17,16,
-        12,13,12,14,12,12,12,14,12,13,13,14,15,13,13,14,15,14,
-        11,11,11,11,11,11,12,13,12,12,13,11,11,12,12,13,13,12,
-        13,12,12,13,13,12,13,11,11,15,14,13,14,14,13,14,12,12 };
-
-    const unsigned short rdel03[72] =
-      { 14,14,14,15,15,13,13,15,14,14,15,14,16,15,14,14,15,15,
-        11,11,11,12,11,12,11,12,12,12,12,12,13,12,12,12,13,13,
-        11,11,11,11,12,11,11,11,11,11,12,11,11,12,11,12,11,11,
-        12,12,12,12,12,11,11,11,12,13,12,12,12,12,12,12,11,12 };
-
-    const unsigned short rdel04[72] =
-      { 13,14,14,14,14,13,13,14,13,15,16,15,15,15,14,14,15,15,
-        11,11,11,12,11,11,11,11,11,12,12,12,13,12,12,12,13,12,
-        11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,11,
-        12,12,11,11,12,11,11,10,11,13,12,12,11,13,11,12,11,11 };
-
-    const unsigned short rdel05[72] =
-      { 13,14,13,13,14,12,12,13,13,15,16,14,15,15,13,13,14,14,
-        11,11,11,12,11,11,10,12,11,11,12,12,12,12,12,12,13,13,
-        11,11,11,11,11,11,11,11,11,12,11,11,11,12,11,12,12,12,
-        12,11,11,11,12,11,11,11,11,13,12,11,12,12,12,12,11,11 };
-
-    const unsigned short rdel06[72] =
-      { 13,14,13,14,14,13,12,13,13,14,15,14,15,16,14,14,15,14,
-        11,11,11,12,11,11,10,11,11,11,11,12,13,12,11,12,12,13,
-        11,10,10,10,11,10,10,11,10,12,11,11,11,11,11,11,12,11,
-        11,11,11,11,11,11,11,10,11,13,11,11,11,12,11,12,11,11 };
-
-    const unsigned short rdel07[72] =
-      { 11,13,13,12,13,11,12,12,11,12,14,14,13,14,12,13,13,13,
-        11,11,11,12,11,11,11,11,11,11,11,11,12,11,11,11,11,11,
-        11,10,10,10,10,10,11,10,10,11,11,10,11,11,11,12,11,11,
-        12,12,11,12,11,11,12,10,10,13,12,12,12,12,11,12,10,10 };
-
-    const unsigned short rdel08[72] =
-      { 13,13,13,13,14,12,12,13,13,14,14,14,14,16,13,13,14,14,
-        11,11,11,11,11,11,11,11,11,12,12,11,13,12,12,12,12,12,
-        11,10,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,11,
-        12,12,11,12,11,11,12,11,11,13,12,12,12,12,11,13,11,11 };
-
-    const unsigned short rdel09[72] =
-      { 11,13,13,13,13,11,12,13,12,14,15,14,14,15,13,13,14,15,
-        11,12,10,11,11,12,11,12,12,12,11,11,12,12,12,11,12,12,
-        11,11,11,11,11,10,10,11,11,11,12,11,11,12,11,11,12,11,
-        11,11,11,11,11,11,11,11,11,13,11,12,12,12,11,12,11,11 };
-
-    const unsigned short rdel10[72] =
-      { 13,14,14,14,13,13,13,13,13,14,15,15,14,15,13,13,15,15,
-        11,11,11,12,11,11,10,11,11,11,11,12,13,12,12,11,12,12,
-        11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,
-        13,12,12,12,12,11,12,11,10,14,12,12,13,13,11,12,11,11 };
-
-    const unsigned short rdel11[72] =
-      { 13,14,14,14,14,13,13,13,13,14,15,14,15,15,14,14,15,14,
-        11,12,12,12,12,12,12,12,12,12,12,14,14,12,12,13,14,14,
-        11,11,11,11,12,11,11,12,11,12,12,12,12,12,12,12,12,12,
-        11,11,11,11,11,10,11,11,11,13,12,12,12,12,11,12,11,12 };
-
-    const unsigned short *rdel = 0;
-    switch( processor.deviceIndex() )
-    {
-        case  0: rdel = rdel00; break;
-        case  1: rdel = rdel01; break;
-        case  2: rdel = rdel02; break;
-        case  3: rdel = rdel03; break;
-        case  4: rdel = rdel04; break;
-        case  5: rdel = rdel05; break;
-        case  6: rdel = rdel06; break;
-        case  7: rdel = rdel07; break;
-        case  8: rdel = rdel08; break;
-        case  9: rdel = rdel09; break;
-        case 10: rdel = rdel10; break;
-        case 11: rdel = rdel11; break;
-        default:
-        {
-            std::ostringstream msg;
-            msg << "Invalid processor device index: " << std::hex << processor.deviceIndex();
-            throw std::runtime_error( msg.str() );
-        }
-    }
-
     for(unsigned int i=0; i<72; i++)
     {
         std::stringstream reg;
