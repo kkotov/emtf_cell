@@ -18,6 +18,9 @@
         <param cmd="Enable automatic AF delays" id="enable_auto_af_delays" type="bool">true</param>
 
         <param cmd="Enable the firmware report in DAQ stream" id="daq_report_wo_track_enabled" type="bool">true</param>
+
+        <param cmd="Write the Pt LUT to the board" id="updateRAMdelays" type="bool">false</param>
+
     </context>
 </infra>
 

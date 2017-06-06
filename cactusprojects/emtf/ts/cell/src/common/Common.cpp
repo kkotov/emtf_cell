@@ -89,6 +89,11 @@ namespace config {
         return "/home/emtfts/emtf_cell_config/ptlut.dat";
     }
 
+    const std::string rwDelaysPath()
+    {
+        return "/home/emtfts/emtf_cell_config/delays/";
+    }
+
     const uint16_t brokenLinksWarningProcessor()
     {
         return 1;

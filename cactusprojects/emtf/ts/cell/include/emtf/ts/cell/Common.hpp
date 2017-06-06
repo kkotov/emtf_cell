@@ -24,6 +24,7 @@ namespace config {
     const std::string log4cplusPropertyFile();
     const std::string pcLutsPath();
     const std::string ptLutPath();
+    const std::string rwDelaysPath();
     const uint16_t brokenLinksWarningProcessor();
     const uint16_t brokenLinksErrorProcessor();
     const uint16_t brokenLinksWarningSystem();
