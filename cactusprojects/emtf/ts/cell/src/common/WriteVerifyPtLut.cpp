@@ -11,6 +11,7 @@
 #include <boost/format.hpp>
 #include <time.h>
 //#include <iomanip>
+#include "xdata/Serializable.h"
 #include "xdata/UnsignedInteger32.h"
 #include "xdata/Vector.h"
 
@@ -84,7 +85,25 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
 
 emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
-    processor(getActionable<EmtfProcessor>()){}
+    processor(getActionable<EmtfProcessor>()){
+
+    unsigned procIndex = processor.deviceIndex();
+    if( procIndex > 11 ){
+        std::ostringstream msg;
+        msg << "Invalid processor device index: " << std::hex << processor.deviceIndex();
+        throw std::runtime_error( msg.str() );
+    }
+
+    std::stringstream wdelName, rdelName;
+    wdelName << "wdel" << boost::format("%|02|") % procIndex; 
+    rdelName << "rdel" << boost::format("%|02|") % procIndex; 
+
+    writeDelaysName = wdelName.str();
+    readDelaysName  = rdelName.str();
+
+    registerParameter(writeDelaysName, xdata::Vector<xdata::UnsignedInteger>());
+    registerParameter(readDelaysName,  xdata::Vector<xdata::UnsignedInteger>());
+}
 
 
 static void initPtLut(emtf::EmtfProcessor &processor);
@@ -96,25 +115,24 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
     setStatusMsg("Writing the Pt LUT to the board.");
     setProgress(0.);
 
-    unsigned procIndex = processor.deviceIndex();
-    if( procIndex > 11 ){
-        std::ostringstream msg;
-        msg << "Invalid processor device index: " << std::hex << processor.deviceIndex();
-        throw std::runtime_error( msg.str() );
-    }
-
-
-    std::stringstream wdelName, rdelName;
-    wdelName << "wdel" << boost::format("%|02|") % procIndex; 
-//    wdelName << "wdel" << std::setfill(0) << std::setw(2) << 1;
-//    rdelName << "rdel" << std::setfill(0) << std::setw(2) << 2;
-
-    // boost::format("%|02|")%value;
-
     unsigned int writeDelays[72], readDelays[72];
 
-    const xdata::Vector<xdata::UnsignedInteger> &xwdel = params.get<xdata::Vector<xdata::UnsignedInteger>>(wdelName.str().c_str());
-    const xdata::Vector<xdata::UnsignedInteger> &xrdel = params.get<xdata::Vector<xdata::UnsignedInteger>>(rdelName.str().c_str());
+std::cout << params << std::flush << std::endl;
+
+const xdata::Serializable& lParam = params.get(writeDelaysName.c_str());
+
+std::cout << lParam.type() << std::flush << std::endl;
+
+    const xdata::Vector<xdata::UnsignedInteger> &xwdel = params.get<xdata::Vector<xdata::UnsignedInteger>>(writeDelaysName.c_str());
+    const xdata::Vector<xdata::UnsignedInteger> &xrdel = params.get<xdata::Vector<xdata::UnsignedInteger>>(readDelaysName.c_str());
+
+    if( xwdel.size() != 72 || xrdel.size() != 72 )
+    {
+        // put a complaint here
+        return ActionSnapshot::kError;
+    }
+
+    return ActionSnapshot::kDone;
 
     int n = 0;
     for(xdata::Vector<xdata::UnsignedInteger>::const_iterator it=xwdel.begin(); it!=xwdel.end() && n<72; it++,n++)
@@ -127,7 +145,7 @@ swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParamet
 //    std::array<unsigned int,72> writeDelays = {}, readDelays = {};
 //    std::transform( xwdel.begin(), xwdel.end(), std::back_inserter(writeDelays), [](auto &val){ return val.value_; } );
 //    std::transform( rwdel.begin(), rwdel.end(), std::back_inserter(readDelays),  [](auto &val){ return val.value_; } );
-    
+
     // Setting write and read delay registers
     initPtLut(processor);
     setWritePtLutDelays(processor, writeDelays);
