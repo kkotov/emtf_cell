@@ -13,6 +13,7 @@
 #include "emtf/ts/cell/Reboot.hpp"
 #include "emtf/ts/cell/DAQConfigRegisters.hpp"
 #include "emtf/ts/cell/SpyFifo.hpp"
+#include "emtf/ts/cell/SetDoubleMuonTrg.hpp"
 #include "emtf/ts/cell/ConfigCommands.hpp"
 #include "emtf/ts/cell/WriteVerifyPCLuts.hpp"
 #include "emtf/ts/cell/WriteVerifyPtLut.hpp"
@@ -126,6 +127,7 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
     Command & cSetDaqCfgRegs = registerCommand<DAQConfigRegisters>("Set DAQ Config Registers");
     Command & cSetBC0AndDataDelay = registerCommand<SetDelaysAndTriggerSource>("Set BC0 and Data Delay");
     Command & cSetSingleHits = registerCommand<SetSingleHits>("Enable the single hit algorithm");
+    Command & cSetDoubleMuonTrg = registerCommand<SetDoubleMuonTrg>("Enable the two muons algorithm");
     Command & cDaqReportWoTrack = registerCommand<DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
     Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
@@ -155,6 +157,7 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
                                                                       then(cSetDaqCfgRegs).
                                                                       then(cSetBC0AndDataDelay).
                                                                       then(cSetSingleHits).
+                                                                      then(cSetDoubleMuonTrg).
                                                                       then(cDaqReportWoTrack).
                                                                       then(cVerifyPcLutsVersion).
                                                                       then(cWritePcLuts).

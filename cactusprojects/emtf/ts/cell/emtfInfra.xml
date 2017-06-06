@@ -21,6 +21,9 @@
 
         <param cmd="Write the Pt LUT to the board" id="updateRAMdelays" type="bool">false</param>
 
+        <param cmd="Enable the two muons algorithm" id="two_muons_trigger_enabled" type="uint">0</param>
+        <param cmd="Enable the two muons algorithm" id="delay_two_muons_trigger" type="uint">9</param>
+
     </context>
 </infra>
 
