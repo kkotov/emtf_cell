@@ -13,7 +13,6 @@
 #include "emtf/ts/cell/Reboot.hpp"
 #include "emtf/ts/cell/DAQConfigRegisters.hpp"
 #include "emtf/ts/cell/SpyFifo.hpp"
-#include "emtf/ts/cell/SetDoubleMuonTrg.hpp"
 #include "emtf/ts/cell/ConfigCommands.hpp"
 #include "emtf/ts/cell/WriteVerifyPCLuts.hpp"
 #include "emtf/ts/cell/WriteVerifyPtLut.hpp"
@@ -128,12 +127,13 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
     Command & cSetBC0AndDataDelay = registerCommand<SetDelaysAndTriggerSource>("Set BC0 and Data Delay");
     Command & cSetSingleHits = registerCommand<SetSingleHits>("Enable the single hit algorithm");
     Command & cSetDoubleMuonTrg = registerCommand<SetDoubleMuonTrg>("Enable the two muons algorithm");
+    Command & cAlgoConfig = registerCommand<AlgoConfig>("Configuring Track-Finding algorithm");
     Command & cDaqReportWoTrack = registerCommand<DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
     Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
     Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
-    // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
+    Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
 
     Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
@@ -153,11 +153,13 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
                                                                        then(cWritePtLut).
                                                                        then(cVerifyPtLut);
 
-    CommandSequence &configureSeq = registerSequence("Configure sequence", cDaqModuleRst).
+    CommandSequence &configureSeq = registerSequence("Configure sequence", cCheckFWVersion).
+                                                                      then(cDaqModuleRst).
                                                                       then(cSetDaqCfgRegs).
                                                                       then(cSetBC0AndDataDelay).
                                                                       then(cSetSingleHits).
                                                                       then(cSetDoubleMuonTrg).
+                                                                      then(cAlgoConfig).
                                                                       then(cDaqReportWoTrack).
                                                                       then(cVerifyPcLutsVersion).
                                                                       then(cWritePcLuts).

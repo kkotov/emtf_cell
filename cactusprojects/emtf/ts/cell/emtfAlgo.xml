@@ -1,9 +1,12 @@
 <algo id="emtf">
     <context id="emtfProcessors">
-	    <param id="control_firmware_version" type="string">2016-2-3 18:29:26</param>
-	    <param id="core_firmware_version" type="string">2016-5-11 4:51:32</param>
-	    <param id="pc_lut_version" type="string">2016-07-18</param>
+        <param id="control_firmware_version" type="string">2016-2-3 18:29:26</param>
+        <param id="core_firmware_version" type="string">2017-6-6 23:49:55</param>
+        <param id="pc_lut_version" type="string">2016-07-18</param>
         <param id="pt_lut_version" type="uint">1541</param>
-    </context>
+        <param id="th_window" type="uint">8</param>
+        <param id="two_muons_trigger_enabled" type="uint">0</param>
+        <param id="delay_two_muons_trigger" type="uint">9</param>
+</context>
 </algo>
 

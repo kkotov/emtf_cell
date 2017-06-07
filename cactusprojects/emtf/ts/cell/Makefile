@@ -13,7 +13,7 @@ Project=cactusprojects
 Package=emtf/ts/cell
 
 export PACKAGE_VER_MAJOR=2
-export PACKAGE_VER_MINOR=2
+export PACKAGE_VER_MINOR=3
 export PACKAGE_VER_PATCH=0
 export PACKAGE_RELEASE=0
 
@@ -35,7 +35,6 @@ Sources=\
 	Reboot.cpp \
 	DAQConfigRegisters.cpp \
 	SpyFifo.cpp \
-	SetDoubleMuonTrg.cpp \
 	LinksAlignmentReferences.cpp \
 	ConfigCommands.cpp \
 	WriteVerifyPCLuts.cpp \
