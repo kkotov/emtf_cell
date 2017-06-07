@@ -186,7 +186,7 @@ swatch::action::Command::State emtf::VerifyPtLutVersion::code(const swatch::core
         LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(oss.str()));
     }
 
-    if(ptLutVersionFile != ptLutVersionDB)
+    if((ptLutVersionFile&0x1FF) != (ptLutVersionDB&0x1FF))
     {
         commandStatus = Functionoid::kError;
     }
