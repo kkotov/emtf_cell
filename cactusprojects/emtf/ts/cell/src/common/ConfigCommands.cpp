@@ -45,7 +45,8 @@ swatch::action::Command::State CheckFWVersion::code(const swatch::core::XParamet
 AlgoConfig::AlgoConfig(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     swatch::action::Command(aId, aActionable, xdata::Integer(0))
 {
-    registerParameter("th_window", xdata::UnsignedInteger(8u));
+    registerParameter("th_window",      xdata::UnsignedInteger(8u));
+    registerParameter("low_th_promote", xdata::UnsignedInteger(0u));
 }
 
 swatch::action::Command::State AlgoConfig::code(const swatch::core::XParameterSet& params)
@@ -53,12 +54,15 @@ swatch::action::Command::State AlgoConfig::code(const swatch::core::XParameterSe
     setStatusMsg("Setting track-finding algorithm parameters");
     EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
-    const uint64_t th_window(params.get<xdata::UnsignedInteger>("th_window").value_);
-
     Command::State commandStatus = Functionoid::kDone;
 
+    const uint64_t th_window(params.get<xdata::UnsignedInteger>("th_window").value_);
     processor.write64("th_window", th_window);
     verify::CheckWrittenValue(processor, "th_window", th_window, commandStatus);
+
+    const uint64_t low_th_promote(params.get<xdata::UnsignedInteger>("low_th_promote").value_);
+    processor.write64("low_th_promote", low_th_promote);
+    verify::CheckWrittenValue(processor, "low_th_promote", low_th_promote, commandStatus);
 
     setProgress(1.);
 

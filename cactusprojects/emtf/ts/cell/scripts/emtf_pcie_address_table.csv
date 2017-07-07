@@ -395,6 +395,7 @@ base,ch,sel,offset,address hex,"length (bytes, hex)",mask,read,write,description
 80000,54,0,11,000B6088,8,0000000380000000,1,1,GTH PRBS mode selection,,,,gth_prbs_mode,
 80000,54,0,11,000B6088,8,000007fc00000000,1,1,TTC BC0 delay for input data alignment,,,,af_ttc_bc0_delay,
 80000,54,0,11,000B6088,8,007ff80000000000,1,1,time offset for transmitting commas on GMT link,,,,gmt_link_comma_delay,
+80000,54,0,11,000B6088,8,1f80000000000000,1,1,TTC BC0 delay for CPPF data alignment,,,,cppf_ttc_bc0_delay,
 ,,,,,,,,,,,,,,
 80000,54,0,12,000B6090,8,0000000000000001,1,0,"BC0 period error, link disabled",1a,02,ME1a/02,bc0_err_me1a_02,bc0_err_
 80000,54,0,12,000B6090,8,0000000000000002,1,0,"BC0 period error, link disabled",1a,03,ME1a/03,bc0_err_me1a_03,bc0_err_
@@ -677,6 +678,7 @@ base,ch,sel,offset,address hex,"length (bytes, hex)",mask,read,write,description
 80000,54,0,32,000B6190,8,0000000000000f00,1,1,stub delay for two-muon trigger,,,,delay_two_mu,
 80000,54,0,32,000B6190,8,0000000000001000,1,1,enable single stub trigger,,,,single_en,
 80000,54,0,32,000B6190,8,0000000000002000,1,1,enable two-muon trigger,,,,two_mu_en,
+80000,54,0,32,000B6190,8,0000000000004000,1,1,enable low theta mode 7 promotion to mode 12,,,,low_th_promote,
 ,,,,,,,,,,,,,,
 80000,54,0,33,000B6198,8,0000000003ffffff,1,0,LCT rate counter,1a,01,ME1a/01,rate_lct_me1a_01,rate_lct_
 80000,54,0,33,000B6198,8,03ffffff00000000,1,0,LCT rate counter,1a,02,ME1a/02,rate_lct_me1a_02,rate_lct_

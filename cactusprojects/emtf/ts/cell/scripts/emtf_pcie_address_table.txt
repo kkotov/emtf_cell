@@ -380,6 +380,7 @@ tst_data_inj_on_mpc_inj_cmd           memory        0        000B6088           
 gth_prbs_mode                         memory        0        000B6088           0000000380000000        1           1            GTH PRBS mode selection
 af_ttc_bc0_delay                      memory        0        000B6088           000007fc00000000        1           1            TTC BC0 delay for input data alignment
 gmt_link_comma_delay                  memory        0        000B6088           007ff80000000000        1           1            time offset for transmitting commas on GMT link
+cppf_ttc_bc0_delay                    memory        0        000B6088           1f80000000000000        1           1            TTC BC0 delay for CPPF data alignment
 bc0_err_me1a_02                       memory        0        000B6090           0000000000000001        1           0            BC0 period error, link disabled
 bc0_err_me1a_03                       memory        0        000B6090           0000000000000002        1           0            BC0 period error, link disabled
 bc0_err_me1a_04                       memory        0        000B6090           0000000000000004        1           0            BC0 period error, link disabled
@@ -649,6 +650,7 @@ th_window                             memory        0        000B6190           
 delay_two_mu                          memory        0        000B6190           0000000000000f00        1           1            stub delay for two-muon trigger
 single_en                             memory        0        000B6190           0000000000001000        1           1            enable single stub trigger
 two_mu_en                             memory        0        000B6190           0000000000002000        1           1            enable two-muon trigger
+low_th_promote                        memory        0        000B6190           0000000000004000        1           1            enable low theta mode 7 promotion to mode 12
 rate_lct_me1a_01                      memory        0        000B6198           0000000003ffffff        1           0            LCT rate counter
 rate_lct_me1a_02                      memory        0        000B6198           03ffffff00000000        1           0            LCT rate counter
 rate_lct_me1a_03                      memory        0        000B61A0           0000000003ffffff        1           0            LCT rate counter
