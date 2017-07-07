@@ -1,5 +1,5 @@
 #include "emtf/ts/cell/Cell.h"
-#include "swatch/core/ThreadPool.hpp"
+#include "swatch/action/ThreadPool.hpp"
 #include "ts/framework/CellPanelFactory.h"
 #include "swatchcell/framework/RedirectPanel.h"
 

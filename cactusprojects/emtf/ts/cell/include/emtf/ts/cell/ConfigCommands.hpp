@@ -1,16 +1,32 @@
 #ifndef __CONFIG_COMMANDS_HPP__
 #define __CONFIG_COMMANDS_HPP__
 
-#include "swatch/core/Command.hpp"
+#include "swatch/action/Command.hpp"
 
 namespace emtf {
 
-class CheckFWVersion : public swatch::core::Command
+class CheckFWVersion : public swatch::action::Command
 {
 public:
-    CheckFWVersion(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    CheckFWVersion(const std::string& aId, swatch::action::ActionableObject& aActionable);
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
+};
+
+class AlgoConfig: public swatch::action::Command
+{
+public:
+    AlgoConfig(const std::string& aId, swatch::action::ActionableObject& aActionable);
+
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
+};
+
+class SetDoubleMuonTrg : public swatch::action::Command
+{
+public:
+    SetDoubleMuonTrg(const std::string& aId, swatch::action::ActionableObject& aActionable);
+
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 };
 
 } // namespace

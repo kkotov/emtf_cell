@@ -1,5 +1,5 @@
 #include "swatch/core/Factory.hpp"
-#include "swatch/core/SystemStateMachine.hpp"
+#include "swatch/action/SystemStateMachine.hpp"
 #include "swatch/dtm/DaqTTCManager.hpp"
 #include "emtf/ts/cell/EmtfSystem.hpp"
 #include "emtf/ts/cell/Common.hpp"

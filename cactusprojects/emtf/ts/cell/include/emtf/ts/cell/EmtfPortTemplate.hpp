@@ -26,7 +26,7 @@ public:
 protected:
     const std::string id;
 
-    swatch::core::Metric<std::string> & mLinkIdMismatch;
+    swatch::core::SimpleMetric<std::string> & mLinkIdMismatch;
 
     EmtfProcessor &parentProcessor;
 

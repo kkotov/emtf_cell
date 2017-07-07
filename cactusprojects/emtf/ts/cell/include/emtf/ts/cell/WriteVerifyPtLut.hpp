@@ -1,7 +1,7 @@
 #ifndef __WRITE_VERIFY_PTLUT__
 #define __WRITE_VERIFY_PTLUT__
 
-#include "swatch/core/Command.hpp"
+#include "swatch/action/Command.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -34,13 +34,13 @@ private:
 };
 
 
-class VerifyWritePtLut : public swatch::core::Command
+class VerifyWritePtLut : public swatch::action::Command
 {
 public:
-    VerifyWritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    VerifyWritePtLut(const std::string& aId, swatch::action::ActionableObject& aActionable);
     ~VerifyWritePtLut(){}
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory
@@ -51,13 +51,13 @@ private:
 };
 
 
-class VerifyPtLut : public swatch::core::Command
+class VerifyPtLut : public swatch::action::Command
 {
 public:
-    VerifyPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    VerifyPtLut(const std::string& aId, swatch::action::ActionableObject& aActionable);
     ~VerifyPtLut(){}
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory
@@ -68,13 +68,13 @@ private:
 };
 
 
-class WritePtLut : public swatch::core::Command
+class WritePtLut : public swatch::action::Command
 {
 public:
-    WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    WritePtLut(const std::string& aId, swatch::action::ActionableObject& aActionable);
     ~WritePtLut(){}
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     std::string writeDelaysName, readDelaysName;
@@ -87,13 +87,13 @@ private:
 };
 
 
-class VerifyPtLutVersion : public swatch::core::Command
+class VerifyPtLutVersion : public swatch::action::Command
 {
 public:
-    VerifyPtLutVersion(const std::string& aId, swatch::core::ActionableObject& aActionable);
+    VerifyPtLutVersion(const std::string& aId, swatch::action::ActionableObject& aActionable);
     ~VerifyPtLutVersion(){}
 
-    virtual swatch::core::Command::State code(const swatch::core::XParameterSet& params);
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
     // hide the copy constructor and the assignment operator because the class allocates memory

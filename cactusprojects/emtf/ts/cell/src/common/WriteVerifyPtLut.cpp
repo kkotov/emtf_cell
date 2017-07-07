@@ -44,11 +44,11 @@ static void print(const char *prefix, uint64_t val, const char *suffix="")
 static bool verifyPtLut(emtf::EmtfProcessor &processor);
 static void writePtLut (emtf::EmtfProcessor &processor);
 
-emtf::VerifyWritePtLut::VerifyWritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::VerifyWritePtLut::VerifyWritePtLut(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<EmtfProcessor>()){}
 
-swatch::core::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Verifying the Pt LUT on the board.");
     setProgress(0.);
@@ -59,20 +59,20 @@ swatch::core::Command::State emtf::VerifyWritePtLut::code(const swatch::core::XP
         writePtLut(processor);
         if( verifyPtLut(processor) ){ 
             print("Pt LUT verification failed second time");
-            return ActionSnapshot::kError;
+            return Functionoid::kError;
         }
     }
     print("Pt LUT verification succeed");
     setProgress(1.);
-    return ActionSnapshot::kDone;
+    return Functionoid::kDone;
 }
 
 
-emtf::VerifyPtLut::VerifyPtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::VerifyPtLut::VerifyPtLut(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<EmtfProcessor>()){}
 
-swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State emtf::VerifyPtLut::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Verifying the Pt LUT on the board.");
     setProgress(0.);
@@ -80,96 +80,99 @@ swatch::core::Command::State emtf::VerifyPtLut::code(const swatch::core::XParame
     bool error = verifyPtLut(processor);
     setProgress(1.);
 
-    return (error ? ActionSnapshot::kError : ActionSnapshot::kDone );
+    return (error ? Functionoid::kError : Functionoid::kDone );
 }
 
-emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::WritePtLut::WritePtLut(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0)),
     processor(getActionable<EmtfProcessor>()){
-
-    unsigned procIndex = processor.deviceIndex();
-    if( procIndex > 11 ){
-        std::ostringstream msg;
-        msg << "Invalid processor device index: " << std::hex << processor.deviceIndex();
-        throw std::runtime_error( msg.str() );
-    }
-
-    std::stringstream wdelName, rdelName;
-    wdelName << "wdel" << boost::format("%|02|") % procIndex; 
-    rdelName << "rdel" << boost::format("%|02|") % procIndex; 
-
-    writeDelaysName = wdelName.str();
-    readDelaysName  = rdelName.str();
-
-    registerParameter(writeDelaysName, xdata::Vector<xdata::UnsignedInteger>());
-    registerParameter(readDelaysName,  xdata::Vector<xdata::UnsignedInteger>());
+    registerParameter("updateRAMdelays", xdata::Boolean(false));
 }
 
-
 static void initPtLut(emtf::EmtfProcessor &processor);
-static void setWritePtLutDelays(emtf::EmtfProcessor &, unsigned int (&)[72]);
-static void setReadPtLutDelays (emtf::EmtfProcessor &, unsigned int (&)[72]);
+static void setWritePtLutDelays(emtf::EmtfProcessor&, unsigned int (&)[72]);
+static void setReadPtLutDelays (emtf::EmtfProcessor&, unsigned int (&)[72]);
 
-swatch::core::Command::State emtf::WritePtLut::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State emtf::WritePtLut::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Writing the Pt LUT to the board.");
     setProgress(0.);
 
-    unsigned int writeDelays[72], readDelays[72];
+    const xdata::Boolean& updateRAMdelays = params.get<xdata::Boolean>("updateRAMdelays");
 
-std::cout << params << std::flush << std::endl;
+    if( updateRAMdelays.value_ ){
 
-const xdata::Serializable& lParam = params.get(writeDelaysName.c_str());
+        unsigned int writeDelays[72], readDelays[72];
 
-std::cout << lParam.type() << std::flush << std::endl;
+        unsigned procIndex = processor.deviceIndex();
+        if( procIndex > 11 ){
+            std::ostringstream msg;
+            msg << "Invalid processor device index: " << std::hex << processor.deviceIndex();
+            throw std::runtime_error( msg.str() );
+        }
 
-    const xdata::Vector<xdata::UnsignedInteger> &xwdel = params.get<xdata::Vector<xdata::UnsignedInteger>>(writeDelaysName.c_str());
-    const xdata::Vector<xdata::UnsignedInteger> &xrdel = params.get<xdata::Vector<xdata::UnsignedInteger>>(readDelaysName.c_str());
+        std::stringstream wdelFileName, rdelFileName;
+        wdelFileName << config::rwDelaysPath() << "/wdel" << boost::format("%|02|") % procIndex << ".txt";
+        rdelFileName << config::rwDelaysPath() << "/rdel" << boost::format("%|02|") % procIndex << ".txt";
 
-    if( xwdel.size() != 72 || xrdel.size() != 72 )
-    {
-        // put a complaint here
-        return ActionSnapshot::kError;
+        ifstream wdelFile(wdelFileName.str());
+        if( wdelFile ){
+            for(size_t i=0; i<72 && !wdelFile.eof(); i++){
+                string tmp;
+                wdelFile >> tmp;
+                char *endptr = NULL;
+                writeDelays[i] = strtoul(tmp.c_str(),&endptr,10);
+            }
+            wdelFile.close();
+        } else {
+            std::stringstream oss;
+            oss << "Cannot open " << wdelFileName.str();
+            log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
+            LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(oss.str()));
+            return Functionoid::kError;
+        }
+
+        ifstream rdelFile(rdelFileName.str());
+        if( rdelFile ){
+            for(size_t i=0; i<72 && !rdelFile.eof(); i++){
+                string tmp;
+                rdelFile >> tmp;
+                char *endptr = NULL;
+                readDelays[i] = strtoul(tmp.c_str(),&endptr,10);
+            }
+            rdelFile.close();
+        } else {
+            std::stringstream oss;
+            oss << "Cannot open " << rdelFileName.str();
+            log4cplus::Logger generalLogger( log4cplus::Logger::getInstance(config::log4cplusGeneralLogger()) );
+            LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(oss.str()));
+            return Functionoid::kError;
+        }
+
+        initPtLut(processor);
+        setWritePtLutDelays(processor, writeDelays);
+        setReadPtLutDelays (processor, readDelays);
     }
-
-    return ActionSnapshot::kDone;
-
-    int n = 0;
-    for(xdata::Vector<xdata::UnsignedInteger>::const_iterator it=xwdel.begin(); it!=xwdel.end() && n<72; it++,n++)
-        writeDelays[n] = it->value_;
-
-    n = 0;
-    for(xdata::Vector<xdata::UnsignedInteger>::const_iterator it=xrdel.begin(); it!=xrdel.end() && n<72; it++,n++)
-        readDelays[n] = it->value_;
-
-//    std::array<unsigned int,72> writeDelays = {}, readDelays = {};
-//    std::transform( xwdel.begin(), xwdel.end(), std::back_inserter(writeDelays), [](auto &val){ return val.value_; } );
-//    std::transform( rwdel.begin(), rwdel.end(), std::back_inserter(readDelays),  [](auto &val){ return val.value_; } );
-
-    // Setting write and read delay registers
-    initPtLut(processor);
-    setWritePtLutDelays(processor, writeDelays);
-    setReadPtLutDelays(processor,  readDelays);
 
     writePtLut(processor);
     setProgress(1.);
 
-    return ActionSnapshot::kDone;
+    return Functionoid::kDone;
 }
 
 
-emtf::VerifyPtLutVersion::VerifyPtLutVersion(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+emtf::VerifyPtLutVersion::VerifyPtLutVersion(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0))
 {
     registerParameter("pt_lut_version", xdata::UnsignedInteger(1));
 }
 
-swatch::core::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::XParameterSet& params)
+swatch::action::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::XParameterSet& params)
 {
     setStatusMsg("Check the Pt LUT version.");
     setProgress(0.);
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     const uint32_t ptLutVersionDB = (params.get<xdata::UnsignedInteger>("pt_lut_version").value_);
 
@@ -188,9 +191,9 @@ swatch::core::Command::State emtf::VerifyPtLutVersion::code(const swatch::core::
         LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(oss.str()));
     }
 
-    if(ptLutVersionFile != ptLutVersionDB)
+    if((ptLutVersionFile&0x1FF) != (ptLutVersionDB&0x1FF))
     {
-        commandStatus = ActionSnapshot::kError;
+        commandStatus = Functionoid::kError;
     }
     setProgress(1.);
 

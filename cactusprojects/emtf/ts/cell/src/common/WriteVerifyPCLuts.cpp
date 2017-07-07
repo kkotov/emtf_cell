@@ -11,8 +11,8 @@
 #include <time.h>
 
 using namespace std;
-using namespace swatch;
-using namespace core;
+using namespace swatch::core;
+using namespace swatch::action;
 using namespace log4cplus;
 
 
@@ -117,7 +117,7 @@ Command::State WritePcLuts::code(const XParameterSet& params)
 {
     setStatusMsg("Write the PC LUTs to the board.");
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     auto thLutPairs = pcLuts->getThLutPairs();
     // write(processor, thLutPairs);
@@ -153,7 +153,7 @@ Command::State VerifyPcLuts::code(const XParameterSet& params)
 {
     setStatusMsg("Verify the PC LUTs.");
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     auto thLutPairs = pcLuts->getThLutPairs();
     verify(processor, thLutPairs, commandStatus);
@@ -179,14 +179,14 @@ void VerifyPcLuts::verify(EmtfProcessor &processor, map<string, vector<unsigned 
         {
             if(fileData[i] != boardData[i])
             {
-                status = ActionSnapshot::kError;
+                status = Functionoid::kError;
             }
         }
     }
 }
 
 
-VerifyPcLutsVersion::VerifyPcLutsVersion(const std::string& aId, swatch::core::ActionableObject& aActionable) :
+VerifyPcLutsVersion::VerifyPcLutsVersion(const std::string& aId, swatch::action::ActionableObject& aActionable) :
     Command(aId, aActionable, xdata::Integer(0))
 {
     registerParameter("pc_lut_version", xdata::String("YYYY-MM-DD"));
@@ -199,7 +199,7 @@ Command::State VerifyPcLutsVersion::code(const XParameterSet& params)
 {
     setStatusMsg("Check the PC LUTs version.");
 
-    Command::State commandStatus = ActionSnapshot::kDone;
+    Command::State commandStatus = Functionoid::kDone;
 
     const string pcLutVersionDB = (params.get<xdata::String>("pc_lut_version").value_);
 
@@ -216,7 +216,7 @@ Command::State VerifyPcLutsVersion::code(const XParameterSet& params)
 
     if(pcLutVersionFile != pcLutVersionDB)
     {
-        commandStatus = ActionSnapshot::kError;
+        commandStatus = Functionoid::kError;
     }
 
     return commandStatus;

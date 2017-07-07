@@ -6,8 +6,8 @@
 #include "emtf/ts/cell/EmtfOutputPort.hpp"
 #include "swatch/processor/PortCollection.hpp"
 #include "emtf/ts/cell/EmtfAlgoInterface.hpp"
-#include "swatch/core/CommandSequence.hpp"
-#include "swatch/core/StateMachine.hpp"
+#include "swatch/action/CommandSequence.hpp"
+#include "swatch/action/StateMachine.hpp"
 #include "emtf/ts/cell/Common.hpp"
 #include "emtf/ts/cell/Resets.hpp"
 #include "emtf/ts/cell/Reboot.hpp"
@@ -24,12 +24,12 @@
 #include "boost/date_time/posix_time/posix_time_types.hpp"
 #include <boost/format.hpp>
 
-#include "swatch/core/StateMachine.hpp"
 #include "swatch/core/MetricConditions.hpp"
 
 
 using namespace std;
 using namespace swatch::core;
+using namespace swatch::action;
 using namespace swatch::processor;
 using namespace boost::gregorian;
 using namespace boost::posix_time;
@@ -126,12 +126,14 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
     Command & cSetDaqCfgRegs = registerCommand<DAQConfigRegisters>("Set DAQ Config Registers");
     Command & cSetBC0AndDataDelay = registerCommand<SetDelaysAndTriggerSource>("Set BC0 and Data Delay");
     Command & cSetSingleHits = registerCommand<SetSingleHits>("Enable the single hit algorithm");
+    Command & cSetDoubleMuonTrg = registerCommand<SetDoubleMuonTrg>("Enable the two muons algorithm");
+    Command & cAlgoConfig = registerCommand<AlgoConfig>("Configuring Track-Finding algorithm");
     Command & cDaqReportWoTrack = registerCommand<DaqReportWoTrack>("Enable the firmware report in DAQ stream");
     Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
     Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
     Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
-    // Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
+    Command & cCheckFWVersion = registerCommand<CheckFWVersion>("Compare the firmware version");
 
     Command & cWritePcLuts = registerCommand<WritePcLuts>("Write the PC LUTs to the board");
     Command & cVerifyPcLuts = registerCommand<VerifyPcLuts>("Verify the PC LUTs");
@@ -151,10 +153,13 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
                                                                        then(cWritePtLut).
                                                                        then(cVerifyPtLut);
 
-    CommandSequence &configureSeq = registerSequence("Configure sequence", cDaqModuleRst).
+    CommandSequence &configureSeq = registerSequence("Configure sequence", cCheckFWVersion).
+                                                                      then(cDaqModuleRst).
                                                                       then(cSetDaqCfgRegs).
                                                                       then(cSetBC0AndDataDelay).
                                                                       then(cSetSingleHits).
+                                                                      then(cSetDoubleMuonTrg).
+                                                                      then(cAlgoConfig).
                                                                       then(cDaqReportWoTrack).
                                                                       then(cVerifyPcLutsVersion).
                                                                       then(cWritePcLuts).
@@ -241,7 +246,7 @@ void EmtfProcessor::generateLctPairs()
     boost::format registerTemplate("rate_lct_%s_0%u");
 
     string metricName;
-    Metric<uint32_t> *metric;
+    SimpleMetric<uint32_t> *metric;
 
     // generate the metricName-registerName pairs for the stations 1a, 1b, 2, 3 and 4
     for(auto it=stationNames.begin(); it!=stationNames.end(); ++it)
@@ -251,7 +256,7 @@ void EmtfProcessor::generateLctPairs()
             metricName = (metricTemplate % (*it) % i).str();
             metric = &registerMetric<uint32_t>(metricName);
 
-            pair<Metric<uint32_t> *, string> pair(metric, (registerTemplate % (*it) % i).str());
+            pair<SimpleMetric<uint32_t> *, string> pair(metric, (registerTemplate % (*it) % i).str());
 
             lctRates.push_back(pair);
         }
@@ -264,7 +269,7 @@ void EmtfProcessor::generateLctPairs()
         metricName = (metricTemplate % "me1n" % i).str();
         metric = &registerMetric<uint32_t>(metricName);
 
-        pair<Metric<uint32_t> *, string> pair(metric, (registerTemplate % "me1n" % i).str());
+        pair<SimpleMetric<uint32_t> *, string> pair(metric, (registerTemplate % "me1n" % i).str());
 
         lctRates.push_back(pair);
     }
@@ -278,7 +283,7 @@ void EmtfProcessor::generateLctPairs()
             metricName = (metricTemplate % (*it) % i).str();
             metric = &registerMetric<uint32_t>(metricName);
 
-            pair<Metric<uint32_t> *, string> pair(metric, (registerTemplate % (*it) % i).str());
+            pair<SimpleMetric<uint32_t> *, string> pair(metric, (registerTemplate % (*it) % i).str());
 
             lctRates.push_back(pair);
         }

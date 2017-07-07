@@ -118,15 +118,15 @@ private:
     uint32_t lctRate(std::string lctName);
     void generateLctPairs();
 
-    swatch::core::Metric<bool>        & extPllLockStatus;
-    swatch::core::Metric<int>         & bc0PeriodCounter;
-    swatch::core::Metric<uint32_t>    & outputTrack0Rate;
-    swatch::core::Metric<uint32_t>    & outputTrack1Rate;
-    swatch::core::Metric<uint32_t>    & outputTrack2Rate;
-    std::vector<std::pair<swatch::core::Metric<uint32_t> *,
+    swatch::core::SimpleMetric<bool>        & extPllLockStatus;
+    swatch::core::SimpleMetric<int>         & bc0PeriodCounter;
+    swatch::core::SimpleMetric<uint32_t>    & outputTrack0Rate;
+    swatch::core::SimpleMetric<uint32_t>    & outputTrack1Rate;
+    swatch::core::SimpleMetric<uint32_t>    & outputTrack2Rate;
+    std::vector<std::pair<swatch::core::SimpleMetric<uint32_t> *,
                           std::string>> lctRates;
-    swatch::core::Metric<std::string> & controlFirmwareVersion;
-    swatch::core::Metric<std::string> & coreFirmwareVersion;
+    swatch::core::SimpleMetric<std::string> & controlFirmwareVersion;
+    swatch::core::SimpleMetric<std::string> & coreFirmwareVersion;
 
     HAL::PCIExprLinuxBusAdapter     busAdapter;
     HAL::PCIAddressTableASCIIReader * addressTableReader;
