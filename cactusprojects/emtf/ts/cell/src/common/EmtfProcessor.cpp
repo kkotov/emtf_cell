@@ -17,6 +17,7 @@
 #include "emtf/ts/cell/WriteVerifyPCLuts.hpp"
 #include "emtf/ts/cell/WriteVerifyPtLut.hpp"
 #include "emtf/ts/cell/AlignmentFifoDelays.hpp"
+#include "emtf/ts/cell/LinksAlignmentReferences.hpp"
 #include "emtf/ts/cell/TransitionCommands.hpp"
 #include <fstream>
 #include <string>
@@ -173,6 +174,17 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
     RunControlFSM &pFSM = getRunControlFSM();
     pFSM.coldReset.add(coldStartSeq);
     pFSM.configure.add(configureSeq);
+
+    // Before a new run I've update the references from the previous run (if requested in the key)
+    Command & cUpdateLinkAlignmentRefs = registerCommand<UpdateLinkAlignmentRefs>("Update link alignment references");
+    CommandSequence & startSeq = registerSequence("Update link alignment references", cUpdateLinkAlignmentRefs);
+    pFSM.start.add(startSeq);
+
+    // Once current run ends I've save the current alignment values (if requested in the key)
+    Command & cSaveLinkAlignmentRefs = registerCommand<SaveLinkAlignmentRefs>("Save link alignment references");
+    CommandSequence & stopSeq = registerSequence("Save link alignment references", cSaveLinkAlignmentRefs);
+    pFSM.stopFromAligned.add(stopSeq);
+    pFSM.stopFromRunning.add(stopSeq);
 
     const string processorMessage("Board " + aStub.id + " (/dev/utca_sp12" + getStub().uri + ") " + "initialized successfully");
     LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(processorMessage));

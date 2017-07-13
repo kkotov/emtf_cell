@@ -23,6 +23,8 @@ public:
 
     virtual void retrieveMetricValues() = 0;
 
+    virtual std::string getId(void) const { return id; }
+
 protected:
     const std::string id;
 
