@@ -177,12 +177,12 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
 
     // Before a new run I've update the references from the previous run (if requested in the key)
     Command & cUpdateLinkAlignmentRefs = registerCommand<UpdateLinkAlignmentRefs>("Update link alignment references");
-    CommandSequence & startSeq = registerSequence("Update link alignment references", cUpdateLinkAlignmentRefs);
+    CommandSequence & startSeq = registerSequence("Start sequence", cUpdateLinkAlignmentRefs);
     pFSM.start.add(startSeq);
 
     // Once current run ends I've save the current alignment values (if requested in the key)
     Command & cSaveLinkAlignmentRefs = registerCommand<SaveLinkAlignmentRefs>("Save link alignment references");
-    CommandSequence & stopSeq = registerSequence("Save link alignment references", cSaveLinkAlignmentRefs);
+    CommandSequence &stopSeq = registerSequence("Stop sequence", cSaveLinkAlignmentRefs);
     pFSM.stopFromAligned.add(stopSeq);
     pFSM.stopFromRunning.add(stopSeq);
 

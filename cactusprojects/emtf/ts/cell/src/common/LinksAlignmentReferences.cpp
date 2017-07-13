@@ -1,5 +1,6 @@
 #include "emtf/ts/cell/LinksAlignmentReferences.hpp"
 #include "swatch/processor/PortCollection.hpp"
+#include "emtf/ts/cell/Common.hpp"
 #include <chrono>
 #include <ctime>
 #include <iomanip>
@@ -118,6 +119,10 @@ UpdateLinkAlignmentRefs::UpdateLinkAlignmentRefs(const std::string& aId, swatch:
 
 swatch::action::Command::State UpdateLinkAlignmentRefs::code(const swatch::core::XParameterSet& params)
 {
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+
+    std::remove( std::string(config::alignmentReferencesDir() + "/" + processor.getStub().id).c_str() );
+
     const uint64_t needUpdate( params.get<xdata::UnsignedInteger>("update_link_alignment").value_ );
 
     Command::State commandStatus = Functionoid::kDone;
@@ -127,7 +132,6 @@ swatch::action::Command::State UpdateLinkAlignmentRefs::code(const swatch::core:
 
     setStatusMsg("Updating link alignment references...");
 
-    EmtfProcessor &processor = getActionable<EmtfProcessor>();
     uint32_t endcap = processor.endcap();
     uint32_t sector = processor.sector();
 
@@ -137,11 +141,11 @@ swatch::action::Command::State UpdateLinkAlignmentRefs::code(const swatch::core:
 
     std::ifstream alignmentReferenceSummaryFile
     (
-        "/home/emtfts/reference_values/" + processor.getStub().id + "_summary"
+        config::alignmentReferencesDir() + "/" + processor.getStub().id + "_summary"
     );
     if( !alignmentReferenceSummaryFile )
     {
-        setStatusMsg("No '" + processor.getStub().id + "_means' file found in /home/emtfts/reference_values/");
+        setStatusMsg("No '" + processor.getStub().id + "_means' file found in " + config::alignmentReferencesDir());
         return Functionoid::kError;
     }
 
@@ -184,12 +188,12 @@ swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::X
     EmtfProcessor &processor = getActionable<EmtfProcessor>();
     std::ifstream alignmentReferenceLogFile
     (
-        "/home/emtfts/reference_values/" + processor.getStub().id
+        config::alignmentReferencesDir() + "/" + processor.getStub().id
     );
     if( !alignmentReferenceLogFile )
     {
-        setStatusMsg("No " + processor.getStub().id + " file found in /home/emtfts/reference_values/");
-        return Functionoid::kError;
+        setStatusMsg("No " + processor.getStub().id + " file found in " + config::alignmentReferencesDir() + ". Do nothing.");
+        return Functionoid::kDone; //kError;
     }
 
     // internally, swatch keeps ports in std::deque that provides the random-access
@@ -201,23 +205,24 @@ swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::X
 
     // read in the values a table that is a vector of columns
     std::vector<std::list<uint32_t>> table(nPorts);
-    while( alignmentReferenceLogFile )
+    for(std::string line; std::getline(alignmentReferenceLogFile, line); )
     {
-        uint32_t column = 0;
         nCscPorts = 0;
+
+        std::istringstream tmp(line);
 
         for(auto it =processor.getInputPorts().getPorts().begin();
                  it!=processor.getInputPorts().getPorts().end();
                  ++it)
         {
+
             EmtfCscInputPort *port = dynamic_cast<EmtfCscInputPort *>(*it);
 
             if(port) // process only the CSC input ports
             {
-                uint32_t value = 0;
-                alignmentReferenceLogFile >> value;
-                table[column++].push_back(value);
-                nCscPorts++;
+                size_t value = 0;
+                tmp >> value;
+                table[nCscPorts++].push_back(value);
             }
         }
     }
@@ -235,50 +240,50 @@ swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::X
             sum  += i;
             sum2 += i*i;
         }
-        if(cnt>0) mean[col] = sum/cnt;
-        if(cnt>1) sd  [col] = sqrt( (sum2-sum*sum/cnt)/(cnt-1) );
+        if(cnt>0) mean[col] = sum/double(cnt);
+        if(cnt>1) sd  [col] = sqrt( (sum2-sum*sum/double(cnt))/(cnt-1) );
     }
 
     // current time
     std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
     // convert current time to the C/POSIX format
     std::time_t t = std::chrono::system_clock::to_time_t(tp);
-    // make a UTC string from that format
-    std::string ts = std::asctime(gmtime(&t));
-    // skip trailing newline
-    ts.resize(ts.size()-1);
+    // make a UTC tm structure from that format
+    struct tm utc;
+    gmtime_r(&t,&utc);
+    char buf[128];
+    strftime(buf, sizeof(buf), "%Y.%m.%d_%T", &utc);
+    std::string ts = buf;
 
     // save the summary into a file
     std::ofstream alignmentReferenceSummaryFile
     (
-        "/home/emtfts/reference_values/" + processor.getStub().id + "_" + ts
+        config::alignmentReferencesDir() + "/" + processor.getStub().id + "_" + ts + "_summary"
     );
     if( !alignmentReferenceSummaryFile )
     {
-        setStatusMsg("Cannot open " + processor.getStub().id + "_" + ts + " file /home/emtfts/reference_values/");
+        setStatusMsg("Cannot open " + processor.getStub().id + "_" + ts + " file " + config::alignmentReferencesDir());
         return Functionoid::kError;
     }
     for(size_t col=0; col<nCscPorts; ++col)
-        alignmentReferenceSummaryFile << std::setw(3) << mean[col] << "\t";
+        alignmentReferenceSummaryFile << std::setw(4) << mean[col] << "\t";
 
     alignmentReferenceSummaryFile << std::endl;
 
     for(size_t col=0; col<nCscPorts; ++col)
-        alignmentReferenceSummaryFile << std::setw(3) << sd[col] << "\t";
+        alignmentReferenceSummaryFile << std::setw(4) << sd[col] << "\t";
 
     alignmentReferenceSummaryFile.close();
 
     // cleanup
     if( std::rename(
-            std::string("/home/emtfts/reference_values/" + processor.getStub().id).c_str(),
-            std::string("/home/emtfts/reference_values/" + processor.getStub().id + "_" + ts).c_str()
+            std::string(config::alignmentReferencesDir() + "/" + processor.getStub().id).c_str(),
+            std::string(config::alignmentReferencesDir() + "/" + processor.getStub().id + "_" + ts).c_str()
         )
     ){
-        setStatusMsg("Cannot rename " + processor.getStub().id + " file in /home/emtfts/reference_values/");
+        setStatusMsg("Cannot rename " + processor.getStub().id + " file in " + config::alignmentReferencesDir());
         return Functionoid::kError;
     }
-
-    //symlink(const char  *name1, const char *name2);
 
     setProgress(1.);
 

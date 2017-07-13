@@ -20,6 +20,10 @@
         <param cmd="Enable the firmware report in DAQ stream" id="daq_report_wo_track_enabled" type="bool">true</param>
 
         <param cmd="Write the Pt LUT to the board" id="updateRAMdelays" type="bool">false</param>
+
+        <param cmd="Update link alignment references" id="update_link_alignment" type="uint">0</param>
+        <param cmd="Save link alignment references" id="save_link_alignment" type="uint">1</param>
+
     </context>
 </infra>
 

@@ -121,6 +121,11 @@ namespace config {
         return (fileNameTemplate % endcap % sector).str();
     }
 
+    const std::string linksAlignmentReferencesDir()
+    {
+        return "/home/emtfts/reference_values/";
+    }
+
     const uint32_t cscLinksCount()
     {
         return 49;
