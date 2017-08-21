@@ -117,10 +117,11 @@ UpdateLinkAlignmentRefs::UpdateLinkAlignmentRefs(const std::string& aId, swatch:
     registerParameter("update_link_alignment", xdata::UnsignedInteger(0u));
 }
 
+// Read in the alignment references from the summary files, prepared by SaveLinkAlignmentRefs command
 swatch::action::Command::State UpdateLinkAlignmentRefs::code(const swatch::core::XParameterSet& params)
 {
-    EmtfProcessor &processor = getActionable<EmtfProcessor>();
-
+    // the EmtfProcessor::retrieveMetricValues dumps the alignment readings non-stop
+    //  this commands gets invoked on start of the run and cleans up the irrelevant readings generated in between runs
     std::remove( std::string(config::alignmentReferencesDir() + "/" + processor.getStub().id).c_str() );
 
     const uint64_t needUpdate( params.get<xdata::UnsignedInteger>("update_link_alignment").value_ );
@@ -131,6 +132,8 @@ swatch::action::Command::State UpdateLinkAlignmentRefs::code(const swatch::core:
     if( !needUpdate ) return commandStatus;
 
     setStatusMsg("Updating link alignment references...");
+
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     uint32_t endcap = processor.endcap();
     uint32_t sector = processor.sector();
@@ -145,10 +148,11 @@ swatch::action::Command::State UpdateLinkAlignmentRefs::code(const swatch::core:
     );
     if( !alignmentReferenceSummaryFile )
     {
-        setStatusMsg("No '" + processor.getStub().id + "_means' file found in " + config::alignmentReferencesDir());
+        setStatusMsg("No '" + processor.getStub().id + "_summary' file found in " + config::alignmentReferencesDir());
         return Functionoid::kError;
     }
 
+    // This loop should match _exactly_ the one in EmtfProcessor::retrieveMetricValues (sequence of ports matters)
     for(auto it =processor.getInputPorts().getPorts().begin();
              it!=processor.getInputPorts().getPorts().end();
              ++it)
@@ -174,6 +178,7 @@ SaveLinkAlignmentRefs::SaveLinkAlignmentRefs(const std::string& aId, swatch::act
     registerParameter("save_link_alignment", xdata::UnsignedInteger(1u));
 }
 
+// A summary command that goes over the alignment readings dumped during the run and calcuates means/variances
 swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::XParameterSet& params)
 {
     const uint64_t needSave( params.get<xdata::UnsignedInteger>("save_link_alignment").value_ );
@@ -203,7 +208,7 @@ swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::X
     );
     size_t nCscPorts = 0;
 
-    // read in the values a table that is a vector of columns
+    // read alignment values in a table that is a vector of columns (one column per port)
     std::vector<std::list<uint32_t>> table(nPorts);
     for(std::string line; std::getline(alignmentReferenceLogFile, line); )
     {
@@ -211,6 +216,7 @@ swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::X
 
         std::istringstream tmp(line);
 
+        // This loop should match _exactly_ the one in EmtfProcessor::retrieveMetricValues (sequence of ports matters)
         for(auto it =processor.getInputPorts().getPorts().begin();
                  it!=processor.getInputPorts().getPorts().end();
                  ++it)
@@ -262,7 +268,7 @@ swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::X
     );
     if( !alignmentReferenceSummaryFile )
     {
-        setStatusMsg("Cannot open " + processor.getStub().id + "_" + ts + " file " + config::alignmentReferencesDir());
+        setStatusMsg("Cannot open " + processor.getStub().id + "_" + ts + "_summary file " + config::alignmentReferencesDir());
         return Functionoid::kError;
     }
     for(size_t col=0; col<nCscPorts; ++col)
@@ -275,7 +281,7 @@ swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::X
 
     alignmentReferenceSummaryFile.close();
 
-    // cleanup
+    // save the original readings
     if( std::rename(
             std::string(config::alignmentReferencesDir() + "/" + processor.getStub().id).c_str(),
             std::string(config::alignmentReferencesDir() + "/" + processor.getStub().id + "_" + ts).c_str()
