@@ -19,12 +19,18 @@ EmtfCscInputPort::EmtfCscInputPort(const string & aID, const uint32_t portId, Em
     lockedOld(false),
     alignedOld(false),
     crcOld(false),
-    idOld(false)
+    idOld(false),
+    silenceMetricCountdown(0)
 {
 }
 
 EmtfCscInputPort::~EmtfCscInputPort()
 {
+}
+
+void EmtfCscInputPort::silenceMetricsFor(uint32_t nChecks)
+{
+    silenceMetricCountdown = nChecks;
 }
 
 void EmtfCscInputPort::retrieveMetricValues()
@@ -36,6 +42,8 @@ void EmtfCscInputPort::retrieveMetricValues()
     setMetricValue<string>(mLinkIdMismatch, compareLinkIds());
 
     logLinkStatus();
+
+    silenceMetricCountdown--;
 }
 
 uint64_t EmtfCscInputPort::readLinkRealId()
@@ -56,6 +64,9 @@ uint64_t EmtfCscInputPort::readLinkExpectedId()
 
 bool EmtfCscInputPort::readMetricIsLocked()
 {
+    if( silenceMetricCountdown != 0 )
+        return true;
+
     const string regName("bc0_err_" + id);
 
     uint64_t bc0Err;
@@ -67,6 +78,9 @@ bool EmtfCscInputPort::readMetricIsLocked()
 
 bool EmtfCscInputPort::readMetricIsAligned()
 {
+    if( silenceMetricCountdown != 0 )
+        return true;
+
     const string regName("af_delay_" + id);
 
     uint64_t afDelay;

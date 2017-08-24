@@ -31,6 +31,8 @@ public:
 
     void logLinkStatus(bool forceLog=false);
 
+    void silenceMetricsFor(uint32_t nChecks);
+
 private:
     const int64_t afDeltaMin;
     const int64_t afDeltaMax;
@@ -45,6 +47,8 @@ private:
     bool alignedOld;
     bool crcOld;
     bool idOld;
+
+    uint32_t silenceMetricCountdown;
 
     std::string boolToString(bool b)
     {

@@ -120,6 +120,8 @@ UpdateLinkAlignmentRefs::UpdateLinkAlignmentRefs(const std::string& aId, swatch:
 // Read in the alignment references from the summary files, prepared by SaveLinkAlignmentRefs command
 swatch::action::Command::State UpdateLinkAlignmentRefs::code(const swatch::core::XParameterSet& params)
 {
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+
     // the EmtfProcessor::retrieveMetricValues dumps the alignment readings non-stop
     //  this commands gets invoked on start of the run and cleans up the irrelevant readings generated in between runs
     std::remove( std::string(config::alignmentReferencesDir() + "/" + processor.getStub().id).c_str() );
@@ -132,8 +134,6 @@ swatch::action::Command::State UpdateLinkAlignmentRefs::code(const swatch::core:
     if( !needUpdate ) return commandStatus;
 
     setStatusMsg("Updating link alignment references...");
-
-    EmtfProcessor &processor = getActionable<EmtfProcessor>();
 
     uint32_t endcap = processor.endcap();
     uint32_t sector = processor.sector();
@@ -260,6 +260,7 @@ swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::X
     char buf[128];
     strftime(buf, sizeof(buf), "%Y.%m.%d_%T", &utc);
     std::string ts = buf;
+    // of course, put_time c++11 manipulator would simplify great detal the code above
 
     // save the summary into a file
     std::ofstream alignmentReferenceSummaryFile
@@ -294,6 +295,35 @@ swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::X
     setProgress(1.);
 
     return commandStatus;
+}
+
+
+ResetPortsSilencePeriod::ResetPortsSilencePeriod(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0))
+{
+}
+
+swatch::action::Command::State ResetPortsSilencePeriod::code(const swatch::core::XParameterSet& params)
+{
+    setStatusMsg("Silencing ports' errors while starting the run");
+
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+
+    for(auto it =processor.getInputPorts().getPorts().begin();
+             it!=processor.getInputPorts().getPorts().end();
+             ++it)
+    {
+        EmtfCscInputPort *port = dynamic_cast<EmtfCscInputPort *>(*it);
+
+        if(port) // process only the CSC input ports
+        {
+            port->silenceMetricsFor(6);
+        }
+    }
+
+    setProgress(1.);
+
+    return Functionoid::kDone;
 }
 
 } // namespace

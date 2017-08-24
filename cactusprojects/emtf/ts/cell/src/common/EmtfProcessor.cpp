@@ -177,7 +177,10 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
 
     // Before a new run I've update the references from the previous run (if requested in the key)
     Command & cUpdateLinkAlignmentRefs = registerCommand<UpdateLinkAlignmentRefs>("Update link alignment references");
-    CommandSequence & startSeq = registerSequence("Start sequence", cUpdateLinkAlignmentRefs);
+    //  and reset ports' silence counters for ignoring errors while starting a new run
+    Command & cResetPortsSilencePeriod = registerCommand<ResetPortsSilencePeriod>("Silencing ports' errors while starting the run");
+    CommandSequence & startSeq = registerSequence("Start sequence", cUpdateLinkAlignmentRefs).
+                                                                      then(cResetPortsSilencePeriod);
     pFSM.start.add(startSeq);
 
     // Once current run ends I've save the current alignment values (if requested in the key)

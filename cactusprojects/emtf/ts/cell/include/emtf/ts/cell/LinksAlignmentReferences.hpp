@@ -48,6 +48,13 @@ public:
     virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 };
 
+class ResetPortsSilencePeriod: public swatch::action::Command
+{
+public:
+    ResetPortsSilencePeriod(const std::string& aId, swatch::action::ActionableObject& aActionable);
+
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
+};
 
 } // namespace
 

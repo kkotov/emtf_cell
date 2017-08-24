@@ -14,7 +14,7 @@ public:
     EmtfInputPortTemplate(const std::string& aID, const uint32_t portId, EmtfProcessor &parent) :
         InputPort(aID),
         id(aID),
-        mLinkIdMismatch(registerMetric<std::string>("linkIdMismatch", swatch::core::NotEqualCondition<std::string>("none"), swatch::core::NotEqualCondition<std::string>("none"))),
+        mLinkIdMismatch(registerMetric<std::string>("linkIdMismatch", swatch::core::LessThanCondition<std::string>(""), swatch::core::NotEqualCondition<std::string>("none"))),
         parentProcessor(parent)
     {
     }
