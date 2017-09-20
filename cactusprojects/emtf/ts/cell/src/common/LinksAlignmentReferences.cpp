@@ -1,10 +1,18 @@
 #include "emtf/ts/cell/LinksAlignmentReferences.hpp"
+#include "swatch/processor/PortCollection.hpp"
+#include "emtf/ts/cell/Common.hpp"
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
 namespace emtf {
 
-const map<string, uint32_t> InputLinksAlignmentReferences::referenceValues = {
+// initial reference values
+map<string, uint32_t> InputLinksAlignmentReferences::referenceValues = {
     // endcap 1, sector 1
     {"1_1_me1a_02", 15}, {"1_1_me1a_03", 15}, {"1_1_me1a_04", 15}, {"1_1_me1a_05", 15}, {"1_1_me1a_06", 15}, {"1_1_me1a_07", 15}, {"1_1_me1a_08", 15}, {"1_1_me1a_09", 15},
     {"1_1_me1b_02", 15}, {"1_1_me1b_03", 15}, {"1_1_me1b_04", 15}, {"1_1_me1b_05", 15}, {"1_1_me1b_06", 14}, {"1_1_me1b_07", 15}, {"1_1_me1b_08", 15}, {"1_1_me1b_09", 16},
@@ -101,6 +109,222 @@ const map<string, uint32_t> InputLinksAlignmentReferences::referenceValues = {
     {"2_6_me4_02",  14}, {"2_6_me4_03",  14}, {"2_6_me4_04",  14}, {"2_6_me4_05",  14}, {"2_6_me4_06",  14}, {"2_6_me4_07",  14}, {"2_6_me4_08",  14}, {"2_6_me4_09",  13},
     {"2_6_me1n_03", 41}, {"2_6_me1n_06", 40}, {"2_6_me1n_09", 40}, {"2_6_me2n_03", 15}, {"2_6_me2n_09", 14}, {"2_6_me3n_03", 15}, {"2_6_me3n_09", 14}, {"2_6_me4n_03", 15}, {"2_6_me4n_09", 14}
 };
+
+
+UpdateLinkAlignmentRefs::UpdateLinkAlignmentRefs(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0))
+{
+    registerParameter("update_link_alignment", xdata::UnsignedInteger(0u));
+}
+
+// Read in the alignment references from the summary files, prepared by SaveLinkAlignmentRefs command
+swatch::action::Command::State UpdateLinkAlignmentRefs::code(const swatch::core::XParameterSet& params)
+{
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+
+    // the EmtfProcessor::retrieveMetricValues dumps the alignment readings non-stop
+    //  this commands gets invoked on start of the run and cleans up the irrelevant readings generated in between runs
+    std::remove( std::string(config::linksAlignmentReferencesDir() + "/" + processor.getStub().id).c_str() );
+
+    const uint64_t needUpdate( params.get<xdata::UnsignedInteger>("update_link_alignment").value_ );
+
+    Command::State commandStatus = Functionoid::kDone;
+
+    // no need updating?
+    if( !needUpdate ) return commandStatus;
+
+    setStatusMsg("Updating link alignment references...");
+
+    uint32_t endcap = processor.endcap();
+    uint32_t sector = processor.sector();
+
+    std::stringstream sMapId;
+    sMapId << endcap << "_" << sector << "_";
+    std::string mapId = sMapId.str();
+
+    std::ifstream alignmentReferenceSummaryFile
+    (
+        config::linksAlignmentReferencesDir() + "/" + processor.getStub().id + "_summary"
+    );
+    if( !alignmentReferenceSummaryFile )
+    {
+        setStatusMsg("No '" + processor.getStub().id + "_summary' file found in " + config::linksAlignmentReferencesDir());
+        return Functionoid::kError;
+    }
+
+    // This loop should match _exactly_ the one in EmtfProcessor::retrieveMetricValues (sequence of ports matters)
+    for(auto it =processor.getInputPorts().getPorts().begin();
+             it!=processor.getInputPorts().getPorts().end();
+             ++it)
+    {
+        EmtfCscInputPort *port = dynamic_cast<EmtfCscInputPort *>(*it);
+
+        if(port) // process only the CSC input ports
+        {
+            alignmentReferenceSummaryFile >> InputLinksAlignmentReferences::referenceValues[ mapId + port->getId() ];
+        }
+    }
+
+    alignmentReferenceSummaryFile.close();
+
+    setProgress(1.);
+
+    return commandStatus;
+}
+
+SaveLinkAlignmentRefs::SaveLinkAlignmentRefs(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0))
+{
+    registerParameter("save_link_alignment", xdata::UnsignedInteger(1u));
+}
+
+// A summary command that goes over the alignment readings dumped during the run and calcuates means/variances
+swatch::action::Command::State SaveLinkAlignmentRefs::code(const swatch::core::XParameterSet& params)
+{
+    const uint64_t needSave( params.get<xdata::UnsignedInteger>("save_link_alignment").value_ );
+
+    Command::State commandStatus = Functionoid::kDone;
+
+    // do nothing?
+    if( !needSave ) return commandStatus;
+
+    setStatusMsg("Processing and saving link alignment references...");
+
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+    std::ifstream alignmentReferenceLogFile
+    (
+        config::linksAlignmentReferencesDir() + "/" + processor.getStub().id
+    );
+    if( !alignmentReferenceLogFile )
+    {
+        setStatusMsg("No " + processor.getStub().id + " file found in " + config::linksAlignmentReferencesDir() + ". Do nothing.");
+        return Functionoid::kDone; //kError;
+    }
+
+    // internally, swatch keeps ports in std::deque that provides the random-access
+    //  iterators, thus std::distance function offers an amortized constant time complexity
+    size_t nPorts = std::distance(processor.getInputPorts().getPorts().begin(),
+                                  processor.getInputPorts().getPorts().end()
+    );
+    size_t nCscPorts = 0;
+
+    // read alignment values in a table that is a vector of columns (one column per port)
+    std::vector<std::list<uint32_t>> table(nPorts);
+    for(std::string line; std::getline(alignmentReferenceLogFile, line); )
+    {
+        nCscPorts = 0;
+
+        std::istringstream tmp(line);
+
+        // This loop should match _exactly_ the one in EmtfProcessor::retrieveMetricValues (sequence of ports matters)
+        for(auto it =processor.getInputPorts().getPorts().begin();
+                 it!=processor.getInputPorts().getPorts().end();
+                 ++it)
+        {
+
+            EmtfCscInputPort *port = dynamic_cast<EmtfCscInputPort *>(*it);
+
+            if(port) // process only the CSC input ports
+            {
+                size_t value = 0;
+                tmp >> value;
+                table[nCscPorts++].push_back(value);
+            }
+        }
+    }
+
+    alignmentReferenceLogFile.close();
+
+    // averaging and calculating standard deviation
+    std::vector<double> mean(nCscPorts), sd(nCscPorts);
+    for(size_t col=0; col<nCscPorts; ++col)
+    {
+        size_t sum = 0, sum2 = 0, cnt = 0;
+        for(auto i : table[col])
+        {
+            cnt++;
+            sum  += i;
+            sum2 += i*i;
+        }
+        if(cnt>0) mean[col] = sum/double(cnt);
+        if(cnt>1) sd  [col] = sqrt( (sum2-sum*sum/double(cnt))/(cnt-1) );
+    }
+
+    // current time
+    std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+    // convert current time to the C/POSIX format
+    std::time_t t = std::chrono::system_clock::to_time_t(tp);
+    // make a UTC tm structure from that format
+    struct tm utc;
+    gmtime_r(&t,&utc);
+    char buf[128];
+    strftime(buf, sizeof(buf), "%Y.%m.%d_%T", &utc);
+    std::string ts = buf;
+    // of course, put_time c++11 manipulator would simplify great detal the code above
+
+    // save the summary into a file
+    std::ofstream alignmentReferenceSummaryFile
+    (
+        config::linksAlignmentReferencesDir() + "/" + processor.getStub().id + "_" + ts + "_summary"
+    );
+    if( !alignmentReferenceSummaryFile )
+    {
+        setStatusMsg("Cannot open " + processor.getStub().id + "_" + ts + "_summary file " + config::linksAlignmentReferencesDir());
+        return Functionoid::kError;
+    }
+    for(size_t col=0; col<nCscPorts; ++col)
+        alignmentReferenceSummaryFile << std::setprecision(1) << std::fixed << mean[col] << "\t";
+
+    alignmentReferenceSummaryFile << std::endl;
+
+    for(size_t col=0; col<nCscPorts; ++col)
+        alignmentReferenceSummaryFile << std::setprecision(1) << std::fixed << sd[col] << "\t";
+
+    alignmentReferenceSummaryFile.close();
+
+    // save the original readings
+    if( std::rename(
+            std::string(config::linksAlignmentReferencesDir() + "/" + processor.getStub().id).c_str(),
+            std::string(config::linksAlignmentReferencesDir() + "/" + processor.getStub().id + "_" + ts).c_str()
+        )
+    ){
+        setStatusMsg("Cannot rename " + processor.getStub().id + " file in " + config::linksAlignmentReferencesDir());
+        return Functionoid::kError;
+    }
+
+    setProgress(1.);
+
+    return commandStatus;
+}
+
+
+ResetPortsSilencePeriod::ResetPortsSilencePeriod(const std::string& aId, swatch::action::ActionableObject& aActionable) :
+    swatch::action::Command(aId, aActionable, xdata::Integer(0))
+{
+}
+
+swatch::action::Command::State ResetPortsSilencePeriod::code(const swatch::core::XParameterSet& params)
+{
+    setStatusMsg("Silencing ports' errors while starting the run");
+
+    EmtfProcessor &processor = getActionable<EmtfProcessor>();
+
+    for(auto it =processor.getInputPorts().getPorts().begin();
+             it!=processor.getInputPorts().getPorts().end();
+             ++it)
+    {
+        EmtfCscInputPort *port = dynamic_cast<EmtfCscInputPort *>(*it);
+
+        if(port) // process only the CSC input ports
+        {
+            port->silenceMetricsFor(6);
+        }
+    }
+
+    setProgress(1.);
+
+    return Functionoid::kDone;
+}
 
 } // namespace
 

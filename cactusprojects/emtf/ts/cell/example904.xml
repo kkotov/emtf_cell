@@ -11,7 +11,7 @@
       <creator>emtf::EmtfProcessor</creator>
       <hw-type>EMTF</hw-type>
       <role>emtfProcessors</role>
-      <uri>1</uri>
+      <uri>0</uri>
       <address-table>/nfshome0/kkotov/cactus_trunk/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt</address-table>
       <crate>S1D05g</crate>
       <slot>1</slot>
@@ -33,8 +33,8 @@
       <role>daqttc</role>
       <crate>S1D05g</crate>
       <slot>13</slot>
-      <uri id="t1">ipbusudp-2.0://192.168.2.55:50001</uri>
-      <uri id="t2">ipbusudp-2.0://192.168.2.54:50001</uri>
+      <uri id="t1">ipbusudp-2.0://192.168.3.137:50001</uri>
+      <uri id="t2">ipbusudp-2.0://192.168.3.136:50001</uri>
       <address-table id="t1">file:///opt/cactus/etc/amc13/AMC13XG_T1.xml</address-table>
       <address-table id="t2">file:///opt/cactus/etc/amc13/AMC13XG_T2.xml</address-table>
       <fed-id>1385</fed-id>

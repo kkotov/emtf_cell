@@ -1,6 +1,8 @@
 #ifndef __INPUT_LINKS_ALIGNMENT_REFERENCES__
 #define __INPUT_LINKS_ALIGNMENT_REFERENCES__
 
+#include "swatch/action/Command.hpp"
+
 #include "emtf/ts/cell/EmtfCscPort.hpp"
 #include <map>
 #include <string>
@@ -25,7 +27,33 @@ private:
     InputLinksAlignmentReferences & operator=(const InputLinksAlignmentReferences &init);
     ~InputLinksAlignmentReferences();
 
-    static const std::map<std::string, uint32_t> referenceValues;
+    friend class UpdateLinkAlignmentRefs;
+
+    static std::map<std::string, uint32_t> referenceValues;
+};
+
+class UpdateLinkAlignmentRefs: public swatch::action::Command
+{
+public:
+    UpdateLinkAlignmentRefs(const std::string& aId, swatch::action::ActionableObject& aActionable);
+
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
+};
+
+class SaveLinkAlignmentRefs: public swatch::action::Command
+{
+public:
+    SaveLinkAlignmentRefs(const std::string& aId, swatch::action::ActionableObject& aActionable);
+
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
+};
+
+class ResetPortsSilencePeriod: public swatch::action::Command
+{
+public:
+    ResetPortsSilencePeriod(const std::string& aId, swatch::action::ActionableObject& aActionable);
+
+    virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 };
 
 } // namespace

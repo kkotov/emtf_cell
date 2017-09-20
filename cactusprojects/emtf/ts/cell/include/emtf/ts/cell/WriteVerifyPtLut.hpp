@@ -77,8 +77,6 @@ public:
     virtual swatch::action::Command::State code(const swatch::core::XParameterSet& params);
 
 private:
-    std::string writeDelaysName, readDelaysName;
-
     // hide the copy constructor and the assignment operator because the class allocates memory
     WritePtLut(const VerifyWritePtLut &);
     WritePtLut operator=(const VerifyWritePtLut &);

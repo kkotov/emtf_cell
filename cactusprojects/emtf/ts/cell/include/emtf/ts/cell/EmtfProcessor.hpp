@@ -64,30 +64,6 @@ public:
         driver->writeBlock64(reg, length, buffer, HAL::HAL_NO_VERIFY, HAL::HAL_DO_INCREMENT, offset);
     }
 
-    void read64reg(std::string reg, uint64_t &value)
-    {
-        union {
-            uint64_t val;
-            char data[];
-        } rvalue;
-
-        readBlock(reg, sizeof(rvalue), rvalue.data);
-
-        value = rvalue.val;
-    }
-
-    void write64reg(std::string reg, uint64_t value)
-    {
-        union {
-            uint64_t val;
-            char data[];
-        } wvalue;
-
-        wvalue.val = value;
-
-        writeBlock(reg, sizeof(wvalue), wvalue.data);
-    }
-
     int deviceIndex()
     {
         return boost::lexical_cast<int, std::string>(getStub().uri);
@@ -104,8 +80,8 @@ public:
         return sectorIndex[deviceIndex() % 6];
     }
 
-    std::string readControlFirmwareVersion(uint32_t *controlFirmwareVersion = NULL);
-    std::string readCoreFirmwareVersion(uint32_t *coreFirmwareVersion = NULL);
+    std::string readControlFirmwareVersion(uint64_t *controlFirmwareVersion = NULL);
+    std::string readCoreFirmwareVersion(uint64_t *coreFirmwareVersion = NULL);
 
 private:
     uint64_t readFirmwareVersion();

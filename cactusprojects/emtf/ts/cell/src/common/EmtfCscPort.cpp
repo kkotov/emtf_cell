@@ -19,12 +19,18 @@ EmtfCscInputPort::EmtfCscInputPort(const string & aID, const uint32_t portId, Em
     lockedOld(false),
     alignedOld(false),
     crcOld(false),
-    idOld(false)
+    idOld(false),
+    silenceMetricCountdown(0)
 {
 }
 
 EmtfCscInputPort::~EmtfCscInputPort()
 {
+}
+
+void EmtfCscInputPort::silenceMetricsFor(uint32_t nChecks)
+{
+    silenceMetricCountdown = nChecks;
 }
 
 void EmtfCscInputPort::retrieveMetricValues()
@@ -36,15 +42,17 @@ void EmtfCscInputPort::retrieveMetricValues()
     setMetricValue<string>(mLinkIdMismatch, compareLinkIds());
 
     logLinkStatus();
+
+    silenceMetricCountdown--;
 }
 
 uint64_t EmtfCscInputPort::readLinkRealId()
 {
     string regName = "link_id_" + id;
 
-    uint64_t result = 0;
+    uint32_t result = 0;
 
-    parentProcessor.read64(regName, result);
+    parentProcessor.read(regName, result);
 
     return result;
 }
@@ -56,22 +64,28 @@ uint64_t EmtfCscInputPort::readLinkExpectedId()
 
 bool EmtfCscInputPort::readMetricIsLocked()
 {
+    if( silenceMetricCountdown != 0 )
+        return true;
+
     const string regName("bc0_err_" + id);
 
-    uint64_t bc0Err;
+    uint32_t bc0Err;
 
-    parentProcessor.read64(regName, bc0Err);
+    parentProcessor.read(regName, bc0Err);
 
     return (0 == bc0Err);
 }
 
 bool EmtfCscInputPort::readMetricIsAligned()
 {
+    if( silenceMetricCountdown != 0 )
+        return true;
+
     const string regName("af_delay_" + id);
 
-    uint64_t afDelay;
+    uint32_t afDelay;
 
-    parentProcessor.read64(regName, afDelay);
+    parentProcessor.read(regName, afDelay);
 
     bool res = true;
 

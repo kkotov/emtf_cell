@@ -258,8 +258,8 @@
       <role>daqttc</role>
       <crate>S1D05g</crate>
       <slot>13</slot>
-      <uri id="t1">ipbusudp-2.0://amc-s1d05-28-13-t1.cms:50001</uri>
-      <uri id="t2">ipbusudp-2.0://amc-s1d05-28-13-t2.cms:50001</uri>
+      <uri id="t1">chtcp-2.0://ctrl-s2c16-21-01:10203?target=amc-s1d05-28-13-t1.cms:50001</uri>
+      <uri id="t2">chtcp-2.0://ctrl-s2c16-21-01:10203?target=amc-s1d05-28-13-t2.cms:50001</uri>
       <address-table id="t1">file:///opt/cactus/etc/amc13/AMC13XG_T1.xml</address-table>
       <address-table id="t2">file:///opt/cactus/etc/amc13/AMC13XG_T2.xml</address-table>
       <fed-id>1385</fed-id>
@@ -269,8 +269,8 @@
       <role>daqttc</role>
       <crate>S1D05f</crate>
       <slot>13</slot>
-      <uri id="t1">ipbusudp-2.0://amc-s1d05-21-13-t1.cms:50001</uri>
-      <uri id="t2">ipbusudp-2.0://amc-s1d05-21-13-t2.cms:50001</uri>
+      <uri id="t1">chtcp-2.0://ctrl-s2c16-21-01:10203?target=amc-s1d05-21-13-t1.cms:50001</uri>
+      <uri id="t2">chtcp-2.0://ctrl-s2c16-21-01:10203?target=amc-s1d05-21-13-t2.cms:50001</uri>
       <address-table id="t1">file:///opt/cactus/etc/amc13/AMC13XG_T1.xml</address-table>
       <address-table id="t2">file:///opt/cactus/etc/amc13/AMC13XG_T2.xml</address-table>
       <fed-id>1384</fed-id>

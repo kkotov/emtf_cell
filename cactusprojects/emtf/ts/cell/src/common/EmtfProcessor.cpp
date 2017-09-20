@@ -17,6 +17,7 @@
 #include "emtf/ts/cell/WriteVerifyPCLuts.hpp"
 #include "emtf/ts/cell/WriteVerifyPtLut.hpp"
 #include "emtf/ts/cell/AlignmentFifoDelays.hpp"
+#include "emtf/ts/cell/LinksAlignmentReferences.hpp"
 #include "emtf/ts/cell/TransitionCommands.hpp"
 #include <fstream>
 #include <string>
@@ -49,7 +50,7 @@ static const uint16_t* countObjectsInError(const std::vector<swatch::core::Monit
 
     for(auto it=objects.begin(); it!=objects.end(); ++it)
     {
-        if(it->getStatusFlag() != kGood)
+        if(it->getStatusFlag() == kError)
         {
             ++count;
         }
@@ -129,7 +130,6 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
     Command & cSetDoubleMuonTrg = registerCommand<SetDoubleMuonTrg>("Enable the two muons algorithm");
     Command & cAlgoConfig = registerCommand<AlgoConfig>("Configuring Track-Finding algorithm");
     Command & cDaqReportWoTrack = registerCommand<DaqReportWoTrack>("Enable the firmware report in DAQ stream");
-    Command & cOnStart = registerCommand<OnStart>("Executed at the transition from 'Aligned' to 'Running'");
     Command & cPtLutClockReset = registerCommand<ResetPtLut>("Reset Pt LUT clock");
     Command & cReboot = registerCommand<Reboot>("Reconfigure main FPGA");
 
@@ -166,7 +166,6 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
                                                                       then(cVerifyPcLuts).
                                                                       then(cVerifyPtLutVersion).
                                                                       then(cVerifyWritePtLut).
-                                                                      then(cOnStart).
                                                                       then(cAlignmentFifoDelays);
 
     // processor run control state machine
@@ -174,7 +173,25 @@ EmtfProcessor::EmtfProcessor(const AbstractStub& aStub) :
     pFSM.coldReset.add(coldStartSeq);
     pFSM.configure.add(configureSeq);
 
-    const string processorMessage("Board " + aStub.id + " (/dev/utca_sp12" + getStub().uri + ") " + "initialized successfully");
+    // Before a new run I've update the references from the previous run (if requested in the key)
+    Command & cUpdateLinkAlignmentRefs = registerCommand<UpdateLinkAlignmentRefs>("Update link alignment references");
+    //  and reset ports' silence counters for ignoring errors while starting a new run
+    Command & cResetPortsSilencePeriod = registerCommand<ResetPortsSilencePeriod>("Silencing ports' errors while starting the run");
+    Command & cOnStart = registerCommand<OnStart>("Log link status");
+    CommandSequence & startSeq = registerSequence("Start sequence", cUpdateLinkAlignmentRefs).
+                                                                      then(cOnStart).
+                                                                      then(cResetPortsSilencePeriod);
+    pFSM.start.add(startSeq);
+
+    // Once current run ends I've save the current alignment values (if requested in the key)
+    Command & cSaveLinkAlignmentRefs = registerCommand<SaveLinkAlignmentRefs>("Save link alignment references");
+    Command & cOnStop  = registerCommand<OnStop>("Mark end of run in logs");
+    CommandSequence &stopSeq = registerSequence("Stop sequence", cSaveLinkAlignmentRefs).
+                                                                   then(cOnStop);
+    pFSM.stopFromAligned.add(stopSeq);
+    pFSM.stopFromRunning.add(stopSeq);
+
+    const string processorMessage("Board " + aStub.id + " (/dev/xdma" + getStub().uri + "_{user,h2c,c2h}) " + "initialized successfully");
     LOG4CPLUS_INFO(generalLogger, LOG4CPLUS_TEXT(processorMessage));
 }
 
@@ -187,10 +204,10 @@ EmtfProcessor::~EmtfProcessor()
 
 uint64_t EmtfProcessor::readFirmwareVersion()
 {
-    uint32_t controlFirmwareVersion = 0u;
+    uint64_t controlFirmwareVersion = 0u;
     readControlFirmwareVersion(&controlFirmwareVersion);
 
-    uint32_t coreFirmwareVersion = 0u;
+    uint64_t coreFirmwareVersion = 0u;
     readCoreFirmwareVersion(&coreFirmwareVersion);
 
     uint64_t firmwareVersion = (((uint64_t)coreFirmwareVersion) << 32) | controlFirmwareVersion;
@@ -216,10 +233,10 @@ int EmtfProcessor::readBC0counter(void)
 
 uint32_t EmtfProcessor::readTrackRate(uint16_t track)
 {
-    uint64_t trackCounter = 0u;
+    uint32_t trackCounter = 0u;
 
     boost::format regNameTemplate("rate_track_%u_1");
-    read64((regNameTemplate % track).str(), trackCounter);
+    read((regNameTemplate % track).str(), trackCounter);
 
     boost::format msgTemplate("%s output track_%u rate: %u Hz");
     const string trackRateMsg((msgTemplate % getStub().id % track % trackCounter).str());
@@ -231,9 +248,9 @@ uint32_t EmtfProcessor::readTrackRate(uint16_t track)
 
 uint32_t EmtfProcessor::lctRate(string lctName)
 {
-    uint64_t inputLctRate = 0u;
+    uint32_t inputLctRate = 0u;
 
-    read64(lctName, inputLctRate);
+    read(lctName, inputLctRate);
 
     return inputLctRate;
 }
@@ -290,7 +307,7 @@ void EmtfProcessor::generateLctPairs()
     }
 }
 
-string EmtfProcessor::readControlFirmwareVersion(uint32_t *firmwareVersion)
+string EmtfProcessor::readControlFirmwareVersion(uint64_t *firmwareVersion)
 {
     uint32_t ctlFpgaFwSec = 0u;
     read("ctl_fpga_fw_sec", ctlFpgaFwSec);
@@ -331,25 +348,25 @@ string EmtfProcessor::readControlFirmwareVersion(uint32_t *firmwareVersion)
     return controlFirmwareVersion;
 }
 
-string EmtfProcessor::readCoreFirmwareVersion(uint32_t *firmwareVersion)
+string EmtfProcessor::readCoreFirmwareVersion(uint64_t *firmwareVersion)
 {
-    uint64_t coreFpgaFwSec = 0u;
-    read64("core_fpga_fw_sec", coreFpgaFwSec);
+    uint32_t coreFpgaFwSec = 0u;
+    read("core_fpga_fw_sec", coreFpgaFwSec);
 
-    uint64_t coreFpgaFwMin = 0u;
-    read64("core_fpga_fw_min", coreFpgaFwMin);
+    uint32_t coreFpgaFwMin = 0u;
+    read("core_fpga_fw_min", coreFpgaFwMin);
 
-    uint64_t coreFpgaFwHour = 0u;
-    read64("core_fpga_fw_hour", coreFpgaFwHour);
+    uint32_t coreFpgaFwHour = 0u;
+    read("core_fpga_fw_hour", coreFpgaFwHour);
 
-    uint64_t coreFpgaFwDay = 0u;
-    read64("core_fpga_fw_day", coreFpgaFwDay);
+    uint32_t coreFpgaFwDay = 0u;
+    read("core_fpga_fw_day", coreFpgaFwDay);
 
-    uint64_t coreFpgaFwMonth = 0u;
-    read64("core_fpga_fw_month", coreFpgaFwMonth);
+    uint32_t coreFpgaFwMonth = 0u;
+    read("core_fpga_fw_month", coreFpgaFwMonth);
 
-    uint64_t coreFpgaFwYear = 0u;
-    read64("core_fpga_fw_year", coreFpgaFwYear);
+    uint32_t coreFpgaFwYear = 0u;
+    read("core_fpga_fw_year", coreFpgaFwYear);
     coreFpgaFwYear += 2000u; // the year is written in the firmware relative to the year 2000
 
     const string coreFirmwareVersion(        boost::lexical_cast<string>(coreFpgaFwYear)

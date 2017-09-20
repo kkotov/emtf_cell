@@ -22,14 +22,16 @@ public:
     {
         const std::string regName("af_delay_" + id);
 
-        uint64_t afDelay;
+        uint32_t afDelay;
 
-        parentProcessor.read64(regName, afDelay);
+        parentProcessor.read(regName, afDelay);
 
         return afDelay;
     }
 
     void logLinkStatus(bool forceLog=false);
+
+    void silenceMetricsFor(uint32_t nChecks);
 
 private:
     const int64_t afDeltaMin;
@@ -45,6 +47,8 @@ private:
     bool alignedOld;
     bool crcOld;
     bool idOld;
+
+    uint32_t silenceMetricCountdown;
 
     std::string boolToString(bool b)
     {
