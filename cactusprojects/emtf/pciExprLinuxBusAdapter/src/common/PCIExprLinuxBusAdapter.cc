@@ -3,6 +3,13 @@
 #include <iomanip>
 #include <unistd.h>
 
+#define PCIEXPR_DEFAULT_FILE             "/dev/xdma%d_user"
+#define PCIEXPR_DEFAULT_FILE_BLOCK_READ  "/dev/xdma%d_c2h_0"
+#define PCIEXPR_DEFAULT_FILE_BLOCK_WRITE "/dev/xdma%d_h2c_0"
+
+#define REG_BASE ((uint64_t)0x40ULL) // TODO: define REG_BASE as a class const member
+#define MAXIMUM_TRANSMISSION_UNIT ((uint32_t)4096)
+
 HAL::PCIExprLinuxBusAdapter::PCIExprLinuxBusAdapter() throw (HAL::BusAdapterException)
   try
     : PCIExprLinuxBusAdapterInterface()
@@ -17,7 +24,21 @@ HAL::PCIExprLinuxBusAdapter::~PCIExprLinuxBusAdapter() {
       int res = close(device_d);
 
       if(res != 0) {
-        std::cout << "ERROR: Cannot close device file for SP12" << std::endl;
+        std::cout << "ERROR: Cannot close device file for xdmaX_user" << std::endl;
+      }
+  }
+  if (blockRead_d > -1) {
+      int res = close(blockRead_d);
+
+      if(res != 0) {
+        std::cout << "ERROR: Cannot close device file for xdmaX_c2h" << std::endl;
+      }
+  }
+  if (blockWrite_d > -1) {
+      int res = close(blockWrite_d);
+
+      if(res != 0) {
+        std::cout << "ERROR: Cannot close device file for xdmaX_h2c" << std::endl;
       }
   }
 }
@@ -30,11 +51,26 @@ void HAL::PCIExprLinuxBusAdapter::findDeviceByIndex( uint32_t index )
   std::cout << "Initializing the MTF7 board #" << index;
 
   char driver_string[100];
-  sprintf(driver_string, "%s%d", PCIEXPR_DEFAULT_FILE, index);
-  std::cout << ": driver is " << driver_string << std::endl;
+
+  sprintf(driver_string, PCIEXPR_DEFAULT_FILE, index);
+  std::cout << ": device files are " << driver_string << std::flush;
   device_d = open(driver_string,O_RDWR);
   if (device_d < 0) {
-    std::cout << "ERROR: Cannot open device file for SP12" << std::endl;
+    throw NoSuchDeviceException( "ERROR: Cannot open device file for xdmaX_user", __FILE__, __LINE__, __FUNCTION__ );
+  }
+
+  sprintf(driver_string, PCIEXPR_DEFAULT_FILE_BLOCK_READ, index);
+  std::cout << ", " << driver_string << std::flush;
+  blockRead_d = open(driver_string,O_RDONLY);
+  if (blockRead_d < 0) {
+    throw NoSuchDeviceException( "ERROR: Cannot open device file for xdmaX_c2h", __FILE__, __LINE__, __FUNCTION__ );
+  }
+
+  sprintf(driver_string, PCIEXPR_DEFAULT_FILE_BLOCK_WRITE, index);
+  std::cout << ", " << driver_string << std::endl;
+  blockWrite_d = open(driver_string,O_WRONLY);
+  if (blockWrite_d < 0) {
+    throw NoSuchDeviceException( "ERROR: Cannot open device file for xdmaX_h2c", __FILE__, __LINE__, __FUNCTION__ );
   }
 }
 
@@ -473,7 +509,7 @@ void HAL::PCIExprLinuxBusAdapter::writeBlock64(PCIDeviceIdentifier& device, // t
         length -= MAXIMUM_TRANSMISSION_UNIT;
     }
 
-    writeBoard(buffer, length, startAddress);
+    writeBoardBlock(buffer, length, startAddress);
 }
 
 void HAL::PCIExprLinuxBusAdapter::readBlock(PCIDeviceIdentifier& device, // this parameter is not used
@@ -496,7 +532,7 @@ void HAL::PCIExprLinuxBusAdapter::readBlock64(PCIDeviceIdentifier& device, // th
     // TODO: this offset needs to be removed in the future
     startAddress -= 0x10; // Shift the startAddress back. There is an offset set in the HAL layer that needs to be undone.
 
-    uint64_t regBase = REG_BASE;
+    uint64_t regBase = 0; // REG_BASE; not needed anymore
 
     if(0 != startAddress % 8) {
         throw(BusAdapterException("start address is not aligned to 8 bytes", __FILE__, __LINE__, __FUNCTION__));
@@ -520,7 +556,7 @@ void HAL::PCIExprLinuxBusAdapter::readBlock64(PCIDeviceIdentifier& device, // th
     }
 
     uint64_t readAddress = (regBase << 32) + startAddress; // form the virtual address for reading
-    readBoard(buffer, length, readAddress);
+    readBoardBlock(buffer, length, readAddress);
 }
 
 void HAL::PCIExprLinuxBusAdapter::writeBoard(char *buffer, uint64_t length, uint64_t startAddress)
@@ -535,6 +571,22 @@ void HAL::PCIExprLinuxBusAdapter::readBoard(char *buffer, uint64_t length, uint6
     throw(BusAdapterException)
 {
     if(length != pread(device_d, buffer, length, startAddress)) {
+        throw(BusAdapterException("Wrong number of bytes read from the PCIExpr device", __FILE__, __LINE__, __FUNCTION__));
+    }
+}
+
+void HAL::PCIExprLinuxBusAdapter::writeBoardBlock(char *buffer, uint64_t length, uint64_t startAddress)
+    throw(BusAdapterException)
+{
+    if(length != pwrite(blockWrite_d, buffer, length, startAddress)) {
+        throw(BusAdapterException("Wrong number of bytes writtn to the PCIExpr device", __FILE__, __LINE__, __FUNCTION__));
+    }
+}
+
+void HAL::PCIExprLinuxBusAdapter::readBoardBlock(char *buffer, uint64_t length, uint64_t startAddress)
+    throw(BusAdapterException)
+{
+    if(length != pread(blockRead_d, buffer, length, startAddress)) {
         throw(BusAdapterException("Wrong number of bytes read from the PCIExpr device", __FILE__, __LINE__, __FUNCTION__));
     }
 }

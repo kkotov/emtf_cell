@@ -1,32 +1,734 @@
-*****************************************************************************************************
-*    EXAMPLE FOR MTF6/7
-*****************************************************************************************************
-*  key           accessmode  bar  address     mask      read write   description
-*****************************************************************************************************
-ConfigStart     configuration      00000000    FFFFFFFF    1    1     This is the beginning of the configuration space. 
-*                                                                     It is put here in the table as r/w item so that it
-*                                                                     can be read out and written back after a change of the 
-*                                                                     firmware loaded from the eprom into the FRL fpga
-Vendor_Id       configuration      00000000    0000FFFF    1    0     This register corresponds to the Vendor ID of the board (function 2 of the card).
-Device_Id       configuration      00000000    FFFF0000    1    0     This register correspond to the Device ID of the FRL logic element (function 2 of the card)
-Memory_Space    configuration      00000004    00000002    1    1     This bit when set by the BIOS able card to be accessed in memory space.
-Bus_Master      configuration      00000004    00000004    1    1     This bit when set by the BIOS able the card to do master access on PCI bus
-bar0            configuration      00000010    FFFFFFFF    1    1     This register is write by the BIOS to indicate at which address the card responds to a PCI access
-bar1            configuration      00000014    FFFFFFFF    1    1     This register is write by the BIOS to indicate at which address the card responds to a PCI access
-bar2            configuration      00000018    FFFFFFFF    1    1     This register is write by the BIOS to indicate at which address the card responds to a PCI access
-*
-* The current MTF6/7 driver is automatically using BAR0 and BAR1 spaces. 
-* BAR0 window is reserved for single registers.
-* BAR1 is a large memory window that only works with block transfers. 
-* The driver decides which window to use based on the transfer size. 
-* Adding the bar numbering just for completeness, but it is not currently used
-* As of today (2013.01.09) the firmware allocates only 2 registers of 32 bits 
-* for reading/writing random values in two different offsets starting from the BAR0
-*
-test_reg1      memory        0   00000010    FFFFFFFF    1    1    memory
-test_reg2      memory        0   0000000c    FFFFFFFF    1    1    memory
-*
-test_mem       memory        1   00000000    FFFFFFFF    1    1     memory
-test_mem_end   memory        1   00001000    FFFFFFFF    1    1     memory
-*
-*****************************************************************************************************
+lb_memory                       memory        0        00000000           ffffffffffffffff        1           1            loopback memory area
+prim_conv_params_me1a_01        memory        1        00200000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_01        memory        1        00200400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1a_01        memory        1        00200800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1a_01            memory        1        00200C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_02        memory        1        00201000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_02        memory        1        00201400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1a_02        memory        1        00201800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1a_02            memory        1        00201C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_03        memory        1        00202000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_03        memory        1        00202400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1a_03        memory        1        00202800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1a_03            memory        1        00202C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_04        memory        1        00203000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_04        memory        1        00203400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_04            memory        1        00203800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_05        memory        1        00204000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_05        memory        1        00204400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_05            memory        1        00204800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_06        memory        1        00205000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_06        memory        1        00205400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_06            memory        1        00205800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_07        memory        1        00206000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_07        memory        1        00206400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_07            memory        1        00206800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_08        memory        1        00207000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_08        memory        1        00207400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_08            memory        1        00207800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1a_09        memory        1        00208000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1a_09        memory        1        00208400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1a_09            memory        1        00208800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_01        memory        1        00209000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_01        memory        1        00209400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1b_01        memory        1        00209800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1b_01            memory        1        00209C00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_02        memory        1        0020A000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_02        memory        1        0020A400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1b_02        memory        1        0020A800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1b_02            memory        1        0020AC00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_03        memory        1        0020B000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_03        memory        1        0020B400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1b_03        memory        1        0020B800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1b_03            memory        1        0020BC00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_04        memory        1        0020C000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_04        memory        1        0020C400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_04            memory        1        0020C800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_05        memory        1        0020D000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_05        memory        1        0020D400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_05            memory        1        0020D800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_06        memory        1        0020E000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_06        memory        1        0020E400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_06            memory        1        0020E800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_07        memory        1        0020F000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_07        memory        1        0020F400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_07            memory        1        0020F800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_08        memory        1        00210000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_08        memory        1        00210400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_08            memory        1        00210800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1b_09        memory        1        00211000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1b_09        memory        1        00211400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1b_09            memory        1        00211800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_01         memory        1        00212000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_01         memory        1        00212400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_01             memory        1        00212800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_02         memory        1        00213000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_02         memory        1        00213400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_02             memory        1        00213800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_03         memory        1        00214000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_03         memory        1        00214400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_03             memory        1        00214800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_04         memory        1        00215000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_04         memory        1        00215400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_04             memory        1        00215800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_05         memory        1        00216000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_05         memory        1        00216400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_05             memory        1        00216800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_06         memory        1        00217000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_06         memory        1        00217400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_06             memory        1        00217800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_07         memory        1        00218000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_07         memory        1        00218400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_07             memory        1        00218800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_08         memory        1        00219000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_08         memory        1        00219400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_08             memory        1        00219800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2_09         memory        1        0021A000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2_09         memory        1        0021A400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2_09             memory        1        0021A800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_01         memory        1        0021B000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_01         memory        1        0021B400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_01             memory        1        0021B800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_02         memory        1        0021C000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_02         memory        1        0021C400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_02             memory        1        0021C800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_03         memory        1        0021D000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_03         memory        1        0021D400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_03             memory        1        0021D800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_04         memory        1        0021E000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_04         memory        1        0021E400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_04             memory        1        0021E800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_05         memory        1        0021F000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_05         memory        1        0021F400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_05             memory        1        0021F800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_06         memory        1        00220000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_06         memory        1        00220400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_06             memory        1        00220800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_07         memory        1        00221000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_07         memory        1        00221400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_07             memory        1        00221800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_08         memory        1        00222000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_08         memory        1        00222400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_08             memory        1        00222800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3_09         memory        1        00223000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3_09         memory        1        00223400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3_09             memory        1        00223800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_01         memory        1        00224000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_01         memory        1        00224400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_01             memory        1        00224800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_02         memory        1        00225000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_02         memory        1        00225400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_02             memory        1        00225800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_03         memory        1        00226000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_03         memory        1        00226400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_03             memory        1        00226800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_04         memory        1        00227000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_04         memory        1        00227400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_04             memory        1        00227800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_05         memory        1        00228000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_05         memory        1        00228400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_05             memory        1        00228800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_06         memory        1        00229000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_06         memory        1        00229400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_06             memory        1        00229800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_07         memory        1        0022A000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_07         memory        1        0022A400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_07             memory        1        0022A800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_08         memory        1        0022B000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_08         memory        1        0022B400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_08             memory        1        0022B800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4_09         memory        1        0022C000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4_09         memory        1        0022C400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4_09             memory        1        0022C800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1n_03        memory        1        0022D000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1n_03        memory        1        0022D400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_th_cor_me1n_03        memory        1        0022D800           000000000000003f        1           1            Primitive converter theta correction LUT
+prim_conv_id_me1n_03            memory        1        0022DC00           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1n_06        memory        1        0022E000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1n_06        memory        1        0022E400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1n_06            memory        1        0022E800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me1n_09        memory        1        0022F000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me1n_09        memory        1        0022F400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me1n_09            memory        1        0022F800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2n_03        memory        1        00230000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2n_03        memory        1        00230400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2n_03            memory        1        00230800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me2n_09        memory        1        00231000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me2n_09        memory        1        00231400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me2n_09            memory        1        00231800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3n_03        memory        1        00232000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3n_03        memory        1        00232400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3n_03            memory        1        00232800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me3n_09        memory        1        00233000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me3n_09        memory        1        00233400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me3n_09            memory        1        00233800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4n_03        memory        1        00234000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4n_03        memory        1        00234400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4n_03            memory        1        00234800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+prim_conv_params_me4n_09        memory        1        00235000           0000000000001fff        1           1            Primitive converter parameters
+prim_conv_th_lut_me4n_09        memory        1        00235400           000000000000003f        1           1            Primitive converter theta LUT
+prim_conv_id_me4n_09            memory        1        00235800           00000000000000ff        1           0            Primitive converter ID, [7:4]=station, [3:0]=chamber
+ptlut_mem                       memory        1        00280000           0003ffff0003ffff        1           1            PT LUT access memory area
+ptlut_addr                      memory        1        00282000           000000001fffffff        1           1            PT LUT access address area
+ext_pll_config_word                   memory        0        0001001C           ffffffff                1           1           external PLL configuration word
+ext_pll_unlock_cnt                    memory        0        00010020           0000ffff                1           0           PLL unlock counter
+ext_pll_lock                          memory        0        00010020           00010000                1           0           PLL lock status
+ext_pll_hold                          memory        0        00010020           00020000                1           0           PLL hold status
+ext_pll_los                           memory        0        00010020           00040000                1           0           PLL loss of signal
+ext_pll_en                            memory        0        00010020           00080000                1           0           PLL enable configuration
+ext_pll_done                          memory        0        00010020           00100000                1           0           PLL done configuration
+lhc_clk_cnt                           memory        0        00010024           ffffffff                1           0           LHC clock counter
+ext_pll_clk_cnt                       memory        0        00010028           ffffffff                1           0           PLL clock counter
+bc0_period_cnt                        memory        0        0001002C           00000fff                1           0           BC0 period counter value
+resync_cnt                            memory        0        0001002C           fffff000                1           0           Resync counter value
+ctl_fpga_fw_sec                       memory        0        00010030           0000003f                1           0           Control FPGA Firmware timestamp, sec
+ctl_fpga_fw_min                       memory        0        00010030           00000fc0                1           0           Control FPGA Firmware timestamp, min
+ctl_fpga_fw_hour                      memory        0        00010030           0001f000                1           0           Control FPGA Firmware timestamp, hour
+ctl_fpga_fw_year                      memory        0        00010030           007e0000                1           0           Control FPGA Firmware timestamp, year (add 2000)
+ctl_fpga_fw_month                     memory        0        00010030           07800000                1           0           Control FPGA Firmware timestamp, month
+ctl_fpga_fw_day                       memory        0        00010030           f8000000                1           0           Control FPGA Firmware timestamp, day
+flash_timer_rst                       memory        0        00010000           00000000                0           1           Flash timer reset
+flash_babeface                        memory        0        00010000           ffffffff                1           0           hardcoded 0xbabeface
+flash_address                         memory        0        00010004           07ffffff                1           1           Flash address
+flash_data                            memory        0        00010008           0000ffff                1           1           Flash data
+flash_core_config_start               memory        0        0001000C           00000001                1           1           Core FPGA configuration start
+flash_core_unconfig                   memory        0        0001000C           00000004                0           1           Core FPGA unconfigure
+flash_core_init                       memory        0        0001000C           00000002                1           0           Core FPGA INIT signal
+flash_core_done                       memory        0        0001000C           00000004                1           0           Core FPGA DONE signal
+flash_core_config_sm_completed        memory        0        0001000C           00000008                1           0           Core FPGA config state machine completed
+flash_core_fw_start                   memory        0        00010010           07ffffff                1           0           Core FPGA firmware start address in Flash
+flash_cnt_fw_start                    memory        0        00010014           07ffffff                1           0           Control FPGA firmware start address in Flash
+flash_core_config_sm_state            memory        0        00010018           0000000f                1           0           Core FPGA config state machine state
+flash_icap_word                       memory        0        00010018           ffffffff                0           1           ICAP write word, used to reconfigure Control FPGA
+gth_rst                               memory        0        00000000           00000001                1           1           GTH reset
+inject_test_data                      memory        0        00000000           00000002                1           1           inject test data
+spy_mem_rst                           memory        0        00000000           00000004                1           1           spy memory reset
+ptlut_clk_rst                         memory        0        00000000           00000008                1           1           reset PT LUT clock manager
+ptlut_chips_rst                       memory        0        00000000           00000010                1           1           reset PT LUT memory ICs
+ptlut_mrs_cmd                         memory        0        00000000           00000020                1           1           PT LUT MRS command
+ptlut_write_cmd                       memory        0        00000000           00000040                1           1           PT LUT write command
+ptlut_read_cmd                        memory        0        00000000           00000080                1           1           PT LUT read command
+ptlut_dbdel_clk_en                    memory        0        00000000           00000400                1           1           PT LUT data bus delays clock enable
+ptlut_dbdel_ld                        memory        0        00000000           00001000                1           1           PT LUT data bus delays load
+ptlut_dbdel_rst                       memory        0        00000000           00002000                1           1           PT LUT data bus delays reset
+gth_rx_buf_rst                        memory        0        00000000           00008000                1           1           GTH RX buffers reset
+latency_test_en                       memory        0        00000000           00010000                1           1           Enable Latency test
+daq_rst                               memory        0        00000000           00020000                1           1           DAQ module reset
+link_id_me1a_02                       memory        0        00000008           000003ff                1           0           Link ID
+link_id_me1a_03                       memory        0        00000008           000ffc00                1           0           Link ID
+link_id_me1a_04                       memory        0        00000008           3ff00000                1           0           Link ID
+link_id_me1a_05                       memory        0        0000000C           000003ff                1           0           Link ID
+link_id_me1a_06                       memory        0        0000000C           000ffc00                1           0           Link ID
+link_id_me1a_07                       memory        0        0000000C           3ff00000                1           0           Link ID
+link_id_me1a_08                       memory        0        00000010           000003ff                1           0           Link ID
+link_id_me1a_09                       memory        0        00000010           000ffc00                1           0           Link ID
+link_id_me1b_02                       memory        0        00000010           3ff00000                1           0           Link ID
+link_id_me1b_03                       memory        0        00000014           000003ff                1           0           Link ID
+link_id_me1b_04                       memory        0        00000014           000ffc00                1           0           Link ID
+link_id_me1b_05                       memory        0        00000014           3ff00000                1           0           Link ID
+link_id_me1b_06                       memory        0        00000018           000003ff                1           0           Link ID
+link_id_me1b_07                       memory        0        00000018           000ffc00                1           0           Link ID
+link_id_me1b_08                       memory        0        00000018           3ff00000                1           0           Link ID
+link_id_me1b_09                       memory        0        0000001C           000003ff                1           0           Link ID
+link_id_me2_02                        memory        0        0000001C           000ffc00                1           0           Link ID
+link_id_me2_03                        memory        0        0000001C           3ff00000                1           0           Link ID
+link_id_me2_04                        memory        0        00000020           000003ff                1           0           Link ID
+link_id_me2_05                        memory        0        00000020           000ffc00                1           0           Link ID
+link_id_me2_06                        memory        0        00000020           3ff00000                1           0           Link ID
+link_id_me2_07                        memory        0        00000024           000003ff                1           0           Link ID
+link_id_me2_08                        memory        0        00000024           000ffc00                1           0           Link ID
+link_id_me2_09                        memory        0        00000024           3ff00000                1           0           Link ID
+link_id_me3_02                        memory        0        00000028           000003ff                1           0           Link ID
+link_id_me3_03                        memory        0        00000028           000ffc00                1           0           Link ID
+link_id_me3_04                        memory        0        00000028           3ff00000                1           0           Link ID
+link_id_me3_05                        memory        0        0000002C           000003ff                1           0           Link ID
+link_id_me3_06                        memory        0        0000002C           000ffc00                1           0           Link ID
+link_id_me3_07                        memory        0        0000002C           3ff00000                1           0           Link ID
+link_id_me3_08                        memory        0        00000030           000003ff                1           0           Link ID
+link_id_me3_09                        memory        0        00000030           000ffc00                1           0           Link ID
+link_id_me4_02                        memory        0        00000030           3ff00000                1           0           Link ID
+link_id_me4_03                        memory        0        00000034           000003ff                1           0           Link ID
+link_id_me4_04                        memory        0        00000034           000ffc00                1           0           Link ID
+link_id_me4_05                        memory        0        00000034           3ff00000                1           0           Link ID
+link_id_me4_06                        memory        0        00000038           000003ff                1           0           Link ID
+link_id_me4_07                        memory        0        00000038           000ffc00                1           0           Link ID
+link_id_me4_08                        memory        0        00000038           3ff00000                1           0           Link ID
+link_id_me4_09                        memory        0        0000003C           000003ff                1           0           Link ID
+link_id_me1n_03                       memory        0        00000040           000003ff                1           0           Link ID
+link_id_me1n_06                       memory        0        00000040           000ffc00                1           0           Link ID
+link_id_me1n_09                       memory        0        00000040           3ff00000                1           0           Link ID
+link_id_me2n_03                       memory        0        00000044           000003ff                1           0           Link ID
+link_id_me2n_09                       memory        0        00000044           000ffc00                1           0           Link ID
+link_id_me3n_03                       memory        0        00000044           3ff00000                1           0           Link ID
+link_id_me3n_09                       memory        0        00000048           000003ff                1           0           Link ID
+link_id_me4n_03                       memory        0        00000048           000ffc00                1           0           Link ID
+link_id_me4n_09                       memory        0        00000048           3ff00000                1           0           Link ID
+cppf_link_id_1                        memory        0        00000288           000000ff                1           0           CPPF link id
+cppf_link_id_2                        memory        0        00000288           0000ff00                1           0           CPPF link id
+cppf_link_id_3                        memory        0        00000288           00ff0000                1           0           CPPF link id
+cppf_link_id_4                        memory        0        00000288           ff000000                1           0           CPPF link id
+cppf_link_id_5                        memory        0        0000028C           000000ff                1           0           CPPF link id
+cppf_link_id_6                        memory        0        0000028C           0000ff00                1           0           CPPF link id
+cppf_link_id_7                        memory        0        0000028C           00ff0000                1           0           CPPF link id
+fiber_en_me1a_02                      memory        0        00000058           00000001                1           1           Fiber enable
+fiber_en_me1a_03                      memory        0        00000058           00000002                1           1           Fiber enable
+fiber_en_me1a_04                      memory        0        00000058           00000004                1           1           Fiber enable
+fiber_en_me1a_05                      memory        0        00000058           00000008                1           1           Fiber enable
+fiber_en_me1a_06                      memory        0        00000058           00000010                1           1           Fiber enable
+fiber_en_me1a_07                      memory        0        00000058           00000020                1           1           Fiber enable
+fiber_en_me1a_08                      memory        0        00000058           00000040                1           1           Fiber enable
+fiber_en_me1a_09                      memory        0        00000058           00000080                1           1           Fiber enable
+fiber_en_me1b_02                      memory        0        00000058           00000100                1           1           Fiber enable
+fiber_en_me1b_03                      memory        0        00000058           00000200                1           1           Fiber enable
+fiber_en_me1b_04                      memory        0        00000058           00000400                1           1           Fiber enable
+fiber_en_me1b_05                      memory        0        00000058           00000800                1           1           Fiber enable
+fiber_en_me1b_06                      memory        0        00000058           00001000                1           1           Fiber enable
+fiber_en_me1b_07                      memory        0        00000058           00002000                1           1           Fiber enable
+fiber_en_me1b_08                      memory        0        00000058           00004000                1           1           Fiber enable
+fiber_en_me1b_09                      memory        0        00000058           00008000                1           1           Fiber enable
+fiber_en_me2_02                       memory        0        00000058           00010000                1           1           Fiber enable
+fiber_en_me2_03                       memory        0        00000058           00020000                1           1           Fiber enable
+fiber_en_me2_04                       memory        0        00000058           00040000                1           1           Fiber enable
+fiber_en_me2_05                       memory        0        00000058           00080000                1           1           Fiber enable
+fiber_en_me2_06                       memory        0        00000058           00100000                1           1           Fiber enable
+fiber_en_me2_07                       memory        0        00000058           00200000                1           1           Fiber enable
+fiber_en_me2_08                       memory        0        00000058           00400000                1           1           Fiber enable
+fiber_en_me2_09                       memory        0        00000058           00800000                1           1           Fiber enable
+fiber_en_me3_02                       memory        0        00000058           01000000                1           1           Fiber enable
+fiber_en_me3_03                       memory        0        00000058           02000000                1           1           Fiber enable
+fiber_en_me3_04                       memory        0        00000058           04000000                1           1           Fiber enable
+fiber_en_me3_05                       memory        0        00000058           08000000                1           1           Fiber enable
+fiber_en_me3_06                       memory        0        00000058           10000000                1           1           Fiber enable
+fiber_en_me3_07                       memory        0        00000058           20000000                1           1           Fiber enable
+fiber_en_me3_08                       memory        0        00000058           40000000                1           1           Fiber enable
+fiber_en_me3_09                       memory        0        00000058           80000000                1           1           Fiber enable
+fiber_en_me4_02                       memory        0        0000005C           00000001                1           1           Fiber enable
+fiber_en_me4_03                       memory        0        0000005C           00000002                1           1           Fiber enable
+fiber_en_me4_04                       memory        0        0000005C           00000004                1           1           Fiber enable
+fiber_en_me4_05                       memory        0        0000005C           00000008                1           1           Fiber enable
+fiber_en_me4_06                       memory        0        0000005C           00000010                1           1           Fiber enable
+fiber_en_me4_07                       memory        0        0000005C           00000020                1           1           Fiber enable
+fiber_en_me4_08                       memory        0        0000005C           00000040                1           1           Fiber enable
+fiber_en_me4_09                       memory        0        0000005C           00000080                1           1           Fiber enable
+fiber_en_me1n_03                      memory        0        0000005C           00000100                1           1           Fiber enable
+fiber_en_me1n_06                      memory        0        0000005C           00000200                1           1           Fiber enable
+fiber_en_me1n_09                      memory        0        0000005C           00000400                1           1           Fiber enable
+fiber_en_me2n_03                      memory        0        0000005C           00000800                1           1           Fiber enable
+fiber_en_me2n_09                      memory        0        0000005C           00001000                1           1           Fiber enable
+fiber_en_me3n_03                      memory        0        0000005C           00002000                1           1           Fiber enable
+fiber_en_me3n_09                      memory        0        0000005C           00004000                1           1           Fiber enable
+fiber_en_me4n_03                      memory        0        0000005C           00008000                1           1           Fiber enable
+fiber_en_me4n_09                      memory        0        0000005C           00010000                1           1           Fiber enable
+af_delay_me1a_02                      memory        0        00000060           000000ff                1           1           Alignment FIFO delay
+af_delay_me1a_03                      memory        0        00000060           0000ff00                1           1           Alignment FIFO delay
+af_delay_me1a_04                      memory        0        00000060           00ff0000                1           1           Alignment FIFO delay
+af_delay_me1a_05                      memory        0        00000060           ff000000                1           1           Alignment FIFO delay
+af_delay_me1a_06                      memory        0        00000064           000000ff                1           1           Alignment FIFO delay
+af_delay_me1a_07                      memory        0        00000064           0000ff00                1           1           Alignment FIFO delay
+af_delay_me1a_08                      memory        0        00000064           00ff0000                1           1           Alignment FIFO delay
+af_delay_me1a_09                      memory        0        00000064           ff000000                1           1           Alignment FIFO delay
+af_delay_me1b_02                      memory        0        00000068           000000ff                1           1           Alignment FIFO delay
+af_delay_me1b_03                      memory        0        00000068           0000ff00                1           1           Alignment FIFO delay
+af_delay_me1b_04                      memory        0        00000068           00ff0000                1           1           Alignment FIFO delay
+af_delay_me1b_05                      memory        0        00000068           ff000000                1           1           Alignment FIFO delay
+af_delay_me1b_06                      memory        0        0000006C           000000ff                1           1           Alignment FIFO delay
+af_delay_me1b_07                      memory        0        0000006C           0000ff00                1           1           Alignment FIFO delay
+af_delay_me1b_08                      memory        0        0000006C           00ff0000                1           1           Alignment FIFO delay
+af_delay_me1b_09                      memory        0        0000006C           ff000000                1           1           Alignment FIFO delay
+af_delay_me2_02                       memory        0        00000070           000000ff                1           1           Alignment FIFO delay
+af_delay_me2_03                       memory        0        00000070           0000ff00                1           1           Alignment FIFO delay
+af_delay_me2_04                       memory        0        00000070           00ff0000                1           1           Alignment FIFO delay
+af_delay_me2_05                       memory        0        00000070           ff000000                1           1           Alignment FIFO delay
+af_delay_me2_06                       memory        0        00000074           000000ff                1           1           Alignment FIFO delay
+af_delay_me2_07                       memory        0        00000074           0000ff00                1           1           Alignment FIFO delay
+af_delay_me2_08                       memory        0        00000074           00ff0000                1           1           Alignment FIFO delay
+af_delay_me2_09                       memory        0        00000074           ff000000                1           1           Alignment FIFO delay
+af_delay_me3_02                       memory        0        00000078           000000ff                1           1           Alignment FIFO delay
+af_delay_me3_03                       memory        0        00000078           0000ff00                1           1           Alignment FIFO delay
+af_delay_me3_04                       memory        0        00000078           00ff0000                1           1           Alignment FIFO delay
+af_delay_me3_05                       memory        0        00000078           ff000000                1           1           Alignment FIFO delay
+af_delay_me3_06                       memory        0        0000007C           000000ff                1           1           Alignment FIFO delay
+af_delay_me3_07                       memory        0        0000007C           0000ff00                1           1           Alignment FIFO delay
+af_delay_me3_08                       memory        0        0000007C           00ff0000                1           1           Alignment FIFO delay
+af_delay_me3_09                       memory        0        0000007C           ff000000                1           1           Alignment FIFO delay
+af_delay_me4_02                       memory        0        00000080           000000ff                1           1           Alignment FIFO delay
+af_delay_me4_03                       memory        0        00000080           0000ff00                1           1           Alignment FIFO delay
+af_delay_me4_04                       memory        0        00000080           00ff0000                1           1           Alignment FIFO delay
+af_delay_me4_05                       memory        0        00000080           ff000000                1           1           Alignment FIFO delay
+af_delay_me4_06                       memory        0        00000084           000000ff                1           1           Alignment FIFO delay
+af_delay_me4_07                       memory        0        00000084           0000ff00                1           1           Alignment FIFO delay
+af_delay_me4_08                       memory        0        00000084           00ff0000                1           1           Alignment FIFO delay
+af_delay_me4_09                       memory        0        00000084           ff000000                1           1           Alignment FIFO delay
+af_delay_me1n_03                      memory        0        00000088           000000ff                1           1           Alignment FIFO delay
+af_delay_me1n_06                      memory        0        00000088           0000ff00                1           1           Alignment FIFO delay
+af_delay_me1n_09                      memory        0        00000088           00ff0000                1           1           Alignment FIFO delay
+af_delay_me2n_03                      memory        0        00000088           ff000000                1           1           Alignment FIFO delay
+af_delay_me2n_09                      memory        0        0000008C           000000ff                1           1           Alignment FIFO delay
+af_delay_me3n_03                      memory        0        0000008C           0000ff00                1           1           Alignment FIFO delay
+af_delay_me3n_09                      memory        0        0000008C           00ff0000                1           1           Alignment FIFO delay
+af_delay_me4n_03                      memory        0        0000008C           ff000000                1           1           Alignment FIFO delay
+af_delay_me4n_09                      memory        0        0000004C           000000ff                1           1           Alignment FIFO delay
+endcap                                memory        0        00000088           00000001                1           1           Endcap (0=ME+, 1=ME-)
+sector                                memory        0        00000088           0000000e                1           1           Sector (1..6)
+spy_data_delay                        memory        0        00000088           0000ff80                1           1           spy memory data delay
+spy_write_at_l1a                      memory        0        00000088           00010000                1           1           start writing spy memory at L1A
+spy_write_at_stub                     memory        0        00000088           00020000                1           1           start writing spy memory at any valid track stub
+spy_write_at_rank                     memory        0        00000088           00040000                1           1           start writing spy memory at valid track rank
+af_en                                 memory        0        00000088           00080000                1           1           alignment FIFO enable
+tst_data_inj_en                       memory        0        00000088           00100000                1           1           enable test data injection to the logic core
+ptlut_busy                            memory        0        00000088           00200000                1           0           PT LUT busy flag
+ptlut_delay_ctl_locked                memory        0        00000088           3fc00000                1           0           PT LUT delay control modules locked status
+tst_data_inj_on_mpc_inj_cmd           memory        0        00000088           40000000                1           1           enable test data injection on MPC inject command
+af_ttc_bc0_delay                      memory        0        0000008C           000007fc                1           1           TTC BC0 delay for input data alignment
+gmt_link_comma_delay                  memory        0        0000008C           007ff800                1           1           time offset for transmitting commas on GMT link
+cppf_ttc_bc0_delay                    memory        0        0000008C           1f800000                1           1           TTC BC0 delay for CPPF data alignment
+gth_prbs_mode                         memory        0        0000008C           e0000000                1           1           GTH PRBS mode selection
+bc0_err_me1a_02                       memory        0        00000090           00000001                1           0           BC0 period error, link disabled
+bc0_err_me1a_03                       memory        0        00000090           00000002                1           0           BC0 period error, link disabled
+bc0_err_me1a_04                       memory        0        00000090           00000004                1           0           BC0 period error, link disabled
+bc0_err_me1a_05                       memory        0        00000090           00000008                1           0           BC0 period error, link disabled
+bc0_err_me1a_06                       memory        0        00000090           00000010                1           0           BC0 period error, link disabled
+bc0_err_me1a_07                       memory        0        00000090           00000020                1           0           BC0 period error, link disabled
+bc0_err_me1a_08                       memory        0        00000090           00000040                1           0           BC0 period error, link disabled
+bc0_err_me1a_09                       memory        0        00000090           00000080                1           0           BC0 period error, link disabled
+bc0_err_me1b_02                       memory        0        00000090           00000100                1           0           BC0 period error, link disabled
+bc0_err_me1b_03                       memory        0        00000090           00000200                1           0           BC0 period error, link disabled
+bc0_err_me1b_04                       memory        0        00000090           00000400                1           0           BC0 period error, link disabled
+bc0_err_me1b_05                       memory        0        00000090           00000800                1           0           BC0 period error, link disabled
+bc0_err_me1b_06                       memory        0        00000090           00001000                1           0           BC0 period error, link disabled
+bc0_err_me1b_07                       memory        0        00000090           00002000                1           0           BC0 period error, link disabled
+bc0_err_me1b_08                       memory        0        00000090           00004000                1           0           BC0 period error, link disabled
+bc0_err_me1b_09                       memory        0        00000090           00008000                1           0           BC0 period error, link disabled
+bc0_err_me2_02                        memory        0        00000090           00010000                1           0           BC0 period error, link disabled
+bc0_err_me2_03                        memory        0        00000090           00020000                1           0           BC0 period error, link disabled
+bc0_err_me2_04                        memory        0        00000090           00040000                1           0           BC0 period error, link disabled
+bc0_err_me2_05                        memory        0        00000090           00080000                1           0           BC0 period error, link disabled
+bc0_err_me2_06                        memory        0        00000090           00100000                1           0           BC0 period error, link disabled
+bc0_err_me2_07                        memory        0        00000090           00200000                1           0           BC0 period error, link disabled
+bc0_err_me2_08                        memory        0        00000090           00400000                1           0           BC0 period error, link disabled
+bc0_err_me2_09                        memory        0        00000090           00800000                1           0           BC0 period error, link disabled
+bc0_err_me3_02                        memory        0        00000090           01000000                1           0           BC0 period error, link disabled
+bc0_err_me3_03                        memory        0        00000090           02000000                1           0           BC0 period error, link disabled
+bc0_err_me3_04                        memory        0        00000090           04000000                1           0           BC0 period error, link disabled
+bc0_err_me3_05                        memory        0        00000090           08000000                1           0           BC0 period error, link disabled
+bc0_err_me3_06                        memory        0        00000090           10000000                1           0           BC0 period error, link disabled
+bc0_err_me3_07                        memory        0        00000090           20000000                1           0           BC0 period error, link disabled
+bc0_err_me3_08                        memory        0        00000090           40000000                1           0           BC0 period error, link disabled
+bc0_err_me3_09                        memory        0        00000090           80000000                1           0           BC0 period error, link disabled
+bc0_err_me4_02                        memory        0        00000094           00000001                1           0           BC0 period error, link disabled
+bc0_err_me4_03                        memory        0        00000094           00000002                1           0           BC0 period error, link disabled
+bc0_err_me4_04                        memory        0        00000094           00000004                1           0           BC0 period error, link disabled
+bc0_err_me4_05                        memory        0        00000094           00000008                1           0           BC0 period error, link disabled
+bc0_err_me4_06                        memory        0        00000094           00000010                1           0           BC0 period error, link disabled
+bc0_err_me4_07                        memory        0        00000094           00000020                1           0           BC0 period error, link disabled
+bc0_err_me4_08                        memory        0        00000094           00000040                1           0           BC0 period error, link disabled
+bc0_err_me4_09                        memory        0        00000094           00000080                1           0           BC0 period error, link disabled
+bc0_err_me1n_03                       memory        0        00000094           00000100                1           0           BC0 period error, link disabled
+bc0_err_me1n_06                       memory        0        00000094           00000200                1           0           BC0 period error, link disabled
+bc0_err_me1n_09                       memory        0        00000094           00000400                1           0           BC0 period error, link disabled
+bc0_err_me2n_03                       memory        0        00000094           00000800                1           0           BC0 period error, link disabled
+bc0_err_me2n_09                       memory        0        00000094           00001000                1           0           BC0 period error, link disabled
+bc0_err_me3n_03                       memory        0        00000094           00002000                1           0           BC0 period error, link disabled
+bc0_err_me3n_09                       memory        0        00000094           00004000                1           0           BC0 period error, link disabled
+bc0_err_me4n_03                       memory        0        00000094           00008000                1           0           BC0 period error, link disabled
+bc0_err_me4n_09                       memory        0        00000094           00010000                1           0           BC0 period error, link disabled
+spy_current_addr                      memory        0        000000B0           000001ff                1           0           current spy memory address
+abs_time_cnt                          memory        0        000000BC           ffffffff                1           0           absolute time counter, runs at 160 MHz from MMCM
+core_fpga_fw_sec                      memory        0        000000C0           0000003f                1           0           Core FPGA Firmware timestamp, sec
+core_fpga_fw_min                      memory        0        000000C0           00000fc0                1           0           Core FPGA Firmware timestamp, min
+core_fpga_fw_hour                     memory        0        000000C0           0001f000                1           0           Core FPGA Firmware timestamp, hour
+core_fpga_fw_year                     memory        0        000000C0           007e0000                1           0           Core FPGA Firmware timestamp, year (add 2000)
+core_fpga_fw_month                    memory        0        000000C0           07800000                1           0           Core FPGA Firmware timestamp, month
+core_fpga_fw_day                      memory        0        000000C0           f8000000                1           0           Core FPGA Firmware timestamp, day
+ptlut_clk_config_word                 memory        0        000000C8           ffffffff                1           1           PT LUT clock manager configuration word
+ptlut_db_inp_del_0                    memory        0        000000D0           0000001f                1           1           PT LUT data bus input delay, bit 0
+ptlut_db_inp_del_1                    memory        0        000000D0           000003e0                1           1           PT LUT data bus input delay, bit 1
+ptlut_db_inp_del_2                    memory        0        000000D0           00007c00                1           1           PT LUT data bus input delay, bit 2
+ptlut_db_inp_del_3                    memory        0        000000D0           000f8000                1           1           PT LUT data bus input delay, bit 3
+ptlut_db_inp_del_4                    memory        0        000000D0           01f00000                1           1           PT LUT data bus input delay, bit 4
+ptlut_db_inp_del_5                    memory        0        000000D0           3e000000                1           1           PT LUT data bus input delay, bit 5
+ptlut_db_inp_del_6                    memory        0        000000D4           0000001f                1           1           PT LUT data bus input delay, bit 6
+ptlut_db_inp_del_7                    memory        0        000000D4           000003e0                1           1           PT LUT data bus input delay, bit 7
+ptlut_db_inp_del_8                    memory        0        000000D4           00007c00                1           1           PT LUT data bus input delay, bit 8
+ptlut_db_inp_del_9                    memory        0        000000D4           000f8000                1           1           PT LUT data bus input delay, bit 9
+ptlut_db_inp_del_10                   memory        0        000000D4           01f00000                1           1           PT LUT data bus input delay, bit 10
+ptlut_db_inp_del_11                   memory        0        000000D4           3e000000                1           1           PT LUT data bus input delay, bit 11
+ptlut_db_inp_del_12                   memory        0        000000D8           0000001f                1           1           PT LUT data bus input delay, bit 12
+ptlut_db_inp_del_13                   memory        0        000000D8           000003e0                1           1           PT LUT data bus input delay, bit 13
+ptlut_db_inp_del_14                   memory        0        000000D8           00007c00                1           1           PT LUT data bus input delay, bit 14
+ptlut_db_inp_del_15                   memory        0        000000D8           000f8000                1           1           PT LUT data bus input delay, bit 15
+ptlut_db_inp_del_16                   memory        0        000000D8           01f00000                1           1           PT LUT data bus input delay, bit 16
+ptlut_db_inp_del_17                   memory        0        000000D8           3e000000                1           1           PT LUT data bus input delay, bit 17
+ptlut_db_inp_del_18                   memory        0        000000DC           0000001f                1           1           PT LUT data bus input delay, bit 18
+ptlut_db_inp_del_19                   memory        0        000000DC           000003e0                1           1           PT LUT data bus input delay, bit 19
+ptlut_db_inp_del_20                   memory        0        000000DC           00007c00                1           1           PT LUT data bus input delay, bit 20
+ptlut_db_inp_del_21                   memory        0        000000DC           000f8000                1           1           PT LUT data bus input delay, bit 21
+ptlut_db_inp_del_22                   memory        0        000000DC           01f00000                1           1           PT LUT data bus input delay, bit 22
+ptlut_db_inp_del_23                   memory        0        000000DC           3e000000                1           1           PT LUT data bus input delay, bit 23
+ptlut_db_inp_del_24                   memory        0        000000E0           0000001f                1           1           PT LUT data bus input delay, bit 24
+ptlut_db_inp_del_25                   memory        0        000000E0           000003e0                1           1           PT LUT data bus input delay, bit 25
+ptlut_db_inp_del_26                   memory        0        000000E0           00007c00                1           1           PT LUT data bus input delay, bit 26
+ptlut_db_inp_del_27                   memory        0        000000E0           000f8000                1           1           PT LUT data bus input delay, bit 27
+ptlut_db_inp_del_28                   memory        0        000000E0           01f00000                1           1           PT LUT data bus input delay, bit 28
+ptlut_db_inp_del_29                   memory        0        000000E0           3e000000                1           1           PT LUT data bus input delay, bit 29
+ptlut_db_inp_del_30                   memory        0        000000E4           0000001f                1           1           PT LUT data bus input delay, bit 30
+ptlut_db_inp_del_31                   memory        0        000000E4           000003e0                1           1           PT LUT data bus input delay, bit 31
+ptlut_db_inp_del_32                   memory        0        000000E4           00007c00                1           1           PT LUT data bus input delay, bit 32
+ptlut_db_inp_del_33                   memory        0        000000E4           000f8000                1           1           PT LUT data bus input delay, bit 33
+ptlut_db_inp_del_34                   memory        0        000000E4           01f00000                1           1           PT LUT data bus input delay, bit 34
+ptlut_db_inp_del_35                   memory        0        000000E4           3e000000                1           1           PT LUT data bus input delay, bit 35
+ptlut_db_inp_del_36                   memory        0        000000E8           0000001f                1           1           PT LUT data bus input delay, bit 36
+ptlut_db_inp_del_37                   memory        0        000000E8           000003e0                1           1           PT LUT data bus input delay, bit 37
+ptlut_db_inp_del_38                   memory        0        000000E8           00007c00                1           1           PT LUT data bus input delay, bit 38
+ptlut_db_inp_del_39                   memory        0        000000E8           000f8000                1           1           PT LUT data bus input delay, bit 39
+ptlut_db_inp_del_40                   memory        0        000000E8           01f00000                1           1           PT LUT data bus input delay, bit 40
+ptlut_db_inp_del_41                   memory        0        000000E8           3e000000                1           1           PT LUT data bus input delay, bit 41
+ptlut_db_inp_del_42                   memory        0        000000EC           0000001f                1           1           PT LUT data bus input delay, bit 42
+ptlut_db_inp_del_43                   memory        0        000000EC           000003e0                1           1           PT LUT data bus input delay, bit 43
+ptlut_db_inp_del_44                   memory        0        000000EC           00007c00                1           1           PT LUT data bus input delay, bit 44
+ptlut_db_inp_del_45                   memory        0        000000EC           000f8000                1           1           PT LUT data bus input delay, bit 45
+ptlut_db_inp_del_46                   memory        0        000000EC           01f00000                1           1           PT LUT data bus input delay, bit 46
+ptlut_db_inp_del_47                   memory        0        000000EC           3e000000                1           1           PT LUT data bus input delay, bit 47
+ptlut_db_inp_del_48                   memory        0        000000F0           0000001f                1           1           PT LUT data bus input delay, bit 48
+ptlut_db_inp_del_49                   memory        0        000000F0           000003e0                1           1           PT LUT data bus input delay, bit 49
+ptlut_db_inp_del_50                   memory        0        000000F0           00007c00                1           1           PT LUT data bus input delay, bit 50
+ptlut_db_inp_del_51                   memory        0        000000F0           000f8000                1           1           PT LUT data bus input delay, bit 51
+ptlut_db_inp_del_52                   memory        0        000000F0           01f00000                1           1           PT LUT data bus input delay, bit 52
+ptlut_db_inp_del_53                   memory        0        000000F0           3e000000                1           1           PT LUT data bus input delay, bit 53
+ptlut_db_inp_del_54                   memory        0        000000F4           0000001f                1           1           PT LUT data bus input delay, bit 54
+ptlut_db_inp_del_55                   memory        0        000000F4           000003e0                1           1           PT LUT data bus input delay, bit 55
+ptlut_db_inp_del_56                   memory        0        000000F4           00007c00                1           1           PT LUT data bus input delay, bit 56
+ptlut_db_inp_del_57                   memory        0        000000F4           000f8000                1           1           PT LUT data bus input delay, bit 57
+ptlut_db_inp_del_58                   memory        0        000000F4           01f00000                1           1           PT LUT data bus input delay, bit 58
+ptlut_db_inp_del_59                   memory        0        000000F4           3e000000                1           1           PT LUT data bus input delay, bit 59
+ptlut_db_inp_del_60                   memory        0        000000F8           0000001f                1           1           PT LUT data bus input delay, bit 60
+ptlut_db_inp_del_61                   memory        0        000000F8           000003e0                1           1           PT LUT data bus input delay, bit 61
+ptlut_db_inp_del_62                   memory        0        000000F8           00007c00                1           1           PT LUT data bus input delay, bit 62
+ptlut_db_inp_del_63                   memory        0        000000F8           000f8000                1           1           PT LUT data bus input delay, bit 63
+ptlut_db_inp_del_64                   memory        0        000000F8           01f00000                1           1           PT LUT data bus input delay, bit 64
+ptlut_db_inp_del_65                   memory        0        000000F8           3e000000                1           1           PT LUT data bus input delay, bit 65
+ptlut_db_inp_del_66                   memory        0        000000FC           0000001f                1           1           PT LUT data bus input delay, bit 66
+ptlut_db_inp_del_67                   memory        0        000000FC           000003e0                1           1           PT LUT data bus input delay, bit 67
+ptlut_db_inp_del_68                   memory        0        000000FC           00007c00                1           1           PT LUT data bus input delay, bit 68
+ptlut_db_inp_del_69                   memory        0        000000FC           000f8000                1           1           PT LUT data bus input delay, bit 69
+ptlut_db_inp_del_70                   memory        0        000000FC           01f00000                1           1           PT LUT data bus input delay, bit 70
+ptlut_db_inp_del_71                   memory        0        000000FC           3e000000                1           1           PT LUT data bus input delay, bit 71
+ptlut_db_out_del_0                    memory        0        00000100           0000001f                1           1           PT LUT data bus output delay, bit 0
+ptlut_db_out_del_1                    memory        0        00000100           000003e0                1           1           PT LUT data bus output delay, bit 1
+ptlut_db_out_del_2                    memory        0        00000100           00007c00                1           1           PT LUT data bus output delay, bit 2
+ptlut_db_out_del_3                    memory        0        00000100           000f8000                1           1           PT LUT data bus output delay, bit 3
+ptlut_db_out_del_4                    memory        0        00000100           01f00000                1           1           PT LUT data bus output delay, bit 4
+ptlut_db_out_del_5                    memory        0        00000100           3e000000                1           1           PT LUT data bus output delay, bit 5
+ptlut_db_out_del_6                    memory        0        00000104           0000001f                1           1           PT LUT data bus output delay, bit 6
+ptlut_db_out_del_7                    memory        0        00000104           000003e0                1           1           PT LUT data bus output delay, bit 7
+ptlut_db_out_del_8                    memory        0        00000104           00007c00                1           1           PT LUT data bus output delay, bit 8
+ptlut_db_out_del_9                    memory        0        00000104           000f8000                1           1           PT LUT data bus output delay, bit 9
+ptlut_db_out_del_10                   memory        0        00000104           01f00000                1           1           PT LUT data bus output delay, bit 10
+ptlut_db_out_del_11                   memory        0        00000104           3e000000                1           1           PT LUT data bus output delay, bit 11
+ptlut_db_out_del_12                   memory        0        00000108           0000001f                1           1           PT LUT data bus output delay, bit 12
+ptlut_db_out_del_13                   memory        0        00000108           000003e0                1           1           PT LUT data bus output delay, bit 13
+ptlut_db_out_del_14                   memory        0        00000108           00007c00                1           1           PT LUT data bus output delay, bit 14
+ptlut_db_out_del_15                   memory        0        00000108           000f8000                1           1           PT LUT data bus output delay, bit 15
+ptlut_db_out_del_16                   memory        0        00000108           01f00000                1           1           PT LUT data bus output delay, bit 16
+ptlut_db_out_del_17                   memory        0        00000108           3e000000                1           1           PT LUT data bus output delay, bit 17
+ptlut_db_out_del_18                   memory        0        0000010C           0000001f                1           1           PT LUT data bus output delay, bit 18
+ptlut_db_out_del_19                   memory        0        0000010C           000003e0                1           1           PT LUT data bus output delay, bit 19
+ptlut_db_out_del_20                   memory        0        0000010C           00007c00                1           1           PT LUT data bus output delay, bit 20
+ptlut_db_out_del_21                   memory        0        0000010C           000f8000                1           1           PT LUT data bus output delay, bit 21
+ptlut_db_out_del_22                   memory        0        0000010C           01f00000                1           1           PT LUT data bus output delay, bit 22
+ptlut_db_out_del_23                   memory        0        0000010C           3e000000                1           1           PT LUT data bus output delay, bit 23
+ptlut_db_out_del_24                   memory        0        00000110           0000001f                1           1           PT LUT data bus output delay, bit 24
+ptlut_db_out_del_25                   memory        0        00000110           000003e0                1           1           PT LUT data bus output delay, bit 25
+ptlut_db_out_del_26                   memory        0        00000110           00007c00                1           1           PT LUT data bus output delay, bit 26
+ptlut_db_out_del_27                   memory        0        00000110           000f8000                1           1           PT LUT data bus output delay, bit 27
+ptlut_db_out_del_28                   memory        0        00000110           01f00000                1           1           PT LUT data bus output delay, bit 28
+ptlut_db_out_del_29                   memory        0        00000110           3e000000                1           1           PT LUT data bus output delay, bit 29
+ptlut_db_out_del_30                   memory        0        00000114           0000001f                1           1           PT LUT data bus output delay, bit 30
+ptlut_db_out_del_31                   memory        0        00000114           000003e0                1           1           PT LUT data bus output delay, bit 31
+ptlut_db_out_del_32                   memory        0        00000114           00007c00                1           1           PT LUT data bus output delay, bit 32
+ptlut_db_out_del_33                   memory        0        00000114           000f8000                1           1           PT LUT data bus output delay, bit 33
+ptlut_db_out_del_34                   memory        0        00000114           01f00000                1           1           PT LUT data bus output delay, bit 34
+ptlut_db_out_del_35                   memory        0        00000114           3e000000                1           1           PT LUT data bus output delay, bit 35
+ptlut_db_out_del_36                   memory        0        00000118           0000001f                1           1           PT LUT data bus output delay, bit 36
+ptlut_db_out_del_37                   memory        0        00000118           000003e0                1           1           PT LUT data bus output delay, bit 37
+ptlut_db_out_del_38                   memory        0        00000118           00007c00                1           1           PT LUT data bus output delay, bit 38
+ptlut_db_out_del_39                   memory        0        00000118           000f8000                1           1           PT LUT data bus output delay, bit 39
+ptlut_db_out_del_40                   memory        0        00000118           01f00000                1           1           PT LUT data bus output delay, bit 40
+ptlut_db_out_del_41                   memory        0        00000118           3e000000                1           1           PT LUT data bus output delay, bit 41
+ptlut_db_out_del_42                   memory        0        0000011C           0000001f                1           1           PT LUT data bus output delay, bit 42
+ptlut_db_out_del_43                   memory        0        0000011C           000003e0                1           1           PT LUT data bus output delay, bit 43
+ptlut_db_out_del_44                   memory        0        0000011C           00007c00                1           1           PT LUT data bus output delay, bit 44
+ptlut_db_out_del_45                   memory        0        0000011C           000f8000                1           1           PT LUT data bus output delay, bit 45
+ptlut_db_out_del_46                   memory        0        0000011C           01f00000                1           1           PT LUT data bus output delay, bit 46
+ptlut_db_out_del_47                   memory        0        0000011C           3e000000                1           1           PT LUT data bus output delay, bit 47
+ptlut_db_out_del_48                   memory        0        00000120           0000001f                1           1           PT LUT data bus output delay, bit 48
+ptlut_db_out_del_49                   memory        0        00000120           000003e0                1           1           PT LUT data bus output delay, bit 49
+ptlut_db_out_del_50                   memory        0        00000120           00007c00                1           1           PT LUT data bus output delay, bit 50
+ptlut_db_out_del_51                   memory        0        00000120           000f8000                1           1           PT LUT data bus output delay, bit 51
+ptlut_db_out_del_52                   memory        0        00000120           01f00000                1           1           PT LUT data bus output delay, bit 52
+ptlut_db_out_del_53                   memory        0        00000120           3e000000                1           1           PT LUT data bus output delay, bit 53
+ptlut_db_out_del_54                   memory        0        00000124           0000001f                1           1           PT LUT data bus output delay, bit 54
+ptlut_db_out_del_55                   memory        0        00000124           000003e0                1           1           PT LUT data bus output delay, bit 55
+ptlut_db_out_del_56                   memory        0        00000124           00007c00                1           1           PT LUT data bus output delay, bit 56
+ptlut_db_out_del_57                   memory        0        00000124           000f8000                1           1           PT LUT data bus output delay, bit 57
+ptlut_db_out_del_58                   memory        0        00000124           01f00000                1           1           PT LUT data bus output delay, bit 58
+ptlut_db_out_del_59                   memory        0        00000124           3e000000                1           1           PT LUT data bus output delay, bit 59
+ptlut_db_out_del_60                   memory        0        00000128           0000001f                1           1           PT LUT data bus output delay, bit 60
+ptlut_db_out_del_61                   memory        0        00000128           000003e0                1           1           PT LUT data bus output delay, bit 61
+ptlut_db_out_del_62                   memory        0        00000128           00007c00                1           1           PT LUT data bus output delay, bit 62
+ptlut_db_out_del_63                   memory        0        00000128           000f8000                1           1           PT LUT data bus output delay, bit 63
+ptlut_db_out_del_64                   memory        0        00000128           01f00000                1           1           PT LUT data bus output delay, bit 64
+ptlut_db_out_del_65                   memory        0        00000128           3e000000                1           1           PT LUT data bus output delay, bit 65
+ptlut_db_out_del_66                   memory        0        0000012C           0000001f                1           1           PT LUT data bus output delay, bit 66
+ptlut_db_out_del_67                   memory        0        0000012C           000003e0                1           1           PT LUT data bus output delay, bit 67
+ptlut_db_out_del_68                   memory        0        0000012C           00007c00                1           1           PT LUT data bus output delay, bit 68
+ptlut_db_out_del_69                   memory        0        0000012C           000f8000                1           1           PT LUT data bus output delay, bit 69
+ptlut_db_out_del_70                   memory        0        0000012C           01f00000                1           1           PT LUT data bus output delay, bit 70
+ptlut_db_out_del_71                   memory        0        0000012C           3e000000                1           1           PT LUT data bus output delay, bit 71
+ptlut_inp_clk_del                     memory        0        00000130           0000001f                1           1           PT LUT input clock delay
+ptlut_wr_term_count                   memory        0        00000138           00000fff                1           1           PT LUT write terminal count
+ptlut_rd_term_count                   memory        0        00000138           00fff000                1           1           PT LUT read terminal count
+ptlut_wr_latency                      memory        0        00000138           3f000000                1           1           PT LUT write latency
+ptlut_wr_phase_shift                  memory        0        00000138           40000000                1           1           PT LUT write phase shift
+ptlut_rd_phase_shift                  memory        0        00000138           80000000                1           1           PT LUT read phase shift
+ptlut_rd_latency                      memory        0        0000013C           0000003f                1           1           PT LUT read latency
+ptlut_dpm_wr_del                      memory        0        0000013C           000007c0                1           1           PT LUT dual-port memory write delay
+ptlut_wr_quad_del                     memory        0        0000013C           0000f800                1           1           PT LUT write quad delay
+ptlut_rd_quad_del                     memory        0        0000013C           001f0000                1           1           PT LUT read quad delay
+ptlut_refresh_en                      memory        0        0000013C           00200000                1           1           PT LUT refresh enable
+ptlut_rd_bank_timeout                 memory        0        0000013C           03800000                1           1           PT LUT bank timeout after read
+ptlut_refresh_bank_timout             memory        0        0000013C           1c000000                1           1           PT LUT bank timeout after refresh
+ptlut_core_rq_mask                    memory        0        0000013C           e0000000                1           1           PT LUT core request mask
+prbs_err_me1a_02                      memory        0        00000140           00000001                1           0           PRBS error detected
+prbs_err_me1a_03                      memory        0        00000140           00000002                1           0           PRBS error detected
+prbs_err_me1a_04                      memory        0        00000140           00000004                1           0           PRBS error detected
+prbs_err_me1a_05                      memory        0        00000140           00000008                1           0           PRBS error detected
+prbs_err_me1a_06                      memory        0        00000140           00000010                1           0           PRBS error detected
+prbs_err_me1a_07                      memory        0        00000140           00000020                1           0           PRBS error detected
+prbs_err_me1a_08                      memory        0        00000140           00000040                1           0           PRBS error detected
+prbs_err_me1a_09                      memory        0        00000140           00000080                1           0           PRBS error detected
+prbs_err_me1b_02                      memory        0        00000140           00000100                1           0           PRBS error detected
+prbs_err_me1b_03                      memory        0        00000140           00000200                1           0           PRBS error detected
+prbs_err_me1b_04                      memory        0        00000140           00000400                1           0           PRBS error detected
+prbs_err_me1b_05                      memory        0        00000140           00000800                1           0           PRBS error detected
+prbs_err_me1b_06                      memory        0        00000140           00001000                1           0           PRBS error detected
+prbs_err_me1b_07                      memory        0        00000140           00002000                1           0           PRBS error detected
+prbs_err_me1b_08                      memory        0        00000140           00004000                1           0           PRBS error detected
+prbs_err_me1b_09                      memory        0        00000140           00008000                1           0           PRBS error detected
+prbs_err_me2_02                       memory        0        00000140           00010000                1           0           PRBS error detected
+prbs_err_me2_03                       memory        0        00000140           00020000                1           0           PRBS error detected
+prbs_err_me2_04                       memory        0        00000140           00040000                1           0           PRBS error detected
+prbs_err_me2_05                       memory        0        00000140           00080000                1           0           PRBS error detected
+prbs_err_me2_06                       memory        0        00000140           00100000                1           0           PRBS error detected
+prbs_err_me2_07                       memory        0        00000140           00200000                1           0           PRBS error detected
+prbs_err_me2_08                       memory        0        00000140           00400000                1           0           PRBS error detected
+prbs_err_me2_09                       memory        0        00000140           00800000                1           0           PRBS error detected
+prbs_err_me3_02                       memory        0        00000140           01000000                1           0           PRBS error detected
+prbs_err_me3_03                       memory        0        00000140           02000000                1           0           PRBS error detected
+prbs_err_me3_04                       memory        0        00000140           04000000                1           0           PRBS error detected
+prbs_err_me3_05                       memory        0        00000140           08000000                1           0           PRBS error detected
+prbs_err_me3_06                       memory        0        00000140           10000000                1           0           PRBS error detected
+prbs_err_me3_07                       memory        0        00000140           20000000                1           0           PRBS error detected
+prbs_err_me3_08                       memory        0        00000140           40000000                1           0           PRBS error detected
+prbs_err_me3_09                       memory        0        00000140           80000000                1           0           PRBS error detected
+prbs_err_me4_02                       memory        0        00000144           00000001                1           0           PRBS error detected
+prbs_err_me4_03                       memory        0        00000144           00000002                1           0           PRBS error detected
+prbs_err_me4_04                       memory        0        00000144           00000004                1           0           PRBS error detected
+prbs_err_me4_05                       memory        0        00000144           00000008                1           0           PRBS error detected
+prbs_err_me4_06                       memory        0        00000144           00000010                1           0           PRBS error detected
+prbs_err_me4_07                       memory        0        00000144           00000020                1           0           PRBS error detected
+prbs_err_me4_08                       memory        0        00000144           00000040                1           0           PRBS error detected
+prbs_err_me4_09                       memory        0        00000144           00000080                1           0           PRBS error detected
+prbs_err_me1n_03                      memory        0        00000144           00000100                1           0           PRBS error detected
+prbs_err_me1n_06                      memory        0        00000144           00000200                1           0           PRBS error detected
+prbs_err_me1n_09                      memory        0        00000144           00000400                1           0           PRBS error detected
+prbs_err_me2n_03                      memory        0        00000144           00000800                1           0           PRBS error detected
+prbs_err_me2n_09                      memory        0        00000144           00001000                1           0           PRBS error detected
+prbs_err_me3n_03                      memory        0        00000144           00002000                1           0           PRBS error detected
+prbs_err_me3n_09                      memory        0        00000144           00004000                1           0           PRBS error detected
+prbs_err_me4n_03                      memory        0        00000144           00008000                1           0           PRBS error detected
+prbs_err_me4n_09                      memory        0        00000144           00010000                1           0           PRBS error detected
+th_window                             memory        0        00000190           0000007f                1           1           Theta window for track building
+delay_two_mu                          memory        0        00000190           00000f00                1           1           stub delay for two-muon trigger
+single_en                             memory        0        00000190           00001000                1           1           enable single stub trigger
+two_mu_en                             memory        0        00000190           00002000                1           1           enable two-muon trigger
+low_th_promote                        memory        0        00000190           00004000                1           1           enable low theta mode 7 promotion to mode 12
+rate_lct_me1a_01                      memory        0        00000198           03ffffff                1           0           LCT rate counter
+rate_lct_me1a_02                      memory        0        0000019C           03ffffff                1           0           LCT rate counter
+rate_lct_me1a_03                      memory        0        000001A0           03ffffff                1           0           LCT rate counter
+rate_lct_me1a_04                      memory        0        000001A4           03ffffff                1           0           LCT rate counter
+rate_lct_me1a_05                      memory        0        000001A8           03ffffff                1           0           LCT rate counter
+rate_lct_me1a_06                      memory        0        000001AC           03ffffff                1           0           LCT rate counter
+rate_lct_me1a_07                      memory        0        000001B0           03ffffff                1           0           LCT rate counter
+rate_lct_me1a_08                      memory        0        000001B4           03ffffff                1           0           LCT rate counter
+rate_lct_me1a_09                      memory        0        000001B8           03ffffff                1           0           LCT rate counter
+rate_track_0_1                        memory        0        000001BC           03ffffff                1           0           Track rate counter
+rate_lct_me1b_01                      memory        0        000001C0           03ffffff                1           0           LCT rate counter
+rate_lct_me1b_02                      memory        0        000001C4           03ffffff                1           0           LCT rate counter
+rate_lct_me1b_03                      memory        0        000001C8           03ffffff                1           0           LCT rate counter
+rate_lct_me1b_04                      memory        0        000001CC           03ffffff                1           0           LCT rate counter
+rate_lct_me1b_05                      memory        0        000001D0           03ffffff                1           0           LCT rate counter
+rate_lct_me1b_06                      memory        0        000001D4           03ffffff                1           0           LCT rate counter
+rate_lct_me1b_07                      memory        0        000001D8           03ffffff                1           0           LCT rate counter
+rate_lct_me1b_08                      memory        0        000001DC           03ffffff                1           0           LCT rate counter
+rate_lct_me1b_09                      memory        0        000001E0           03ffffff                1           0           LCT rate counter
+rate_track_1_1                        memory        0        000001E4           03ffffff                1           0           Track rate counter
+rate_lct_me2_01                       memory        0        000001E8           03ffffff                1           0           LCT rate counter
+rate_lct_me2_02                       memory        0        000001EC           03ffffff                1           0           LCT rate counter
+rate_lct_me2_03                       memory        0        000001F0           03ffffff                1           0           LCT rate counter
+rate_lct_me2_04                       memory        0        000001F4           03ffffff                1           0           LCT rate counter
+rate_lct_me2_05                       memory        0        000001F8           03ffffff                1           0           LCT rate counter
+rate_lct_me2_06                       memory        0        000001FC           03ffffff                1           0           LCT rate counter
+rate_lct_me2_07                       memory        0        00000200           03ffffff                1           0           LCT rate counter
+rate_lct_me2_08                       memory        0        00000204           03ffffff                1           0           LCT rate counter
+rate_lct_me2_09                       memory        0        00000208           03ffffff                1           0           LCT rate counter
+rate_track_2_1                        memory        0        0000020C           03ffffff                1           0           Track rate counter
+rate_lct_me3_01                       memory        0        00000210           03ffffff                1           0           LCT rate counter
+rate_lct_me3_02                       memory        0        00000214           03ffffff                1           0           LCT rate counter
+rate_lct_me3_03                       memory        0        00000218           03ffffff                1           0           LCT rate counter
+rate_lct_me3_04                       memory        0        0000021C           03ffffff                1           0           LCT rate counter
+rate_lct_me3_05                       memory        0        00000220           03ffffff                1           0           LCT rate counter
+rate_lct_me3_06                       memory        0        00000224           03ffffff                1           0           LCT rate counter
+rate_lct_me3_07                       memory        0        00000228           03ffffff                1           0           LCT rate counter
+rate_lct_me3_08                       memory        0        0000022C           03ffffff                1           0           LCT rate counter
+rate_lct_me3_09                       memory        0        00000230           03ffffff                1           0           LCT rate counter
+rate_track_0_2                        memory        0        00000234           03ffffff                1           0           Track rate counter
+rate_lct_me4_01                       memory        0        00000238           03ffffff                1           0           LCT rate counter
+rate_lct_me4_02                       memory        0        0000023C           03ffffff                1           0           LCT rate counter
+rate_lct_me4_03                       memory        0        00000240           03ffffff                1           0           LCT rate counter
+rate_lct_me4_04                       memory        0        00000244           03ffffff                1           0           LCT rate counter
+rate_lct_me4_05                       memory        0        00000248           03ffffff                1           0           LCT rate counter
+rate_lct_me4_06                       memory        0        0000024C           03ffffff                1           0           LCT rate counter
+rate_lct_me4_07                       memory        0        00000250           03ffffff                1           0           LCT rate counter
+rate_lct_me4_08                       memory        0        00000254           03ffffff                1           0           LCT rate counter
+rate_lct_me4_09                       memory        0        00000258           03ffffff                1           0           LCT rate counter
+rate_track_1_2                        memory        0        0000025C           03ffffff                1           0           Track rate counter
+rate_lct_me1n_03                      memory        0        00000260           03ffffff                1           0           LCT rate counter
+rate_lct_me1n_06                      memory        0        00000264           03ffffff                1           0           LCT rate counter
+rate_lct_me1n_09                      memory        0        00000268           03ffffff                1           0           LCT rate counter
+rate_lct_me2n_03                      memory        0        0000026C           03ffffff                1           0           LCT rate counter
+rate_lct_me2n_09                      memory        0        00000270           03ffffff                1           0           LCT rate counter
+rate_lct_me3n_03                      memory        0        00000274           03ffffff                1           0           LCT rate counter
+rate_lct_me3n_09                      memory        0        00000278           03ffffff                1           0           LCT rate counter
+rate_lct_me4n_03                      memory        0        0000027C           03ffffff                1           0           LCT rate counter
+rate_lct_me4n_09                      memory        0        00000280           03ffffff                1           0           LCT rate counter
+rate_track_2_2                        memory        0        00000284           03ffffff                1           0           Track rate counter
+daq_l1a_del                           memory        0        00000178           000000ff                1           1           DAQ L1A delay
+daq_valor_delay                       memory        0        00000178           0000ff00                1           1           DAQ Valid OR delay
+daq_brd_id                            memory        0        00000178           ffff0000                1           1           DAQ board ID
+daq_bxn_offset                        memory        0        0000017C           00000fff                1           1           DAQ BXN offset
+daq_l1a_window                        memory        0        0000017C           00007000                1           1           DAQ L1A window
+daq_valor_window                      memory        0        0000017C           00031000                1           1           DAQ Valid OR window
+daq_stress_en                         memory        0        0000017C           00040000                1           1           DAQ stress test enable
+daq_amc13_easy_en                     memory        0        0000017C           00080000                1           1           DAQ enable AMC13 easy mode
+daq_report_wo_track                   memory        0        0000017C           00100000                1           1           DAQ report data without valid tracks
+daq_rpc_late_by                       memory        0        0000017C           00e00000                1           1           DAQ RPC hits late by
+amc13_not_ready_cnt                   memory        0        00000180           0000ffff                1           0           AMC13 not-ready counter
+amc13_fifo_full_cnt                   memory        0        00000180           ffff0000                1           0           AMC13 FIFO-almost-full counter
+daq_amc13_timeout_cnt                 memory        0        00000184           000000ff                1           0           DAQ AMC13 timeout counter
+daq_oos_cnt                           memory        0        00000188           0000ffff                1           0           DAQ OOS counter
+daq_bsy_cnt                           memory        0        00000188           ffff0000                1           0           DAQ BSY counter
+daq_wof_cnt                           memory        0        0000018C           0000ffff                1           0           DAQ WOF counter
+daq_tts_state                         memory        0        0000018C           000f0000                1           0           DAQ TTS state
+amc13_ready_state                     memory        0        0000018C           00100000                1           0           DAQ AMC13 ready state
+amc13_easy_triggered                  memory        0        0000018C           00200000                1           0           DAQ AMC13 easy mode triggered

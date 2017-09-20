@@ -9,7 +9,7 @@
 #include <vector>
 #include <stdexcept>
 
-#define ADDRESSTABLE "/nfshome0/emtfts/cactus_1701/cactusprojects/emtf/ts/cell/emtf_pcie_address_table.txt"
+#define ADDRESSTABLE "/nfshome0/kkotov/cactus_trunk/cactusprojects/emtf/pciExprLinuxBusAdapter/examples/PCIExpr/address_table_ascii.dat"
 
 #include <string.h>
 #define LB_MEM_SIZE 0x10000 //size of loopback buffer in sp12, bytes
@@ -40,59 +40,59 @@ int main() {
     
     // so far there are only 2 boards connected to the crate, thus 
     // a working mtf7_index can be only 0,1
-    uint32_t mtf7_index = 11;
+    uint32_t mtf7_index = 0;
     HAL::PCIExprDevice PCICard(addressTable, busAdapter, mtf7_index);
-    
-    uint64_t value_1 = 0x0;
-    uint64_t value_2 = 0x1;
+
+    uint32_t value_1 = 0x0;
+    uint32_t value_2 = 0x1;
 
     // WRITE/READ SINGLE REGISTERS
     std::cout << "\nwriting  " << std::hex << "0x" << value_1 << " into gth_rst\n";
-    PCICard.write64( "gth_rst", value_1 );
+    PCICard.write( "gth_rst", value_1 );
 
     std::cout << "\nreading gth_rst\n";
-    PCICard.read64( "gth_rst", &value_1 );
+    PCICard.read( "gth_rst", &value_1 );
     std::cout << "result : " << std::hex << "0x" << value_1 << std::endl << std::endl;
     
     std::cout << "writing  " << std::hex << "0x" << value_2 << " into  gth_rst\n";
-    PCICard.write64( "gth_rst", value_2 );   
+    PCICard.write( "gth_rst", value_2 );   
     
     std::cout << "reading gth_rst\n";                                                                                    
-    PCICard.read64( "gth_rst", &value_2 );   
+    PCICard.read( "gth_rst", &value_2 );   
     std::cout << "result : " << std::hex << "0x" << value_2 << std::endl << std::endl;
 
     value_1 = 0x3;
     value_2 = 0x5;
 
     std::cout << "\nwriting  " << std::hex << "0x" << value_1 << " into sector\n";
-    PCICard.write64( "sector", value_1 );
+    PCICard.write( "sector", value_1 );
 
     std::cout << "\nreading sector\n";
-    PCICard.read64( "sector", &value_1 );
+    PCICard.read( "sector", &value_1 );
     std::cout << "result : " << std::hex << "0x" << value_1 << std::endl << std::endl;
     
     std::cout << "writing  " << std::hex << "0x" << value_2 << " into  sector\n";
-    PCICard.write64( "sector", value_2 );   
+    PCICard.write( "sector", value_2 );   
     
     std::cout << "reading sector \n";                                                                                    
-    PCICard.read64( "sector", &value_2 );   
+    PCICard.read( "sector", &value_2 );   
     std::cout << "result : " << std::hex << "0x" << value_2 << std::endl << std::endl;
 
     value_1 = 0x33;
     value_2 = 0x55;
 
     std::cout << "\nwriting  " << std::hex << "0x" << value_1 << " into spy_data_delay\n";
-    PCICard.write64( "spy_data_delay", value_1 );
+    PCICard.write( "spy_data_delay", value_1 );
 
     std::cout << "\nreading spy_data_delay\n";
-    PCICard.read64( "spy_data_delay", &value_1 );
+    PCICard.read( "spy_data_delay", &value_1 );
     std::cout << "result : " << std::hex << "0x" << value_1 << std::endl << std::endl;
     
     std::cout << "writing  " << std::hex << "0x" << value_2 << " into  spy_data_delay\n";
-    PCICard.write64( "spy_data_delay", value_2 );   
+    PCICard.write( "spy_data_delay", value_2 );   
     
     std::cout << "reading spy_data_delay \n";                                                                                    
-    PCICard.read64( "spy_data_delay", &value_2 );   
+    PCICard.read( "spy_data_delay", &value_2 );   
     std::cout << "result : " << std::hex << "0x" << value_2 << std::endl << std::endl;
 
 

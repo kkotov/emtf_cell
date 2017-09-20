@@ -45,12 +45,13 @@ IncludeDirs = \
 
 LibraryDirs = $(BUILD_HOME)/../daq/hal/generic/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)/ \
               $(BUILD_HOME)/$(Project)/$(XDAQ_PLATFORM)/lib \
+              $(BUILD_HOME)/$(Project)/lib/linux/$(XDAQ_PLATFORM) \
               $(XDAQ_ROOT)/lib \
               $(BUILD_HOME)/lib/$(XDAQ_OS)/$(XDAQ_PLATFORM)
 
 
 #Libraries = xcept toolbox asyncresolv uuid log4cplus GenericHAL HALUtilities DummyBusAdapters PCIExprLinuxBusAdapterStandAlone xpci
-Libraries = xcept toolbox asyncresolv uuid log4cplus GenericHAL HALUtilities PCIExprLinuxBusAdapter GenericHAL xpci
+Libraries = xcept toolbox asyncresolv uuid log4cplus GenericHAL HALUtilities PCIExprLinuxBusAdapter GenericHAL PCILinuxBusAdapter xpci
 
 # these two libraries are needed to compile with the standalone version of PCIExpr bus adaptor
 Libraries += config xerces-c

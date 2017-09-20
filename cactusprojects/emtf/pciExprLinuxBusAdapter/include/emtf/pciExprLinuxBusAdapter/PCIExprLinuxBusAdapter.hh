@@ -199,7 +199,12 @@ private:
   void readBoard(char *buffer, uint64_t length, uint64_t startAddress)
     throw(BusAdapterException);
 
-  int device_d;
+  void writeBoardBlock(char *buffer, uint64_t length, uint64_t startAddress)
+    throw(BusAdapterException);
+  void readBoardBlock(char *buffer, uint64_t length, uint64_t startAddress)
+    throw(BusAdapterException);
+
+  int device_d, blockRead_d, blockWrite_d;
 };
 
 } /* namespace HAL */
