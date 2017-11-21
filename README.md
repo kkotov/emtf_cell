@@ -23,16 +23,16 @@ swatch application.
   - [runStandalone.sh](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/runStandalone.sh)
    script sets environment and runs [runSubsystemCell.sh](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/runSubsystemCell.sh)
 script that generates xml configuration from [common.configure](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/common.configure)
-     + add **-g** command line option where the first script launches the second and you can debug the code in cgdb
    and runs the XDAQ application on port *3234*
+     + add **-g** command line option where the first script launches the second one and you can debug the code in cgdb
   - [emtfTopLevel.xml](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/emtfTopLevel.xml),
     [emtfInfra.xml](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/emtfInfra.xml),
     [emtfAlgo.xml](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/emtfAlgo.xml),
     [emtfRunSettings.xml](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/emtfRunSettings.xml), and 
     [amc13Config.xml](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/amc13Config.xml)
     cell configuration to be used with no database access
-     + this allows you not to launch the next script and also liberates from typing the TSC and RS keys
-     + you'll still have to type **file://** in the "Configuration Key* field on the *Run Control* page
+     + this allows you not to launch the next *tstore.sh* script and also liberates from typing the TSC and RS keys
+     + you'll have to type **file://** in the "Configuration Key* field on the *Run Control* page
   - [tstore.sh](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/tstore.sh) starts an
   independent XDAQ TStore service for accessing the database; also needs a dummy
   [standalone.xhannel](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/standalone.xhannel)
@@ -53,7 +53,7 @@ script that generates xml configuration from [common.configure](https://github.c
     + logs various parameters in local log files
   - Various \*Port classes
     + monitoring and logs
-    + read/s
+    + hardware reads/writes
 
 * Commands for configuring the hardware:
   - AMC13
@@ -70,7 +70,7 @@ script that generates xml configuration from [common.configure](https://github.c
   - Logs (does not affect how the system runs)
     + [OnStart and OnStop](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/src/common/TransitionCommands.cpp)
     + [Link alignment logs](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/src/common/LinksAlignmentReferences.cpp)
-  - Timing and others
+  - Timing and other hardware specifics
     + [SetDelaysAndTriggerSource](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/src/common/SpyFifo.cpp#L19-L52)
     + [DaqReportWoTrack](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/src/common/SpyFifo.cpp#L77-L96)
     + [DAQConfigRegisters](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/src/common/DAQConfigRegisters.cpp)
