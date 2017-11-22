@@ -16,8 +16,8 @@ the EMTF cell implementation. In the list below I summarize the components of th
 swatch application.
 
 * Running the application
-  - System description in [example904.xml](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/example904.xml)
-  and [exampleP5.xml](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/exampleP5.xml)
+  - System description in [example904.xml](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/example904.xml)
+  and [exampleP5.xml](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/exampleP5.xml)
    is used by the framework to instantiate all of the components at the initialization step
      + **\<uri\>** is the tag identifying which **/dev/utca_sp12\*** device file to use (**\<slot\>** tag has no effect)
   - [runStandalone.sh](https://github.com/kkotov/emtf_cell/blob/master/cactusprojects/emtf/ts/cell/runStandalone.sh)
